@@ -1,20 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types";
-import WatermarkOverlay from "@/components/WatermarkOverlay";
-import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/context/CartContext";
+import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
+import ProductCard from "@/components/ProductCard";
 import {
   ArrowLeft,
   ShoppingCart,
   Download,
   FileText,
   CheckCircle2,
-  ShieldCheck,
   Maximize2,
   X,
   Printer,
@@ -23,6 +21,7 @@ import {
   HelpCircle,
   Clock,
   Zap,
+  Check,
 } from "lucide-react";
 
 interface ProductDetailClientProps {
@@ -40,17 +39,13 @@ export default function ProductDetailClient({
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
 
-  const images = product.preview_images?.length
-    ? product.preview_images
-    : [product.cover_image];
-
-  const currentImage = images[activeImageIndex] || product.cover_image;
+  const totalPreviewPages = 3; // Let teachers preview multiple pages of the worksheet
   const isFree = product.is_free_sample || product.price === 0;
 
   const handleAddToCart = () => {
     addToCart(product);
     setAddedSuccess(true);
-    setTimeout(() => setAddedSuccess(false), 2500);
+    setTimeout(() => setAddedSuccess(false), 2000);
   };
 
   const handleBuyNow = () => {
@@ -61,173 +56,161 @@ export default function ProductDetailClient({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
       {/* Top Breadcrumb & Back Link */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#1C64B8] hover:text-[#082340] bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-2xs transition-colors"
+          href="/#catalog"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-[#082340] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>← กลับไปหน้าหลัก</span>
+          <span>กลับหน้าแคตตาล็อกใบงาน</span>
         </Link>
 
-        <span className="text-xs text-slate-400 hidden sm:inline">
-          รหัสใบงาน: {product.id}
-        </span>
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <span>รหัสใบงาน:</span>
+          <span className="font-mono font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
+            {product.id}
+          </span>
+        </div>
       </div>
 
-      {/* Main Product Section: Two Columns (Preview Left, Details Right) */}
+      {/* Main Product Showcase: 2 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Column: A4 Previewer & Thumbnails (6 cols on lg) */}
+        {/* Left Column: Physical A4 Worksheet Desk Display (5 cols on lg) */}
         <div className="lg:col-span-6 space-y-4">
-          {/* Main A4 Standard Paper Ratio Container (1:1.414) */}
-          <div className="relative aspect-[1/1.414] max-w-md mx-auto lg:max-w-none bg-gradient-to-b from-slate-100 to-slate-200 rounded-2xl border-2 border-slate-200 overflow-hidden shadow-md flex items-center justify-center p-3 sm:p-5 group">
-            {/* The A4 "Sheet" */}
-            <div className="relative w-full h-full bg-white rounded-lg shadow-lg overflow-hidden border border-slate-300">
-              <Image
-                src={currentImage}
-                alt={`${product.title} - Page ${activeImageIndex + 1}`}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-              {/* Mandatory Watermark Overlay */}
-              <WatermarkOverlay text="ClassPic Studio" />
+          {/* Desk / Studio Backdrop with Shadows */}
+          <div className="relative p-6 sm:p-8 bg-gradient-to-b from-slate-100 via-slate-100/70 to-slate-200/80 rounded-2xl border border-slate-200/90 shadow-inner flex flex-col items-center justify-center">
+            {/* The Actual A4 Paper Sheet Display */}
+            <div className="relative w-full max-w-[380px] aspect-[1/1.38]">
+              {/* Stack effect under paper */}
+              <div className="absolute inset-0 translate-x-3 translate-y-3 bg-slate-300/60 rounded-sm shadow-md border border-slate-300/40 pointer-events-none" />
+              <div className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-slate-200/80 rounded-sm shadow-md border border-slate-300/60 pointer-events-none" />
+
+              {/* Main Sheet */}
+              <div className="relative z-10 w-full h-full rounded-sm shadow-xl overflow-hidden bg-white">
+                <WorksheetPaperPreview
+                  slug={product.slug}
+                  title={product.title}
+                  gradeLevel={product.grade_level}
+                  subject={product.subject}
+                  pageNumber={activeImageIndex + 1}
+                  totalPages={product.page_count}
+                  hasAnswerKey={product.has_answer_key}
+                />
+              </div>
+
+              {/* Zoom Button */}
+              <button
+                onClick={() => setIsZoomOpen(true)}
+                className="absolute top-3 right-3 z-30 bg-[#082340]/90 hover:bg-[#082340] text-white p-2 rounded-lg shadow-md transition-all active:scale-95 flex items-center gap-1.5 text-xs font-medium backdrop-blur-xs"
+                title="ขยายดูหน้ากระดาษแผ่นใหญ่"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline text-[11px]">ขยายแผ่นเต็ม</span>
+              </button>
             </div>
 
-            {/* Zoom / Lightbox Trigger Button */}
-            <button
-              onClick={() => setIsZoomOpen(true)}
-              className="absolute top-5 right-5 z-20 bg-[#082340]/80 hover:bg-[#082340] text-white p-2.5 rounded-xl backdrop-blur-xs shadow-md transition-transform active:scale-95 flex items-center gap-1.5 text-xs font-medium"
-              title="กดเพื่อขยายดูตัวอย่างแผ่นใหญ่"
-            >
-              <Maximize2 className="w-4 h-4" />
-              <span className="hidden sm:inline">ขยายดูแผ่นเต็ม</span>
-            </button>
-
-            {/* Page number badge */}
-            <div className="absolute bottom-5 left-5 z-20 bg-[#082340]/85 backdrop-blur-xs text-white text-xs font-semibold px-3 py-1 rounded-lg shadow-xs">
-              Page {activeImageIndex + 1} จาก {images.length}
+            {/* Page Selector Tabs under the desk */}
+            <div className="mt-6 flex items-center gap-2">
+              <span className="text-[11px] font-semibold text-slate-500 mr-1">
+                เปิดดูตัวอย่างแผ่นที่:
+              </span>
+              {[0, 1, 2].map((idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all border ${
+                    activeImageIndex === idx
+                      ? "bg-[#082340] text-white border-[#082340] shadow-2xs"
+                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                  }`}
+                >
+                  หน้า {idx + 1}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Thumbnail Slider / Page Switcher (Page 1, Page 2, Page 3...) */}
-          {images.length > 1 && (
-            <div className="space-y-2">
-              <span className="text-xs font-semibold text-slate-500">
-                เลือกดูตัวอย่างหน้ากระดาษ A4 (Page 1, 2, 3...):
-              </span>
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-20 aspect-[1/1.414] rounded-lg overflow-hidden border-2 shrink-0 transition-all ${
-                      activeImageIndex === idx
-                        ? "border-[#F5760A] ring-2 ring-[#F5760A]/30 scale-102"
-                        : "border-slate-200 hover:border-slate-400 opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    <Image
-                      src={img}
-                      alt={`Page ${idx + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/10" />
-                    <span className="absolute bottom-1 right-1 bg-black/75 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">
-                      Page {idx + 1}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Watermark Notice Banner */}
-          <div className="bg-[#B5D5F2]/20 border border-[#B5D5F2]/60 rounded-xl p-3 flex items-start gap-2.5 text-xs text-[#082340]">
-            <ShieldCheck className="w-4 h-4 text-[#1C64B8] shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold">ข้อสังเกตเกี่ยวกับรูปตัวอย่าง:</p>
-              <p className="text-slate-600 mt-0.5">
-                รูปตัวอย่างหน้าร้านมีการคาดลายน้ำ &quot;ClassPic Studio&quot; เพื่อความปลอดภัย ไฟล์ PDF ตัวจริงที่ดาวน์โหลดหลังชำระเงินจะไม่มีลายน้ำ คมชัด 300 DPI เต็มแผ่นพร้อมพิมพ์
-              </p>
-            </div>
+          {/* Watermark Explanation */}
+          <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-start gap-2">
+            <span className="text-base leading-none">ℹ️</span>
+            <p>
+              ตัวอย่างบนหน้าจอมีการประทับลายน้ำ <strong>ClassPic Studio</strong> เพื่อความปลอดภัย ไฟล์ PDF คุณภาพ 300 DPI ที่ดาวน์โหลดหลังสั่งซื้อจะไม่มีลายน้ำ คมชัดพร้อมสั่งพิมพ์ทันที
+            </p>
           </div>
         </div>
 
-        {/* Right Column: Title, Metadata, Pricing, Actions (6 cols on lg) */}
+        {/* Right Column: Spec, Value & Buying Actions */}
         <div className="lg:col-span-6 space-y-6">
-          {/* Grade & Subject Pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="bg-[#082340] text-white text-xs font-semibold px-3 py-1 rounded-lg">
-              ระดับชั้น: {product.grade_level}
-            </span>
-            <span className="bg-[#1C64B8] text-white text-xs font-semibold px-3 py-1 rounded-lg">
-              วิชา: {product.subject}
-            </span>
-            {isFree && (
-              <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-lg flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                ชุดทดลองสอนฟรี
+          <div className="space-y-3">
+            {/* Grade & Subject Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-[#1C64B8] bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-md">
+                {product.subject}
               </span>
-            )}
+              <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
+                ระดับชั้น: {product.grade_level}
+              </span>
+              {isFree && (
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-emerald-600" />
+                  ชุดทดลองสอนฟรี
+                </span>
+              )}
+            </div>
+
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340] leading-tight">
+              {product.title}
+            </h1>
+
+            {/* Description */}
+            <p className="text-sm text-slate-600 leading-relaxed font-light">
+              {product.description}
+            </p>
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340] leading-tight">
-            {product.title}
-          </h1>
-
-          {/* Description */}
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-            {product.description}
-          </p>
-
-          {/* Feature Badges Card (Specs: A4, 300 DPI, page_count, answer_key) */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3.5 shadow-2xs">
+          {/* Paper Specification Box (Crafted Studio Layout) */}
+          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3 shadow-2xs">
             <h4 className="text-xs font-bold text-[#082340] uppercase tracking-wider">
-              สเปกและคุณสมบัติของไฟล์ชุดนี้:
+              สเปกเอกสารสำหรับพิมพ์ (Print Specifications):
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="flex items-center gap-2 text-slate-700">
                 <Printer className="w-4 h-4 text-[#1C64B8]" />
-                <span>ขนาด: <strong>A4 (210 x 297 มม.)</strong> มาตรฐานไทย</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <Layers className="w-4 h-4 text-[#1C64B8]" />
-                <span>ความละเอียด: <strong>300 DPI</strong> คมชัดทุกรายละเอียด</span>
+                <span>ขนาด: <strong>A4 (210 × 297 มม.)</strong></span>
               </div>
               <div className="flex items-center gap-2 text-slate-700">
                 <FileText className="w-4 h-4 text-[#1C64B8]" />
-                <span>จำนวนหน้า: <strong>{product.page_count} หน้า</strong> A4 ครบชุด</span>
+                <span>จำนวน: <strong>{product.page_count} หน้า</strong> ครบชุด</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-700">
+                <Layers className="w-4 h-4 text-[#1C64B8]" />
+                <span>ไฟล์: <strong>PDF ดิจิทัล (300 DPI)</strong></span>
               </div>
               <div className="flex items-center gap-2 text-slate-700">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>เฉลย: <strong>{product.has_answer_key ? "มีเฉลยละเอียดในเล่ม" : "ไม่มีเฉลย"}</strong></span>
+                <span>เฉลย: <strong>{product.has_answer_key ? "มีเฉลยในเล่ม" : "ไม่มีเฉลย"}</strong></span>
               </div>
             </div>
           </div>
 
-          {/* Pricing & Call to Action Box */}
-          <div className="bg-gradient-to-br from-[#082340] to-[#143b66] text-white rounded-2xl p-6 sm:p-7 space-y-5 shadow-lg border border-white/10">
-            <div className="flex items-baseline justify-between border-b border-white/10 pb-4">
+          {/* Pricing & Checkout Block */}
+          <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-baseline justify-between border-b border-slate-200 pb-4">
               <div>
-                <span className="text-xs text-[#B5D5F2] uppercase tracking-wider font-semibold">
-                  ราคาไฟล์ดิจิทัล PDF
-                </span>
-                <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-xs text-slate-500 font-medium">ราคาจำหน่าย:</span>
+                <div className="flex items-baseline gap-2 mt-0.5">
                   {isFree ? (
-                    <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400">
+                    <span className="text-3xl font-extrabold text-emerald-600">
                       ฟรี ฿0
                     </span>
                   ) : (
                     <>
-                      <span className="text-3xl sm:text-4xl font-extrabold text-[#F5760A]">
+                      <span className="text-3xl font-extrabold text-[#082340]">
                         ฿{product.price}
                       </span>
                       {product.original_price && (
-                        <span className="text-sm sm:text-base text-white/50 line-through">
+                        <span className="text-sm text-slate-400 line-through">
                           ฿{product.original_price}
                         </span>
                       )}
@@ -236,97 +219,83 @@ export default function ProductDetailClient({
                 </div>
               </div>
 
-              <div className="text-right">
-                <span className="inline-block bg-white/10 text-[#B5D5F2] text-xs font-medium px-2.5 py-1 rounded-md">
-                  ชำระครั้งเดียว ดาวน์โหลดได้ทันที
-                </span>
-              </div>
+              <span className="text-xs text-slate-500 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                ชำระครั้งเดียว ดาวน์โหลดซ้ำได้ตลอด
+              </span>
             </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              {product.is_coming_soon ? (
+            {/* Buttons */}
+            {product.is_coming_soon ? (
+              <button
+                disabled
+                className="w-full bg-slate-200 text-slate-400 font-semibold py-3.5 rounded-xl cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              >
+                <Clock className="w-4 h-4" />
+                <span>เปิดให้สั่งซื้อเร็วๆ นี้</span>
+              </button>
+            ) : isFree ? (
+              <a
+                href="/downloads"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm"
+              >
+                <Download className="w-4 h-4" />
+                <span>ดาวน์โหลดไฟล์ตัวอย่างฟรีทันที</span>
+              </a>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                  disabled
-                  className="w-full bg-white/20 text-white/50 font-semibold py-3.5 rounded-xl cursor-not-allowed flex items-center justify-center gap-2"
+                  onClick={handleAddToCart}
+                  className={`flex-1 font-bold py-3.5 px-6 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-sm active:scale-98 ${
+                    addedSuccess
+                      ? "bg-emerald-600 text-white"
+                      : "bg-[#F5760A] hover:bg-[#d96303] text-white"
+                  }`}
                 >
-                  <Clock className="w-5 h-5" />
-                  <span>กำลังเตรียมเปิดให้สั่งซื้อเร็วๆ นี้</span>
+                  {addedSuccess ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>เพิ่มลงตะกร้าแล้ว!</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>หยิบใส่ตะกร้า</span>
+                    </>
+                  )}
                 </button>
-              ) : isFree ? (
-                <div className="space-y-3">
-                  <Link
-                    href="/downloads"
-                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
-                  >
-                    <Download className="w-5 h-5" />
-                    <span>ดาวน์โหลดตัวอย่างฟรี</span>
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {/* Button: หยิบใส่ตะกร้า */}
-                  <button
-                    onClick={handleAddToCart}
-                    className="flex-1 bg-[#1C64B8] hover:bg-[#154d8f] text-white font-bold py-3.5 px-5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>{addedSuccess ? "✓ เพิ่มลงตะกร้าแล้ว!" : "หยิบใส่ตะกร้า"}</span>
-                  </button>
 
-                  {/* Button: ซื้อทันที */}
-                  <button
-                    onClick={handleBuyNow}
-                    className="flex-1 bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 px-5 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 active:scale-98"
-                  >
-                    <Zap className="w-5 h-5" />
-                    <span>ซื้อทันที</span>
-                  </button>
-                </div>
-              )}
-
-              {/* ดาวน์โหลดตัวอย่างฟรี (ถ้าเป็นสินค้าเสียเงินแต่มีตัวอย่างให้โหลด) */}
-              {!isFree && !product.is_coming_soon && (
-                <Link
-                  href={`/products/free-starter-pack-sample`}
-                  className="w-full bg-white/10 hover:bg-white/20 text-[#B5D5F2] hover:text-white border border-[#B5D5F2]/30 text-xs font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5"
+                <button
+                  onClick={handleBuyNow}
+                  className="bg-[#082340] hover:bg-[#1C64B8] text-white font-bold py-3.5 px-6 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 active:scale-98"
                 >
-                  <Download className="w-4 h-4 text-[#F5760A]" />
-                  <span>ดาวน์โหลดตัวอย่างฟรี (2 หน้าแรกเพื่อทดลองดูคุณภาพ)</span>
-                </Link>
-              )}
-            </div>
+                  <Zap className="w-4 h-4 text-[#F5760A]" />
+                  <span>ชำระเงินทันที</span>
+                </button>
+              </div>
+            )}
 
-            {/* Security Notes */}
-            <div className="grid grid-cols-2 gap-2 pt-2 text-[11px] text-white/70">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#B5D5F2]" />
-                <span>รองรับสแกน QR PromptPay</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#B5D5F2]" />
-                <span>ส่งมอบไฟล์ PDF ปลอดภัย 100%</span>
-              </div>
+            <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200/70">
+              <span>✓ ชำระผ่าน Mobile Banking ทุกธนาคาร</span>
+              <span>✓ รับลิงก์ดาวน์โหลดทันที</span>
             </div>
           </div>
 
-          {/* Usage License Notice */}
-          <div className="border border-slate-200 rounded-xl p-4 bg-white space-y-2 text-xs text-slate-600">
+          {/* License Note */}
+          <div className="border border-slate-200 rounded-xl p-4 bg-white text-xs text-slate-600 space-y-1.5">
             <h5 className="font-bold text-[#082340] flex items-center gap-1.5">
-              <HelpCircle className="w-4 h-4 text-[#1C64B8]" />
-              สิทธิ์การใช้งาน (ClassPic License):
+              <HelpCircle className="w-3.5 h-3.5 text-[#1C64B8]" />
+              <span>สิทธิ์การใช้งาน (ClassPic Educational License)</span>
             </h5>
-            <ul className="list-disc list-inside space-y-1 text-slate-500 pl-1">
-              <li>อนุญาตให้พิมพ์เพื่อใช้สอนในห้องเรียน และการเรียนรู้ส่วนตัวในครอบครัว</li>
-              <li>ไม่อนุญาตให้นำไฟล์ PDF หรือภาพใบงานไปจำหน่ายต่อ ดัดแปลงขาย หรือเผยแพร่สาธารณะบนอินเทอร์เน็ต</li>
-            </ul>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              อนุญาตให้ครูและผู้ปกครองพิมพ์แจกนักเรียนในชั้นเรียนได้ไม่จำกัดจำนวนครั้ง ไม่อนุญาตให้นำไฟล์ PDF หรือภาพใบงานไปจำหน่ายต่อในเชิงพาณิชย์
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Lightbox Modal (For Zooming Preview) */}
+      {/* Lightbox Modal */}
       {isZoomOpen && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4">
           <button
             onClick={() => setIsZoomOpen(false)}
             className="absolute top-5 right-5 text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-colors z-50"
@@ -335,40 +304,36 @@ export default function ProductDetailClient({
             <X className="w-6 h-6" />
           </button>
 
-          <div className="relative max-w-xl w-full aspect-[1/1.414] bg-white rounded-xl overflow-hidden shadow-2xl">
-            <Image
-              src={currentImage}
-              alt="Zoomed preview"
-              fill
-              className="object-cover"
+          <div className="relative max-w-xl w-full aspect-[1/1.38] bg-white rounded-lg overflow-hidden shadow-2xl">
+            <WorksheetPaperPreview
+              slug={product.slug}
+              title={product.title}
+              gradeLevel={product.grade_level}
+              subject={product.subject}
+              pageNumber={activeImageIndex + 1}
+              totalPages={product.page_count}
+              hasAnswerKey={product.has_answer_key}
             />
-            {/* Watermark in Modal */}
-            <WatermarkOverlay text="ClassPic Studio" />
           </div>
         </div>
       )}
 
-      {/* Related Worksheets Section */}
+      {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="pt-8 border-t border-slate-200 space-y-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold text-[#082340]">
-                ชุดใบงานที่คุณอาจสนใจเพิ่มเติม
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                เลือกดูชุดแบบฝึกหัดอื่นๆ ในสตูดิโอ ClassPic
-              </p>
-            </div>
+            <h3 className="text-xl font-bold text-[#082340]">
+              ชุดใบงานอื่นๆ ในสตูดิโอ
+            </h3>
             <Link
-              href="/"
-              className="text-xs font-semibold text-[#1C64B8] hover:text-[#082340]"
+              href="/#catalog"
+              className="text-xs font-semibold text-[#1C64B8] hover:underline"
             >
               ดูทั้งหมด →
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {relatedProducts.map((rel) => (
               <ProductCard key={rel.id} product={rel} />
             ))}

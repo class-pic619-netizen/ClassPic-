@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
-import { FileText, CheckCircle2, ShoppingCart, Eye, Sparkles, Clock } from "lucide-react";
+import { FileText, CheckCircle2, ShoppingCart, Eye, Sparkles, Clock, Check } from "lucide-react";
 import WatermarkOverlay from "./WatermarkOverlay";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -12,13 +14,27 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const { addToCart } = useCart();
+  const [justAdded, setJustAdded] = useState(false);
   const isFree = product.is_free_sample || product.price === 0;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onAddToCart) {
+      onAddToCart(product);
+    } else {
+      addToCart(product);
+    }
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 2000);
+  };
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200 hover:border-[#1C64B8]/40 overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between">
       <div>
         {/* Worksheet Preview Box (Proportional to A4 paper 1:1.41) */}
-        <div className="relative aspect-[1/1.25] bg-gradient-to-b from-[#B5D5F2]/10 to-[#B5D5F2]/30 overflow-hidden border-b border-slate-100 flex items-center justify-center p-3">
+        <div className="relative aspect-[1/1.28] bg-gradient-to-b from-[#B5D5F2]/10 to-[#B5D5F2]/30 overflow-hidden border-b border-slate-100 flex items-center justify-center p-3">
           <div className="relative w-full h-full rounded-lg overflow-hidden shadow-inner bg-white">
             <Image
               src={product.cover_image}
@@ -46,12 +62,12 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
           {/* Coming Soon Overlay */}
           {product.is_coming_soon && (
-            <div className="absolute inset-0 z-30 bg-[#082340]/70 backdrop-blur-xs flex flex-col items-center justify-center text-center p-4">
+            <div className="absolute inset-0 z-30 bg-[#082340]/75 backdrop-blur-xs flex flex-col items-center justify-center text-center p-4">
               <span className="bg-[#F5760A] text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg flex items-center gap-1.5 mb-2">
                 <Clock className="w-4 h-4" />
                 เร็วๆ นี้ (Coming Soon)
               </span>
-              <p className="text-xs text-white/80">กำลังจัดเตรียมไฟล์ PDF คุณภาพสูง</p>
+              <p className="text-xs text-white/90">กำลังจัดเตรียมไฟล์ PDF คุณภาพสูง</p>
             </div>
           )}
         </div>
@@ -118,10 +134,11 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           {/* Quick Preview Button */}
           <Link
             href={`/products/${product.slug}`}
-            className="p-2 text-slate-500 hover:text-[#1C64B8] hover:bg-white rounded-xl border border-transparent hover:border-slate-200 transition-all shadow-2xs"
+            className="inline-flex items-center gap-1 px-2.5 py-2 text-xs font-medium text-slate-600 hover:text-[#1C64B8] hover:bg-white rounded-xl border border-slate-200 transition-all shadow-2xs"
             title="ดูตัวอย่างใบงาน"
           >
-            <Eye className="w-4 h-4" />
+            <Eye className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">ดูตัวอย่าง</span>
           </Link>
 
           {/* Action Button */}
@@ -141,11 +158,22 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             </Link>
           ) : (
             <button
-              onClick={() => onAddToCart && onAddToCart(product)}
-              className="bg-[#F5760A] hover:bg-[#d96303] text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition-all active:scale-95"
+              onClick={handleAddToCart}
+              className={`text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition-all active:scale-95 ${
+                justAdded ? "bg-emerald-600" : "bg-[#F5760A] hover:bg-[#d96303]"
+              }`}
             >
-              <ShoppingCart className="w-3.5 h-3.5" />
-              <span>สั่งซื้อ</span>
+              {justAdded ? (
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>ใส่ตะกร้าแล้ว</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-3.5 h-3.5" />
+                  <span>หยิบใส่ตะกร้า</span>
+                </>
+              )}
             </button>
           )}
         </div>

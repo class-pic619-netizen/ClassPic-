@@ -26,3 +26,26 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export type OrderStatus = "PENDING" | "PENDING_REVIEW" | "PAID" | "VERIFIED" | "REJECTED" | "FAILED";
+
+export interface Order {
+  id: string;
+  customer_contact: string; // Phone or Email
+  total_amount: number;
+  status: OrderStatus;
+  items: CartItem[];
+  slip_image_url?: string;
+  trans_ref?: string;
+  paid_at?: string;
+  created_at: string;
+}
+
+export interface VerifiedSlip {
+  trans_ref: string;
+  amount: number;
+  sender_bank?: string;
+  receiver_bank?: string;
+  verified_at: string;
+  order_id: string;
+}

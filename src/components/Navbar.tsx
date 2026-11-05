@@ -4,10 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { ShoppingCart, Search, Download, Menu, X } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const cartItemCount = 0; // Will be connected to Cart Context in M3
+  const { totalItems, setIsCartOpen } = useCart();
 
   return (
     <header className="sticky top-0 z-50 bg-[#082340] text-white shadow-md border-b-2 border-[#F5760A]">
@@ -58,20 +59,21 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          {/* Right Action Icons: Search & Cart */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/cart"
-              className="relative flex items-center gap-2 bg-[#1C64B8] hover:bg-[#154d8f] text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all shadow-sm active:scale-95"
-            >
-              <ShoppingCart className="w-4 h-4 text-[#F5760A]" />
-              <span className="hidden sm:inline">ตะกร้า</span>
-              <span className="inline-flex items-center justify-center bg-[#F5760A] text-white text-xs font-bold rounded-full h-5 min-w-5 px-1">
-                {cartItemCount}
-              </span>
-            </Link>
+            {/* Right Action Icons: Search & Cart */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative flex items-center gap-2 bg-[#1C64B8] hover:bg-[#154d8f] text-white px-3.5 py-2 rounded-xl text-sm font-medium transition-all shadow-sm active:scale-95 cursor-pointer"
+                aria-label="Open Cart"
+              >
+                <ShoppingCart className="w-4 h-4 text-[#F5760A]" />
+                <span className="hidden sm:inline">ตะกร้า</span>
+                <span className="inline-flex items-center justify-center bg-[#F5760A] text-white text-xs font-bold rounded-full h-5 min-w-5 px-1">
+                  {totalItems}
+                </span>
+              </button>
 
-            {/* Mobile Menu Button */}
+              {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"

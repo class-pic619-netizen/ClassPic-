@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import WatermarkOverlay from "@/components/WatermarkOverlay";
 import ProductCard from "@/components/ProductCard";
+import { useCart } from "@/context/CartContext";
 import {
   ArrowLeft,
   ShoppingCart,
@@ -20,6 +22,7 @@ import {
   Layers,
   HelpCircle,
   Clock,
+  Zap,
 } from "lucide-react";
 
 interface ProductDetailClientProps {
@@ -31,6 +34,8 @@ export default function ProductDetailClient({
   product,
   relatedProducts,
 }: ProductDetailClientProps) {
+  const router = useRouter();
+  const { addToCart } = useCart();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
@@ -43,8 +48,14 @@ export default function ProductDetailClient({
   const isFree = product.is_free_sample || product.price === 0;
 
   const handleAddToCart = () => {
+    addToCart(product);
     setAddedSuccess(true);
     setTimeout(() => setAddedSuccess(false), 2500);
+  };
+
+  const handleBuyNow = () => {
+    addToCart(product);
+    router.push("/checkout");
   };
 
   return (
@@ -52,11 +63,11 @@ export default function ProductDetailClient({
       {/* Top Breadcrumb & Back Link */}
       <div className="flex items-center justify-between">
         <Link
-          href="/#catalog"
+          href="/"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#1C64B8] hover:text-[#082340] bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-2xs transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>กลับหน้าแคตตาล็อก</span>
+          <span>← กลับไปหน้าหลัก</span>
         </Link>
 
         <span className="text-xs text-slate-400 hidden sm:inline">
@@ -66,15 +77,15 @@ export default function ProductDetailClient({
 
       {/* Main Product Section: Two Columns (Preview Left, Details Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Column: A4 Previewer & Thumbnails (5 cols on lg) */}
+        {/* Left Column: A4 Previewer & Thumbnails (6 cols on lg) */}
         <div className="lg:col-span-6 space-y-4">
-          {/* Main A4 Ratio Preview Container */}
-          <div className="relative aspect-[1/1.3] bg-gradient-to-b from-slate-100 to-slate-200 rounded-2xl border-2 border-slate-200 overflow-hidden shadow-md flex items-center justify-center p-4 sm:p-6 group">
+          {/* Main A4 Standard Paper Ratio Container (1:1.414) */}
+          <div className="relative aspect-[1/1.414] max-w-md mx-auto lg:max-w-none bg-gradient-to-b from-slate-100 to-slate-200 rounded-2xl border-2 border-slate-200 overflow-hidden shadow-md flex items-center justify-center p-3 sm:p-5 group">
             {/* The A4 "Sheet" */}
             <div className="relative w-full h-full bg-white rounded-lg shadow-lg overflow-hidden border border-slate-300">
               <Image
                 src={currentImage}
-                alt={`${product.title} - แผ่นที่ ${activeImageIndex + 1}`}
+                alt={`${product.title} - Page ${activeImageIndex + 1}`}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -87,7 +98,7 @@ export default function ProductDetailClient({
             {/* Zoom / Lightbox Trigger Button */}
             <button
               onClick={() => setIsZoomOpen(true)}
-              className="absolute top-6 right-6 z-20 bg-[#082340]/80 hover:bg-[#082340] text-white p-2.5 rounded-xl backdrop-blur-xs shadow-md transition-transform active:scale-95 flex items-center gap-1.5 text-xs font-medium"
+              className="absolute top-5 right-5 z-20 bg-[#082340]/80 hover:bg-[#082340] text-white p-2.5 rounded-xl backdrop-blur-xs shadow-md transition-transform active:scale-95 flex items-center gap-1.5 text-xs font-medium"
               title="กดเพื่อขยายดูตัวอย่างแผ่นใหญ่"
             >
               <Maximize2 className="w-4 h-4" />
@@ -95,23 +106,23 @@ export default function ProductDetailClient({
             </button>
 
             {/* Page number badge */}
-            <div className="absolute bottom-6 left-6 z-20 bg-[#082340]/80 backdrop-blur-xs text-white text-xs font-semibold px-3 py-1 rounded-lg">
-              ตัวอย่างหน้าที่ {activeImageIndex + 1} จาก {images.length}
+            <div className="absolute bottom-5 left-5 z-20 bg-[#082340]/85 backdrop-blur-xs text-white text-xs font-semibold px-3 py-1 rounded-lg shadow-xs">
+              Page {activeImageIndex + 1} จาก {images.length}
             </div>
           </div>
 
-          {/* Thumbnail Slider / Page Switcher */}
+          {/* Thumbnail Slider / Page Switcher (Page 1, Page 2, Page 3...) */}
           {images.length > 1 && (
             <div className="space-y-2">
               <span className="text-xs font-semibold text-slate-500">
-                เลือกแผ่นเพื่อดูตัวอย่าง:
+                เลือกดูตัวอย่างหน้ากระดาษ A4 (Page 1, 2, 3...):
               </span>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-20 aspect-[1/1.25] rounded-lg overflow-hidden border-2 shrink-0 transition-all ${
+                    className={`relative w-20 aspect-[1/1.414] rounded-lg overflow-hidden border-2 shrink-0 transition-all ${
                       activeImageIndex === idx
                         ? "border-[#F5760A] ring-2 ring-[#F5760A]/30 scale-102"
                         : "border-slate-200 hover:border-slate-400 opacity-70 hover:opacity-100"
@@ -119,13 +130,13 @@ export default function ProductDetailClient({
                   >
                     <Image
                       src={img}
-                      alt={`Thumbnail ${idx + 1}`}
+                      alt={`Page ${idx + 1}`}
                       fill
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-black/10" />
-                    <span className="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] px-1 rounded font-bold">
-                      {idx + 1}
+                    <span className="absolute bottom-1 right-1 bg-black/75 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">
+                      Page {idx + 1}
                     </span>
                   </button>
                 ))}
@@ -139,7 +150,7 @@ export default function ProductDetailClient({
             <div>
               <p className="font-semibold">ข้อสังเกตเกี่ยวกับรูปตัวอย่าง:</p>
               <p className="text-slate-600 mt-0.5">
-                รูปตัวอย่างหน้าร้านมีการคาดลายน้ำเพื่อความปลอดภัย ไฟล์ PDF ตัวจริงที่ดาวน์โหลดหลังชำระเงินจะไม่มีลายน้ำ คมชัด 300 DPI เต็มแผ่นพร้อมพิมพ์
+                รูปตัวอย่างหน้าร้านมีการคาดลายน้ำ &quot;ClassPic Studio&quot; เพื่อความปลอดภัย ไฟล์ PDF ตัวจริงที่ดาวน์โหลดหลังชำระเงินจะไม่มีลายน้ำ คมชัด 300 DPI เต็มแผ่นพร้อมพิมพ์
               </p>
             </div>
           </div>
@@ -173,23 +184,23 @@ export default function ProductDetailClient({
             {product.description}
           </p>
 
-          {/* Feature Badges Card */}
+          {/* Feature Badges Card (Specs: A4, 300 DPI, page_count, answer_key) */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3.5 shadow-2xs">
             <h4 className="text-xs font-bold text-[#082340] uppercase tracking-wider">
               สเปกและคุณสมบัติของไฟล์ชุดนี้:
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="flex items-center gap-2 text-slate-700">
-                <FileText className="w-4 h-4 text-[#1C64B8]" />
-                <span>จำนวน: <strong>{product.page_count} หน้า</strong> A4 ครบชุด</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700">
                 <Printer className="w-4 h-4 text-[#1C64B8]" />
-                <span>ขนาด: <strong>A4 (210 x 297 มม.)</strong> พอดีกระดาษ</span>
+                <span>ขนาด: <strong>A4 (210 x 297 มม.)</strong> มาตรฐานไทย</span>
               </div>
               <div className="flex items-center gap-2 text-slate-700">
                 <Layers className="w-4 h-4 text-[#1C64B8]" />
-                <span>รูปแบบ: <strong>PDF ดิจิทัล (300 DPI)</strong></span>
+                <span>ความละเอียด: <strong>300 DPI</strong> คมชัดทุกรายละเอียด</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-700">
+                <FileText className="w-4 h-4 text-[#1C64B8]" />
+                <span>จำนวนหน้า: <strong>{product.page_count} หน้า</strong> A4 ครบชุด</span>
               </div>
               <div className="flex items-center gap-2 text-slate-700">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -243,30 +254,46 @@ export default function ProductDetailClient({
                   <span>กำลังเตรียมเปิดให้สั่งซื้อเร็วๆ นี้</span>
                 </button>
               ) : isFree ? (
-                <a
-                  href="/downloads"
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>ดาวน์โหลดไฟล์ตัวอย่างฟรีทันที</span>
-                </a>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button
-                    onClick={handleAddToCart}
-                    className="flex-1 bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 active:scale-98"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>{addedSuccess ? "✓ เพิ่มลงตะกร้าแล้ว!" : "หยิบใส่ตะกร้า / สั่งซื้อ"}</span>
-                  </button>
-
+                <div className="space-y-3">
                   <Link
-                    href="/checkout"
-                    className="bg-white/15 hover:bg-white/25 text-white font-semibold py-3.5 px-5 rounded-xl border border-white/20 transition-all text-center flex items-center justify-center"
+                    href="/downloads"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
                   >
-                    <span>ชำระเงินทันที</span>
+                    <Download className="w-5 h-5" />
+                    <span>ดาวน์โหลดตัวอย่างฟรี</span>
                   </Link>
                 </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Button: หยิบใส่ตะกร้า */}
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-[#1C64B8] hover:bg-[#154d8f] text-white font-bold py-3.5 px-5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    <span>{addedSuccess ? "✓ เพิ่มลงตะกร้าแล้ว!" : "หยิบใส่ตะกร้า"}</span>
+                  </button>
+
+                  {/* Button: ซื้อทันที */}
+                  <button
+                    onClick={handleBuyNow}
+                    className="flex-1 bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 px-5 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 active:scale-98"
+                  >
+                    <Zap className="w-5 h-5" />
+                    <span>ซื้อทันที</span>
+                  </button>
+                </div>
+              )}
+
+              {/* ดาวน์โหลดตัวอย่างฟรี (ถ้าเป็นสินค้าเสียเงินแต่มีตัวอย่างให้โหลด) */}
+              {!isFree && !product.is_coming_soon && (
+                <Link
+                  href={`/products/free-starter-pack-sample`}
+                  className="w-full bg-white/10 hover:bg-white/20 text-[#B5D5F2] hover:text-white border border-[#B5D5F2]/30 text-xs font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5"
+                >
+                  <Download className="w-4 h-4 text-[#F5760A]" />
+                  <span>ดาวน์โหลดตัวอย่างฟรี (2 หน้าแรกเพื่อทดลองดูคุณภาพ)</span>
+                </Link>
               )}
             </div>
 
@@ -308,7 +335,7 @@ export default function ProductDetailClient({
             <X className="w-6 h-6" />
           </button>
 
-          <div className="relative max-w-2xl w-full aspect-[1/1.3] bg-white rounded-xl overflow-hidden shadow-2xl">
+          <div className="relative max-w-xl w-full aspect-[1/1.414] bg-white rounded-xl overflow-hidden shadow-2xl">
             <Image
               src={currentImage}
               alt="Zoomed preview"
@@ -334,7 +361,7 @@ export default function ProductDetailClient({
               </p>
             </div>
             <Link
-              href="/#catalog"
+              href="/"
               className="text-xs font-semibold text-[#1C64B8] hover:text-[#082340]"
             >
               ดูทั้งหมด →

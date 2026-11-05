@@ -3,6 +3,8 @@ import { Prompt } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Providers from "@/components/Providers";
+import CartDrawer from "@/components/CartDrawer";
 
 const promptFont = Prompt({
   weight: ["300", "400", "500", "600", "700"],
@@ -28,9 +30,12 @@ export default function RootLayout({
   return (
     <html lang="th" className={`${promptFont.variable}`}>
       <body className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#082340] font-sans antialiased">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <Providers>
+          <Navbar />
+          <CartDrawer />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

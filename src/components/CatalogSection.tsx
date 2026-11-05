@@ -10,7 +10,7 @@ interface CatalogSectionProps {
 }
 
 const GRADE_FILTERS: Array<{ label: string; value: GradeLevel | "all" }> = [
-  { label: "ทุกระดับชั้น", value: "all" },
+  { label: "ทั้งหมด", value: "all" },
   { label: "อนุบาล", value: "อนุบาล" },
   { label: "ป.1-ป.3", value: "ป.1-ป.3" },
   { label: "ป.4-ป.6", value: "ป.4-ป.6" },

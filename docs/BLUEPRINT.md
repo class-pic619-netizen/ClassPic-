@@ -219,4 +219,66 @@ create table if not exists public.verified_slips (
   verify_mode text not null default 'MANUAL_ADMIN', -- MANUAL_ADMIN, AUTO_API
   verified_at timestamptz default now()
 );
+
+-- 5. ส่วนขยายตาราง products สำหรับรองรับ Zero-Exit Ecosystem
+alter table public.products
+  add column if not exists curriculum_code text,                -- เช่น ท 1.1 ป.6/1, ค 1.1 ป.6/2
+  add column if not exists curriculum_desc text,                -- สรุปเป้าหมายหลักสูตร สพฐ. และเกณฑ์ ว.PA
+  add column if not exists warmup_ideas jsonb default '[]'::jsonb, -- คำถามนำ 5 นาที / มินิเกมเปิดคาบ
+  add column if not exists parent_coach text,                  -- คำแนะนำสำหรับผู้ปกครอง 30 วินาที
+  add column if not exists tier_preview_urls jsonb default '{}'::jsonb, -- รูปตัวอย่างแยก Tier A, B, C
+  add column if not exists is_personalizable boolean default true; -- อนุญาตให้แก้ชื่อ/โรงเรียนแล้วสั่งพิมพ์สด
+
+---
+
+## 5. สถาปัตยกรรม "Zero-Exit" ดูดผู้ใช้แบบครบวงจร (Sticky All-in-One Engine)
+
+> **วิสัยทัศน์:** ผู้ใช้ (ครู / ผู้ปกครอง) กดเข้ามาดูแล้ว **"ไม่ต้องกดสลับแท็บออกไปไหนอีกเลย"** ทุกคำถามและทุกความต้องการจบลงในหน้าร้าน ClassPic
+
+```mermaid
+flowchart TD
+    Customer["ผู้ใช้งานเข้ามาที่หน้ารายละเอียดใบงาน"] --> ZeroExitHub["Zero-Exit Interactive Studio"]
+
+    ZeroExitHub --> F1["1. Curriculum Deep-Inspector\n(ส่องตัวชี้วัด สพฐ. + เกณฑ์ ว.PA ใน 10 วิ ไม่ต้องเปิดคู่มือ)"]
+    ZeroExitHub --> F2["2. 5-Minute Warm-Up Sandbox\n(ไอเดียเกมเปิดคาบ + สุ่มชื่อ + จับเวลา ไม่ต้องไป Pinterest)"]
+    ZeroExitHub --> F3["3. Parent 30-Sec Coach\n(โค้ชผู้ปกครองสั้น 30 วิ รู้วิธีสอนลูกทันที ไม่ต้องทะเลาะกัน)"]
+    ZeroExitHub --> F4["4. Live Interactive Tier-Switcher\n(สลับดูสด 3 ระดับ: Tier A เด็กพิเศษ/IIP, Tier B มาตรฐาน, Tier C ท้าทาย)"]
+    ZeroExitHub --> F5["5. In-Browser Personalizer & Instant Print\n(พิมพ์ชื่อ-โรงเรียน แล้วกดพิมพ์สดจากเว็บ ไม่ต้องง้อ Word)"]
+```
+
+### 5.1 Curriculum Deep-Inspector (ส่องไส้ในตัวชี้วัด สพฐ.)
+* **พฤติกรรมเดิม:** ครูจำรหัสตัวชี้วัดไม่ได้ ต้องสลับไปเปิด Google หรือคู่มือเล่มหนา
+* **บนระบบ ClassPic:** คลิกหรือ Hover ที่ป้ายตัวชี้วัด จะมี Side Drawer แสดง:
+  1. เป้าหมายการเรียนรู้หลัก (Key Competencies)
+  2. จุดที่เด็กมักเข้าใจผิดบ่อย (Common Misconceptions)
+  3. แนวทางการวัดผลประเมินผลสำหรับจัดทำแฟ้ม ว.PA ระดับดีเด่น
+
+### 5.2 5-Minute Lesson Warm-Up Sandbox (ไอเดียเปิดคาบ ไม่ต้องไป YouTube)
+* แท็บพิเศษในหน้าแสดงสินค้า: รวมไอเดียกิจกรรม 5 นาทีแรกของคาบ
+* มี Interactive Widgets ในตัว:
+  * ปุ่ม **"สุ่มรายชื่อนักเรียน"** (Random Student Picker)
+  * นาฬิกา **"นับถอยหลังทำกิจกรรม"** (Classroom Timer)
+  * ครูสามารถฉายขึ้นโปรเจกเตอร์หรือทีวีในห้องเรียนสอนได้ทันที
+
+### 5.3 Parent 30-Sec Coach (โค้ชสอนการบ้านผู้ปกครองในตัว)
+* สำหรับผู้ปกครองที่ไม่กล้าซื้อเพราะกลัวสอนลูกไม่ได้:
+* มีคลิปเสียงสั้น / การ์ดคำแนะนำ 30 วินาที:
+  * *"วิธีถามนำลูกโดยไม่เฉลยตรงๆ"*
+  * *"ถ้าลูกติดข้อนี้ ให้ใช้สิ่งของรอบตัวช่วยสาธิตอย่างไร"*
+  * เสริมความมั่นใจให้ผู้ปกครองกล้ากดซื้อทันที
+
+### 5.4 Live Interactive Tier-Switcher (สลับพรีวิว 3 ระดับสดๆ บนจอ)
+* ปุ่มสลับ 3 โหมดบนรูปตัวอย่างกระดาษ A4:
+  * `[Tier A: เสริมพื้นฐาน / IIP]` — สำหรับเด็กเรียนรู้ช้าหรือเด็กพิเศษ (เน้นภาพ ฟอนต์ใหญ่ คำสั่งสั้น)
+  * `[Tier B: มาตรฐาน]` — เนื้อหาเข้มข้นตามเกณฑ์ สพฐ.
+  * `[Tier C: ท้าทาย / ประยุกต์]` — โจทย์เชื่อมโยงสถานการณ์จริง
+* แสดงความคุ้มค่าระดับสายตาว่าซื้อ 1 ครั้ง ตอบโจทย์เด็กทั้งห้องเรียนรวม
+
+### 5.5 In-Browser Personalizer & Instant Print (พิมพ์สดจากหน้าเว็บ ไม่ต้องเปิด Word)
+> **หลักการสำคัญ:** แม้สกิล AI จะถูกพัฒนาจนเขียนเนียนเสมือนครูชำนาญการพิเศษตัวจริงทำเอง ฟีเจอร์นี้ยังคง **"ต้องมี 100%"** เพื่อ:
+1. **Psychological Ownership:** ครูต้องการเห็นชื่อตัวเองและโรงเรียนบนหัวกระดาษ (เปลี่ยนสถานะจาก "ชีทโหลดมา" เป็น "เอกสารของโรงเรียนเรา")
+2. **Zero Device Barrier:** ใช้งานผ่าน iPad / มือถือได้สมบูรณ์แบบ ครูไม่ต้องโหลด `.docx` เข้าแอปแล้วเจอปัญหาสระลอย
+3. **Contextual Nuance:** ปรับชื่อตัวละครหรือชื่อสถานที่ในโจทย์ให้ตรงกับท้องถิ่นได้ใน 5 วินาที
+4. **Emergency Classroom Rescue:** กรณีอีก 10 นาทีเข้าสอน เปิดเว็บ กรอกชื่อ สั่งพิมพ์ออก Wi-Fi/AirPrint เดินเข้าสอนได้ทันที!
+
 ```

@@ -7,21 +7,15 @@ import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
 import ProductCard from "@/components/ProductCard";
+import { ClassPicSpark } from "@/components/ClassPicLogo";
 import {
   ArrowLeft,
-  ShoppingCart,
+  ShoppingBag,
   Download,
-  FileText,
-  CheckCircle2,
   Maximize2,
   X,
-  Printer,
-  Sparkles,
-  Layers,
-  HelpCircle,
-  Clock,
-  Zap,
   Check,
+  ArrowRight,
 } from "lucide-react";
 
 interface ProductDetailClientProps {
@@ -39,7 +33,6 @@ export default function ProductDetailClient({
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
 
-  const totalPreviewPages = 3; // Let teachers preview multiple pages of the worksheet
   const isFree = product.is_free_sample || product.price === 0;
 
   const handleAddToCart = () => {
@@ -55,38 +48,42 @@ export default function ProductDetailClient({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-      {/* Top Breadcrumb & Back Link */}
-      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+      {/* Top Studio Index Bar */}
+      <div className="flex items-center justify-between border-b-2 border-[#082340] pb-4">
         <Link
           href="/#catalog"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-[#082340] transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-extrabold text-[#082340] hover:text-[#F5760A] transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>กลับหน้าแคตตาล็อกใบงาน</span>
+          <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
+          <span>กลับสู่แฟ้มแคตตาล็อกใบงาน</span>
         </Link>
 
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <span>รหัสใบงาน:</span>
-          <span className="font-mono font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
-            {product.id}
+        <div className="flex items-center gap-2 text-xs font-mono">
+          <span className="text-[#082340]/60">SERIAL:</span>
+          <span className="font-bold text-[#082340] bg-[#B5D5F2]/40 border border-[#082340] px-2 py-0.5">
+            {product.id.toUpperCase()}
           </span>
         </div>
       </div>
 
       {/* Main Product Showcase: 2 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Column: Physical A4 Worksheet Desk Display (5 cols on lg) */}
+        {/* Left Column: Physical A4 Worksheet Studio Board */}
         <div className="lg:col-span-6 space-y-4">
-          {/* Desk / Studio Backdrop with Shadows */}
-          <div className="relative p-6 sm:p-8 bg-gradient-to-b from-slate-100 via-slate-100/70 to-slate-200/80 rounded-2xl border border-slate-200/90 shadow-inner flex flex-col items-center justify-center">
-            {/* The Actual A4 Paper Sheet Display */}
-            <div className="relative w-full max-w-[380px] aspect-[1/1.38]">
-              {/* Stack effect under paper */}
-              <div className="absolute inset-0 translate-x-3 translate-y-3 bg-slate-300/60 rounded-sm shadow-md border border-slate-300/40 pointer-events-none" />
-              <div className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-slate-200/80 rounded-sm shadow-md border border-slate-300/60 pointer-events-none" />
+          <div className="relative p-6 sm:p-8 bg-[#B5D5F2]/30 border-2 border-[#082340] shadow-[6px_6px_0px_#082340] flex flex-col items-center justify-center">
+            {/* Top Mat Header */}
+            <div className="w-full flex items-center justify-between text-[10px] font-mono font-bold text-[#082340] pb-3 mb-4 border-b border-[#082340]/20">
+              <span>CLASSPIC PROOF MAT • A4 (210×297 MM)</span>
+              <span className="text-[#1C64B8]">
+                SHEET 0{activeImageIndex + 1} OF {product.page_count}
+              </span>
+            </div>
 
-              {/* Main Sheet */}
-              <div className="relative z-10 w-full h-full rounded-sm shadow-xl overflow-hidden bg-white">
+            {/* A4 Paper Sheet Display */}
+            <div className="relative w-full max-w-[380px] aspect-[1/1.38]">
+              <div className="absolute inset-0 translate-x-2 translate-y-2 bg-[#082340] pointer-events-none" />
+
+              <div className="relative z-10 w-full h-full bg-white">
                 <WorksheetPaperPreview
                   slug={product.slug}
                   title={product.title}
@@ -101,116 +98,131 @@ export default function ProductDetailClient({
               {/* Zoom Button */}
               <button
                 onClick={() => setIsZoomOpen(true)}
-                className="absolute top-3 right-3 z-30 bg-[#082340]/90 hover:bg-[#082340] text-white p-2 rounded-lg shadow-md transition-all active:scale-95 flex items-center gap-1.5 text-xs font-medium backdrop-blur-xs"
+                className="absolute top-3 right-3 z-30 bg-[#082340] hover:bg-[#1C64B8] text-white px-2.5 py-1.5 border border-white shadow-[2px_2px_0px_#F5760A] transition-all flex items-center gap-1.5 text-[11px] font-mono font-bold cursor-pointer"
                 title="ขยายดูหน้ากระดาษแผ่นใหญ่"
               >
-                <Maximize2 className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline text-[11px]">ขยายแผ่นเต็ม</span>
+                <Maximize2 className="w-3.5 h-3.5 text-[#F5760A]" />
+                <span>ZOOM A4</span>
               </button>
             </div>
 
-            {/* Page Selector Tabs under the desk */}
+            {/* Page Selector Index Tabs */}
             <div className="mt-6 flex items-center gap-2">
-              <span className="text-[11px] font-semibold text-slate-500 mr-1">
-                เปิดดูตัวอย่างแผ่นที่:
+              <span className="text-[11px] font-mono font-bold text-[#082340] mr-1">
+                PREVIEW SHEET:
               </span>
               {[0, 1, 2].map((idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all border ${
+                  className={`text-xs font-mono px-3 py-1.5 font-bold transition-all border-2 cursor-pointer ${
                     activeImageIndex === idx
-                      ? "bg-[#082340] text-white border-[#082340] shadow-2xs"
-                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                      ? "bg-[#082340] text-white border-[#082340] shadow-[2px_2px_0px_#F5760A]"
+                      : "bg-white text-[#082340] border-[#082340] hover:bg-[#B5D5F2]/40"
                   }`}
                 >
-                  หน้า {idx + 1}
+                  0{idx + 1}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Watermark Explanation */}
-          <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 flex items-start gap-2">
-            <span className="text-base leading-none">ℹ️</span>
+          {/* Watermark Protection Note */}
+          <div className="p-3.5 bg-white border-2 border-[#082340] text-xs text-[#082340]/80 flex items-start gap-3">
+            <span className="font-mono text-[10px] font-extrabold bg-[#082340] text-[#B5D5F2] px-1.5 py-0.5 shrink-0">
+              NOTE
+            </span>
             <p>
-              ตัวอย่างบนหน้าจอมีการประทับลายน้ำ <strong>ClassPic Studio</strong> เพื่อความปลอดภัย ไฟล์ PDF คุณภาพ 300 DPI ที่ดาวน์โหลดหลังสั่งซื้อจะไม่มีลายน้ำ คมชัดพร้อมสั่งพิมพ์ทันที
+              ภาพตัวอย่างบนหน้าเว็บคาดลายน้ำ <strong>ClassPic Studio</strong> เพื่อคุ้มครองลิขสิทธิ์
+              ไฟล์ต้นฉบับ PDF (300 DPI) ที่ท่านได้รับหลังชำระเงินจะไม่มีลายน้ำ คมชัดทุกเส้นพร้อมพิมพ์ทันที
             </p>
           </div>
         </div>
 
-        {/* Right Column: Spec, Value & Buying Actions */}
+        {/* Right Column: Editorial Spec & Checkout Actions */}
         <div className="lg:col-span-6 space-y-6">
           <div className="space-y-3">
-            {/* Grade & Subject Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-[#1C64B8] bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-md">
+              <span className="text-xs font-extrabold text-[#082340] bg-[#B5D5F2] border-2 border-[#082340] px-2.5 py-0.5">
                 {product.subject}
               </span>
-              <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
-                ระดับชั้น: {product.grade_level}
+              <span className="text-xs font-mono font-bold text-white bg-[#082340] border-2 border-[#082340] px-2.5 py-0.5">
+                GRADE: {product.grade_level}
               </span>
               {isFree && (
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-emerald-600" />
-                  ชุดทดลองสอนฟรี
+                <span className="text-xs font-mono font-bold text-white bg-[#F5760A] border-2 border-[#082340] px-2.5 py-0.5">
+                  FREE SAMPLE EDITION
                 </span>
               )}
             </div>
 
-            {/* Title */}
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340] leading-tight">
               {product.title}
             </h1>
 
-            {/* Description */}
-            <p className="text-sm text-slate-600 leading-relaxed font-light">
+            <p className="text-sm text-[#082340]/80 leading-relaxed">
               {product.description}
             </p>
           </div>
 
-          {/* Paper Specification Box (Crafted Studio Layout) */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3 shadow-2xs">
-            <h4 className="text-xs font-bold text-[#082340] uppercase tracking-wider">
-              สเปกเอกสารสำหรับพิมพ์ (Print Specifications):
-            </h4>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="flex items-center gap-2 text-slate-700">
-                <Printer className="w-4 h-4 text-[#1C64B8]" />
-                <span>ขนาด: <strong>A4 (210 × 297 มม.)</strong></span>
+          {/* Architectural Print Specification Table */}
+          <div className="bg-white border-2 border-[#082340] shadow-[4px_4px_0px_#B5D5F2]">
+            <div className="px-4 py-2 bg-[#082340] text-white flex items-center justify-between text-xs font-mono font-bold">
+              <span className="flex items-center gap-1.5">
+                <ClassPicSpark className="w-3.5 h-3.5" />
+                <span>PRINT SPECIFICATIONS</span>
+              </span>
+              <span className="text-[#B5D5F2]">CLASSPIC STANDARD</span>
+            </div>
+            <div className="grid grid-cols-2 divide-x-2 divide-y-2 divide-[#082340] text-xs">
+              <div className="p-3.5">
+                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                  PAPER SIZE
+                </span>
+                <strong className="text-[#082340] text-sm">A4 (210 × 297 มม.)</strong>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <FileText className="w-4 h-4 text-[#1C64B8]" />
-                <span>จำนวน: <strong>{product.page_count} หน้า</strong> ครบชุด</span>
+              <div className="p-3.5">
+                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                  TOTAL SHEETS
+                </span>
+                <strong className="text-[#082340] text-sm">{product.page_count} หน้าครบชุด</strong>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <Layers className="w-4 h-4 text-[#1C64B8]" />
-                <span>ไฟล์: <strong>PDF ดิจิทัล (300 DPI)</strong></span>
+              <div className="p-3.5">
+                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                  FILE MASTER
+                </span>
+                <strong className="text-[#082340] text-sm">PDF 300 DPI คมชัดสูง</strong>
               </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>เฉลย: <strong>{product.has_answer_key ? "มีเฉลยในเล่ม" : "ไม่มีเฉลย"}</strong></span>
+              <div className="p-3.5">
+                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                  ANSWER KEY
+                </span>
+                <strong className="text-[#082340] text-sm">
+                  {product.has_answer_key ? "รวมเฉลยท้ายเล่ม" : "ชุดฝึกปฏิบัติ"}
+                </strong>
               </div>
             </div>
           </div>
 
-          {/* Pricing & Checkout Block */}
-          <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 space-y-5">
-            <div className="flex items-baseline justify-between border-b border-slate-200 pb-4">
+          {/* Pricing & Checkout Box */}
+          <div className="bg-white border-2 border-[#082340] p-6 space-y-5 shadow-[6px_6px_0px_#082340]">
+            <div className="flex items-baseline justify-between border-b-2 border-[#082340] pb-4">
               <div>
-                <span className="text-xs text-slate-500 font-medium">ราคาจำหน่าย:</span>
-                <div className="flex items-baseline gap-2 mt-0.5">
+                <span className="text-[11px] font-mono font-bold uppercase text-[#1C64B8] block">
+                  EDITION PRICE
+                </span>
+                <div className="flex items-baseline gap-2.5 mt-0.5">
                   {isFree ? (
-                    <span className="text-3xl font-extrabold text-emerald-600">
-                      ฟรี ฿0
+                    <span className="text-3xl font-extrabold text-[#1C64B8] font-mono">
+                      FREE ฿0
                     </span>
                   ) : (
                     <>
-                      <span className="text-3xl font-extrabold text-[#082340]">
+                      <span className="text-3xl font-extrabold text-[#082340] font-mono">
                         ฿{product.price}
                       </span>
                       {product.original_price && (
-                        <span className="text-sm text-slate-400 line-through">
+                        <span className="text-sm font-mono text-slate-400 line-through">
                           ฿{product.original_price}
                         </span>
                       )}
@@ -219,75 +231,73 @@ export default function ProductDetailClient({
                 </div>
               </div>
 
-              <span className="text-xs text-slate-500 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
-                ชำระครั้งเดียว ดาวน์โหลดซ้ำได้ตลอด
+              <span className="text-[11px] font-mono font-bold text-[#082340] bg-[#B5D5F2]/40 px-2.5 py-1 border border-[#082340]">
+                LIFETIME RE-DOWNLOAD
               </span>
             </div>
 
-            {/* Buttons */}
             {product.is_coming_soon ? (
               <button
                 disabled
-                className="w-full bg-slate-200 text-slate-400 font-semibold py-3.5 rounded-xl cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                className="w-full bg-slate-100 text-slate-400 font-mono font-bold py-3.5 border-2 border-slate-300 cursor-not-allowed text-sm"
               >
-                <Clock className="w-4 h-4" />
-                <span>เปิดให้สั่งซื้อเร็วๆ นี้</span>
+                COMING SOON — กำลังจัดทำชุดใบงานนี้
               </button>
             ) : isFree ? (
               <a
                 href="/downloads"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm"
+                className="w-full bg-[#1C64B8] hover:bg-[#082340] text-white font-extrabold py-3.5 px-6 border-2 border-[#082340] shadow-[4px_4px_0px_#082340] transition-all flex items-center justify-center gap-2 text-sm"
               >
-                <Download className="w-4 h-4" />
-                <span>ดาวน์โหลดไฟล์ตัวอย่างฟรีทันที</span>
+                <Download className="w-4 h-4 stroke-[2.5]" />
+                <span>รับไฟล์ตัวอย่าง A4 ฟรีทันที</span>
               </a>
             ) : (
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className={`flex-1 font-bold py-3.5 px-6 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-sm active:scale-98 ${
+                  className={`flex-1 font-extrabold py-3.5 px-6 border-2 border-[#082340] shadow-[4px_4px_0px_#082340] active:translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer ${
                     addedSuccess
-                      ? "bg-emerald-600 text-white"
-                      : "bg-[#F5760A] hover:bg-[#d96303] text-white"
+                      ? "bg-[#1C64B8] text-white"
+                      : "bg-[#F5760A] hover:bg-[#e06905] text-white"
                   }`}
                 >
                   {addedSuccess ? (
                     <>
-                      <Check className="w-4 h-4" />
-                      <span>เพิ่มลงตะกร้าแล้ว!</span>
+                      <Check className="w-4 h-4 stroke-[2.5]" />
+                      <span>อยู่ในแฟ้มสั่งซื้อแล้ว</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingCart className="w-4 h-4" />
-                      <span>หยิบใส่ตะกร้า</span>
+                      <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
+                      <span>เลือกใส่แฟ้มสั่งซื้อ</span>
                     </>
                   )}
                 </button>
 
                 <button
                   onClick={handleBuyNow}
-                  className="bg-[#082340] hover:bg-[#1C64B8] text-white font-bold py-3.5 px-6 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5 active:scale-98"
+                  className="bg-[#082340] hover:bg-[#1C64B8] text-white font-extrabold py-3.5 px-6 border-2 border-[#082340] shadow-[4px_4px_0px_#B5D5F2] active:translate-y-0.5 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Zap className="w-4 h-4 text-[#F5760A]" />
                   <span>ชำระเงินทันที</span>
+                  <ArrowRight className="w-4 h-4 text-[#F5760A] stroke-[2.5]" />
                 </button>
               </div>
             )}
 
-            <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200/70">
-              <span>✓ ชำระผ่าน Mobile Banking ทุกธนาคาร</span>
-              <span>✓ รับลิงก์ดาวน์โหลดทันที</span>
+            <div className="flex items-center justify-between text-[11px] font-mono text-[#082340]/75 pt-2 border-t border-dashed border-[#082340]/25">
+              <span>PROMPTPAY QR (ALL BANKS)</span>
+              <span>INSTANT PDF UNLOCK</span>
             </div>
           </div>
 
-          {/* License Note */}
-          <div className="border border-slate-200 rounded-xl p-4 bg-white text-xs text-slate-600 space-y-1.5">
-            <h5 className="font-bold text-[#082340] flex items-center gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5 text-[#1C64B8]" />
-              <span>สิทธิ์การใช้งาน (ClassPic Educational License)</span>
-            </h5>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              อนุญาตให้ครูและผู้ปกครองพิมพ์แจกนักเรียนในชั้นเรียนได้ไม่จำกัดจำนวนครั้ง ไม่อนุญาตให้นำไฟล์ PDF หรือภาพใบงานไปจำหน่ายต่อในเชิงพาณิชย์
+          {/* Educational License Box */}
+          <div className="border-2 border-[#082340] p-4 bg-[#FAFBFD] text-xs space-y-1">
+            <span className="font-mono text-[10px] font-bold text-[#1C64B8] uppercase tracking-wider block">
+              CLASSPIC EDUCATIONAL LICENSE
+            </span>
+            <p className="text-xs text-[#082340]/80 leading-relaxed">
+              อนุญาตให้คุณครูและผู้ปกครองพิมพ์ใบงานชุดนี้เพื่อใช้สอนนักเรียนในชั้นเรียนหรือที่บ้านได้ไม่จำกัดจำนวนครั้ง
+              สงวนลิขสิทธิ์ห้ามนำไฟล์ดิจิทัลไปจำหน่ายต่อหรือเผยแพร่ซ้ำในกลุ่มสาธารณะ
             </p>
           </div>
         </div>
@@ -295,16 +305,16 @@ export default function ProductDetailClient({
 
       {/* Lightbox Modal */}
       {isZoomOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#082340]/90 backdrop-blur-xs flex items-center justify-center p-4">
           <button
             onClick={() => setIsZoomOpen(false)}
-            className="absolute top-5 right-5 text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-colors z-50"
+            className="absolute top-5 right-5 text-white bg-[#F5760A] border-2 border-white p-2 cursor-pointer z-50"
             title="ปิดหน้าต่าง"
           >
             <X className="w-6 h-6" />
           </button>
 
-          <div className="relative max-w-xl w-full aspect-[1/1.38] bg-white rounded-lg overflow-hidden shadow-2xl">
+          <div className="relative max-w-xl w-full aspect-[1/1.38] bg-white border-2 border-white shadow-2xl">
             <WorksheetPaperPreview
               slug={product.slug}
               title={product.title}
@@ -320,22 +330,22 @@ export default function ProductDetailClient({
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="pt-8 border-t border-slate-200 space-y-6">
+        <section className="pt-8 border-t-2 border-[#082340] space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-[#082340]">
-              ชุดใบงานอื่นๆ ในสตูดิโอ
+            <h3 className="text-xl font-extrabold text-[#082340]">
+              แฟ้มใบงานอื่นๆ ในสตูดิโอ ClassPic
             </h3>
             <Link
               href="/#catalog"
-              className="text-xs font-semibold text-[#1C64B8] hover:underline"
+              className="text-xs font-mono font-bold text-[#1C64B8] hover:text-[#F5760A]"
             >
-              ดูทั้งหมด →
+              VIEW ALL FOLIOS →
             </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {relatedProducts.map((rel) => (
-              <ProductCard key={rel.id} product={rel} />
+            {relatedProducts.map((rel, idx) => (
+              <ProductCard key={rel.id} product={rel} index={idx + 1} />
             ))}
           </div>
         </section>

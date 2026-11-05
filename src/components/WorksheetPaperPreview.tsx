@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import WatermarkOverlay from "./WatermarkOverlay";
+import { ClassPicMark } from "./ClassPicLogo";
 
 interface WorksheetPaperProps {
   slug: string;
@@ -17,126 +17,151 @@ interface WorksheetPaperProps {
 }
 
 export default function WorksheetPaperPreview({
-  slug,
   title,
   gradeLevel,
   subject,
   pageNumber = 1,
   totalPages = 25,
   hasAnswerKey = true,
-  coverImage,
-  isCompact = false,
 }: WorksheetPaperProps) {
-  // If a custom cover image is provided and it's not a generic unsplash photo, or if requested
-  // We can render a rich, realistic educational A4 worksheet sheet!
-
   return (
-    <div className="relative w-full h-full bg-white select-none overflow-hidden flex flex-col justify-between font-sans shadow-md border border-slate-200/90 rounded-sm">
-      {/* Paper texture overlay subtle grain */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-50/20 via-transparent to-slate-100/30 pointer-events-none" />
-
-      {/* Top Header of Thai Educational A4 Worksheet */}
-      <div className="p-3 sm:p-4 border-b-2 border-[#082340]/15 relative z-0 bg-slate-50/60">
-        <div className="flex items-center justify-between gap-2 border-b border-dashed border-slate-300 pb-2">
+    <div className="relative w-full h-full bg-white select-none overflow-hidden flex flex-col justify-between font-sans border-2 border-[#082340]">
+      {/* Architectural A4 Inner Frame */}
+      <div className="p-3 sm:p-4 border-b-2 border-[#082340] bg-[#FAFBFD] relative z-0">
+        <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#082340]/20">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-[#082340] flex items-center justify-center text-white text-[10px] font-bold">
-              C
-            </div>
+            <ClassPicMark className="w-6 h-6 shrink-0" />
             <div>
-              <span className="text-[10px] sm:text-xs font-bold tracking-tight text-[#082340] block leading-none">
-                ClassPic Worksheet Series
-              </span>
-              <span className="text-[8px] text-slate-500 font-medium">
-                ขนาดกระดาษ A4 มาตรฐานไทย (210 × 297 มม.)
+              <div className="flex items-baseline gap-0.5 text-[11px] font-extrabold tracking-tight leading-none">
+                <span className="text-[#082340]">Cla</span>
+                <span className="text-[#F5760A]">ss</span>
+                <span className="text-[#082340]">Pic</span>
+                <span className="text-[8px] font-mono uppercase tracking-widest text-[#1C64B8] ml-1">
+                  STUDIO SHEET
+                </span>
+              </div>
+              <span className="text-[7px] font-mono text-slate-500 uppercase tracking-wider block mt-0.5">
+                STANDARD A4 • 210×297 MM • 300 DPI
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-[9px] font-bold text-[#1C64B8] bg-[#B5D5F2]/40 px-2 py-0.5 rounded-full">
+          <div className="flex items-center gap-1">
+            <span className="text-[8px] font-extrabold text-[#082340] bg-[#B5D5F2] border border-[#082340] px-1.5 py-0.5 uppercase">
               {subject}
             </span>
-            <span className="text-[9px] font-semibold text-[#082340] bg-slate-200/70 px-2 py-0.5 rounded-full">
+            <span className="text-[8px] font-mono font-bold text-white bg-[#082340] px-1.5 py-0.5">
               {gradeLevel}
             </span>
           </div>
         </div>
 
-        {/* Student Name / Class / Date header bar */}
-        <div className="pt-2 grid grid-cols-12 gap-1 text-[8px] sm:text-[9px] text-slate-600">
+        {/* Student Name / Class / Score Line */}
+        <div className="pt-2 grid grid-cols-12 gap-1.5 text-[8px] text-[#082340] font-semibold">
           <div className="col-span-6 flex items-baseline">
-            <span className="shrink-0 font-medium">ชื่อ-สกุล:</span>
-            <span className="flex-1 border-b border-dotted border-slate-400 ml-1"></span>
+            <span className="shrink-0">ชื่อ-สกุล:</span>
+            <span className="flex-1 border-b border-[#082340]/40 ml-1" />
           </div>
           <div className="col-span-3 flex items-baseline">
-            <span className="shrink-0 font-medium">ชั้น:</span>
-            <span className="flex-1 border-b border-dotted border-slate-400 ml-1"></span>
+            <span className="shrink-0">ชั้น:</span>
+            <span className="flex-1 border-b border-[#082340]/40 ml-1" />
           </div>
           <div className="col-span-3 flex items-baseline">
-            <span className="shrink-0 font-medium">คะแนน:</span>
-            <span className="flex-1 border-b border-dotted border-slate-400 ml-1"></span>
+            <span className="shrink-0">คะแนน:</span>
+            <span className="flex-1 border-b border-[#082340]/40 ml-1 font-mono text-[7px] text-right text-slate-400">
+              /10
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Worksheet Content Mockup (Varies by subject) */}
-      <div className="flex-1 p-3 sm:p-5 relative flex flex-col justify-between overflow-hidden">
-        {/* Title Box on Worksheet */}
-        <div className="text-center space-y-1 mb-2">
-          <div className="inline-block border-2 border-[#082340] px-3 py-1 rounded-lg bg-white shadow-2xs">
-            <h4 className="text-[10px] sm:text-xs font-bold text-[#082340] tracking-tight">
-              แบบฝึกหัดทบทวน: {title.split("(")[0].trim()}
+      {/* Worksheet Body Area — Clean Vector Studio Graphics (No Emojis) */}
+      <div className="flex-1 p-3 sm:p-4 relative flex flex-col justify-between overflow-hidden bg-white">
+        {/* Worksheet Title Banner */}
+        <div className="border-2 border-[#082340] bg-[#B5D5F2]/25 px-2.5 py-1.5 mb-2 flex items-center justify-between">
+          <div>
+            <span className="text-[7px] font-mono uppercase tracking-widest text-[#1C64B8] block">
+              EXERCISE SHEET • NO. 0{pageNumber}
+            </span>
+            <h4 className="text-[10px] sm:text-[11px] font-extrabold text-[#082340] tracking-tight line-clamp-1">
+              {title.split("(")[0].trim()}
             </h4>
           </div>
-          <p className="text-[8px] sm:text-[9px] text-slate-500">
-            คำชี้แจง: ให้นักเรียนสังเกตและตอบคำถามลงในช่องว่างให้ถูกต้องสมบูรณ์
-          </p>
+          <span className="text-[8px] font-mono font-bold text-[#F5760A] border border-[#F5760A] bg-white px-1.5 py-0.5 shrink-0">
+            A4 MASTER
+          </span>
         </div>
 
-        {/* Subject-specific interactive-looking visual exercise items */}
+        {/* Subject-Specific Vector Worksheet Exercises */}
         {subject === "ภาษาอังกฤษ" && (
-          <div className="space-y-2 flex-1 flex flex-col justify-around py-1">
+          <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5">
+            {/* Part A: Vector Picture + Handwriting Lines */}
             <div className="grid grid-cols-2 gap-2">
-              <div className="border border-slate-300 rounded-lg p-2 bg-slate-50/50 flex items-center gap-2">
-                <div className="w-8 h-8 rounded bg-[#B5D5F2]/40 flex items-center justify-center text-sm font-bold text-[#1C64B8]">
-                  🍎
+              <div className="border border-[#082340] p-2 bg-[#FAFBFD] flex items-center gap-2">
+                <div className="w-9 h-9 border border-[#082340] bg-[#B5D5F2]/35 flex items-center justify-center shrink-0">
+                  {/* Vector Apple Icon */}
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#082340" strokeWidth="1.8">
+                    <path d="M12 6C12 4 13.5 2.5 15.5 2.5C15.5 4.5 14 6 12 6Z" fill="#B5D5F2" />
+                    <path d="M12 6.5C8.5 6.5 5.5 9 5.5 13.5C5.5 18 8.5 21 12 21C15.5 21 18.5 18 18.5 13.5C18.5 9 15.5 6.5 12 6.5Z" fill="#F5760A" fillOpacity="0.2" />
+                  </svg>
                 </div>
-                <div className="flex-1">
-                  <span className="text-[9px] font-bold text-slate-800">1. A _ P L E</span>
-                  <div className="border-b border-dashed border-slate-300 mt-1"></div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[8px] font-mono font-bold text-[#082340] block">
+                    01. A P P L E
+                  </span>
+                  <div className="mt-1 space-y-1">
+                    <div className="border-b border-[#1C64B8]/50" />
+                    <div className="border-b border-dashed border-[#F5760A]/60" />
+                    <div className="border-b border-[#082340]/60" />
+                  </div>
                 </div>
               </div>
-              <div className="border border-slate-300 rounded-lg p-2 bg-slate-50/50 flex items-center gap-2">
-                <div className="w-8 h-8 rounded bg-[#B5D5F2]/40 flex items-center justify-center text-sm font-bold text-[#1C64B8]">
-                  🐱
+
+              <div className="border border-[#082340] p-2 bg-[#FAFBFD] flex items-center gap-2">
+                <div className="w-9 h-9 border border-[#082340] bg-[#B5D5F2]/35 flex items-center justify-center shrink-0">
+                  {/* Vector Book Icon */}
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#082340" strokeWidth="1.8">
+                    <path d="M4 5.5C4 4.4 4.9 3.5 6 3.5H19V18.5H6C4.9 18.5 4 19.4 4 20.5V5.5Z" fill="#B5D5F2" />
+                    <path d="M4 19.5C4 18.4 4.9 17.5 6 17.5H19" />
+                  </svg>
                 </div>
-                <div className="flex-1">
-                  <span className="text-[9px] font-bold text-slate-800">2. C _ T</span>
-                  <div className="border-b border-dashed border-slate-300 mt-1"></div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[8px] font-mono font-bold text-[#082340] block">
+                    02. B O O K
+                  </span>
+                  <div className="mt-1 space-y-1">
+                    <div className="border-b border-[#1C64B8]/50" />
+                    <div className="border-b border-dashed border-[#F5760A]/60" />
+                    <div className="border-b border-[#082340]/60" />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-lg p-2.5 bg-amber-50/40">
-              <span className="text-[8px] font-bold text-[#082340] block mb-1">
-                ⭐ Word Match (จับคู่คำศัพท์):
-              </span>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[8px] text-slate-600">
-                <div className="flex justify-between">
-                  <span>(1) Pencil</span>
-                  <span className="text-slate-400">○</span>
+            {/* Part B: Bilingual Matching Table */}
+            <div className="border border-[#082340] p-2 bg-white">
+              <div className="flex items-center justify-between border-b border-[#082340]/15 pb-1 mb-1.5">
+                <span className="text-[8px] font-extrabold text-[#082340] uppercase tracking-wider">
+                  PART B — BILINGUAL VOCABULARY MATCH
+                </span>
+                <span className="text-[7px] font-mono text-[#1C64B8]">4 POINTS</span>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[8px] text-[#082340] font-medium">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono">[A] Classroom</span>
+                  <span className="w-2 h-2 rounded-full border border-[#082340]" />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">○</span>
-                  <span>ดินสอ</span>
+                <div className="flex items-center justify-between">
+                  <span className="w-2 h-2 rounded-full border border-[#082340]" />
+                  <span>ดินสอเขียน</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>(2) School</span>
-                  <span className="text-slate-400">○</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono">[B] Pencil</span>
+                  <span className="w-2 h-2 rounded-full border border-[#082340]" />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">○</span>
-                  <span>โรงเรียน</span>
+                <div className="flex items-center justify-between">
+                  <span className="w-2 h-2 rounded-full border border-[#082340]" />
+                  <span>ห้องเรียน</span>
                 </div>
               </div>
             </div>
@@ -144,75 +169,93 @@ export default function WorksheetPaperPreview({
         )}
 
         {subject === "เชาวน์ปัญญา" && (
-          <div className="space-y-2 flex-1 flex flex-col justify-around py-1">
+          <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5">
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-2 bg-slate-50 flex flex-col items-center">
-                <span className="text-xl">🌟</span>
-                <span className="text-[8px] font-bold text-slate-600 mt-1">รูปที่ 1</span>
+              <div className="border border-[#082340] p-2 bg-[#FAFBFD] flex flex-col items-center justify-center">
+                <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none" stroke="#082340" strokeWidth="2">
+                  <rect x="6" y="6" width="20" height="20" fill="#B5D5F2" />
+                </svg>
+                <span className="text-[7px] font-mono font-bold text-[#082340] mt-1">FIG 01</span>
               </div>
-              <div className="border-2 border-dashed border-[#F5760A]/40 rounded-xl p-2 bg-[#F5760A]/5 flex flex-col items-center">
-                <span className="text-xl">🎨</span>
-                <span className="text-[8px] font-bold text-[#F5760A] mt-1">ลากเส้นตามรอย</span>
+              <div className="border border-[#082340] p-2 bg-[#B5D5F2]/25 flex flex-col items-center justify-center">
+                <svg viewBox="0 0 32 32" className="w-7 h-7" fill="none" stroke="#082340" strokeWidth="2">
+                  <polygon points="16,5 28,26 4,26" fill="#F5760A" fillOpacity="0.35" />
+                </svg>
+                <span className="text-[7px] font-mono font-bold text-[#082340] mt-1">FIG 02</span>
               </div>
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-2 bg-slate-50 flex flex-col items-center">
-                <span className="text-xl">🚀</span>
-                <span className="text-[8px] font-bold text-slate-600 mt-1">รูปที่ 3</span>
+              <div className="border-2 border-dashed border-[#F5760A] p-2 bg-white flex flex-col items-center justify-center">
+                <span className="text-xs font-mono font-extrabold text-[#F5760A]">?</span>
+                <span className="text-[7px] font-mono font-bold text-[#082340] mt-1">NEXT SHAPE</span>
               </div>
             </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-2 text-center">
-              <span className="text-[8px] text-slate-500">
-                ✏️ แบบฝึกทักษะกล้ามเนื้อมือ: ลากเส้นโยงภาพคู่เหมือนให้สัมพันธ์กัน
-              </span>
+            <div className="border border-[#082340] p-2 bg-[#FAFBFD] text-[8px] text-[#082340] flex items-center justify-between">
+              <span className="font-semibold">สังเกตลำดับอนุกรมรูปทรงเรขาคณิต แล้ววาดรูปถัดไป</span>
+              <span className="font-mono text-[7px] text-[#1C64B8]">EF LOGIC</span>
             </div>
           </div>
         )}
 
         {subject === "คณิตศาสตร์" && (
-          <div className="space-y-2 flex-1 flex flex-col justify-around py-1">
+          <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5">
             <div className="grid grid-cols-2 gap-2 text-[9px]">
-              <div className="border border-slate-200 rounded-lg p-2 bg-slate-50 text-center font-mono">
-                <span className="text-slate-500 block text-[8px]">ข้อที่ 1</span>
-                <span className="font-bold text-slate-800 text-xs">25 + 14 = [ &nbsp; ]</span>
+              <div className="border border-[#082340] p-2 bg-[#FAFBFD] text-center font-mono">
+                <span className="text-[#1C64B8] block text-[7px] font-bold">ITEM 01</span>
+                <span className="font-extrabold text-[#082340] text-xs">25 + 14 = [ &nbsp;&nbsp; ]</span>
               </div>
-              <div className="border border-slate-200 rounded-lg p-2 bg-slate-50 text-center font-mono">
-                <span className="text-slate-500 block text-[8px]">ข้อที่ 2</span>
-                <span className="font-bold text-slate-800 text-xs">50 - 18 = [ &nbsp; ]</span>
+              <div className="border border-[#082340] p-2 bg-[#FAFBFD] text-center font-mono">
+                <span className="text-[#1C64B8] block text-[7px] font-bold">ITEM 02</span>
+                <span className="font-extrabold text-[#082340] text-xs">50 - 18 = [ &nbsp;&nbsp; ]</span>
               </div>
             </div>
-            <div className="border border-slate-200 rounded-lg p-2 bg-slate-50/80 text-[8px] text-slate-600">
-              <span className="font-bold text-[#082340]">โจทย์ปัญหา:</span> นิดมีดินสอ 12 แท่ง ซื้อเพิ่มอีก 5 แท่ง รวมมีดินสอกี่แท่ง?
-              <div className="border-b border-dotted border-slate-400 mt-2"></div>
+            <div className="border border-[#082340] p-2 bg-white text-[8px] text-[#082340]">
+              <span className="font-extrabold text-[#1C64B8] font-mono">[WORD PROBLEM]</span>{" "}
+              มีสีไม้ 24 แท่ง แบ่งใส่กล่อง กล่องละ 6 แท่ง จะได้ทั้งหมดกี่กล่อง?
+              <div className="border-b border-dashed border-[#082340]/40 mt-2" />
             </div>
           </div>
         )}
 
         {subject !== "ภาษาอังกฤษ" && subject !== "เชาวน์ปัญญา" && subject !== "คณิตศาสตร์" && (
-          <div className="space-y-2 flex-1 flex flex-col justify-center items-center text-center p-2">
-            <div className="w-12 h-12 rounded-full bg-[#B5D5F2]/30 flex items-center justify-center text-2xl mb-1">
-              📝
+          <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5">
+            <div className="border border-[#082340] p-2.5 bg-[#FAFBFD] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[8px] font-mono font-bold text-[#1C64B8]">SECTION 01</span>
+                <span className="text-[7px] font-mono text-slate-500">STRUCTURED VISUAL STEP</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                <div className="h-9 border border-[#082340] bg-white flex items-center justify-center text-[8px] font-mono font-bold">
+                  STEP 1
+                </div>
+                <div className="h-9 border border-[#082340] bg-[#B5D5F2]/30 flex items-center justify-center text-[8px] font-mono font-bold">
+                  STEP 2
+                </div>
+                <div className="h-9 border border-[#082340] bg-white flex items-center justify-center text-[8px] font-mono font-bold">
+                  STEP 3
+                </div>
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-[#082340]">ใบงานทดลองสอน ClassPic A4</span>
-            <span className="text-[8px] text-slate-500 max-w-[200px]">
-              กราฟิกคมชัด สเกลมาตรฐานไทย ปริ้นท์ได้ทันที
-            </span>
+            <div className="border border-[#082340] p-2 bg-white">
+              <div className="border-b border-dashed border-[#082340]/40 h-3" />
+              <div className="border-b border-dashed border-[#082340]/40 h-3 mt-1" />
+            </div>
           </div>
         )}
 
-        {/* Answer key stamp badge */}
+        {/* Answer Key Architectural Stamp */}
         {hasAnswerKey && (
-          <div className="absolute top-2 right-2 rotate-12 opacity-80 pointer-events-none">
-            <span className="border-2 border-emerald-600 text-emerald-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded-sm uppercase tracking-wider bg-emerald-50">
-              มีเฉลยละเอียด
+          <div className="absolute bottom-2 right-2 z-20 pointer-events-none">
+            <span className="border border-[#082340] bg-[#082340] text-[#B5D5F2] text-[7px] font-mono font-bold px-1.5 py-0.5 uppercase tracking-wider">
+              + ANSWER KEY
             </span>
           </div>
         )}
       </div>
 
       {/* Footer of A4 Sheet */}
-      <div className="px-3 py-1.5 bg-slate-100/80 border-t border-slate-200 flex items-center justify-between text-[8px] text-slate-500">
-        <span>© ClassPic Learning & Creative Studio</span>
-        <span className="font-mono font-medium">
-          แผ่นที่ {pageNumber} / {totalPages}
+      <div className="px-3 py-1.5 bg-[#082340] text-white flex items-center justify-between text-[7px] font-mono">
+        <span className="text-[#B5D5F2]">CLASSPIC LEARNING &amp; CREATIVE STUDIO</span>
+        <span className="text-white font-bold">
+          SHEET {String(pageNumber).padStart(2, "0")} / {String(totalPages).padStart(2, "0")}
         </span>
       </div>
 

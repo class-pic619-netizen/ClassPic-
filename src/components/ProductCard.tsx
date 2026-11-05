@@ -5,21 +5,19 @@ import Link from "next/link";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 import WorksheetPaperPreview from "./WorksheetPaperPreview";
-import {
-  FileText,
-  ShoppingCart,
-  Eye,
-  Check,
-  Sparkles,
-  CheckCircle2,
-} from "lucide-react";
+import { ShoppingBag, Eye, Check, ArrowUpRight } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
+  index?: number;
   onAddToCart?: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  index = 1,
+  onAddToCart,
+}: ProductCardProps) {
   const { addToCart } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const isFree = product.is_free_sample || product.price === 0;
@@ -36,35 +34,28 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     setTimeout(() => setJustAdded(false), 2000);
   };
 
-  // Color mapping based on subject for a warm craft feel
-  const subjectColors: Record<string, { bg: string; text: string; border: string }> = {
-    ภาษาอังกฤษ: { bg: "bg-sky-50", text: "text-sky-800", border: "border-sky-200" },
-    เชาวน์ปัญญา: { bg: "bg-amber-50", text: "text-amber-800", border: "border-amber-200" },
-    คณิตศาสตร์: { bg: "bg-indigo-50", text: "text-indigo-800", border: "border-indigo-200" },
-    ภาษาไทย: { bg: "bg-emerald-50", text: "text-emerald-800", border: "border-emerald-200" },
-    วิทยาศาสตร์: { bg: "bg-teal-50", text: "text-teal-800", border: "border-teal-200" },
-    ศิลปะและกิจกรรม: { bg: "bg-rose-50", text: "text-rose-800", border: "border-rose-200" },
-  };
-
-  const theme = subjectColors[product.subject] || {
-    bg: "bg-slate-50",
-    text: "text-slate-800",
-    border: "border-slate-200",
-  };
-
   return (
-    <div className="group bg-white rounded-xl border border-slate-200/80 hover:border-slate-300 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:-translate-y-0.5">
-      {/* Top Paper Display (A4 Aspect Ratio: 1:1.41) */}
-      <div className="relative p-4 pb-2 bg-gradient-to-b from-slate-100/70 to-slate-50/50 rounded-t-xl border-b border-slate-100 flex items-center justify-center">
-        {/* Paper Shadow Stack Effect (Looks like real printed sheets) */}
-        <div className="relative w-full aspect-[1/1.32] max-w-[280px]">
-          {/* Back sheet effect */}
-          <div className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-slate-200/80 rounded-sm shadow-xs border border-slate-300/60 pointer-events-none" />
-          
+    <div className="group bg-white border-2 border-[#082340] shadow-[4px_4px_0px_#082340] hover:shadow-[6px_6px_0px_#F5760A] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between">
+      {/* Top Studio Folio Header Strip */}
+      <div className="px-3.5 py-2 bg-[#FAFBFD] border-b-2 border-[#082340] flex items-center justify-between text-[10px] font-mono">
+        <span className="font-bold text-[#082340]">
+          FOLIO #{String(index).padStart(2, "0")}
+        </span>
+        <span className="font-bold text-[#1C64B8] uppercase">
+          A4 • {product.page_count} PGS
+        </span>
+      </div>
+
+      {/* Physical A4 Paper Mat Display */}
+      <div className="relative p-4 bg-[#B5D5F2]/30 border-b-2 border-[#082340] flex items-center justify-center">
+        <div className="relative w-full aspect-[1/1.33] max-w-[270px]">
+          {/* Offset Backing Paper */}
+          <div className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-[#082340] pointer-events-none" />
+
           {/* Main Printable Worksheet Sheet */}
           <Link
             href={`/products/${product.slug}`}
-            className="block w-full h-full relative z-10 transition-transform duration-300 group-hover:scale-[1.01]"
+            className="block w-full h-full relative z-10 transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
           >
             <WorksheetPaperPreview
               slug={product.slug}
@@ -78,114 +69,103 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             />
           </Link>
 
-          {/* Quick Hover Inspect Pill */}
+          {/* Studio Hover Inspect Bar */}
           <Link
             href={`/products/${product.slug}`}
-            className="absolute inset-0 z-20 bg-[#082340]/0 hover:bg-[#082340]/10 transition-colors flex items-center justify-center pointer-events-auto opacity-0 group-hover:opacity-100"
+            className="absolute inset-0 z-20 bg-[#082340]/0 hover:bg-[#082340]/15 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
           >
-            <span className="bg-[#082340] text-white text-[11px] font-medium px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 backdrop-blur-xs">
-              <Eye className="w-3.5 h-3.5" />
-              <span>คลิกดูตัวอย่างใบงาน</span>
+            <span className="bg-[#082340] text-white border-2 border-white text-[11px] font-bold px-3.5 py-1.5 shadow-[3px_3px_0px_#F5760A] flex items-center gap-1.5">
+              <Eye className="w-3.5 h-3.5 text-[#F5760A]" />
+              <span>เปิดดูตัวอย่างใบงาน</span>
             </span>
           </Link>
         </div>
       </div>
 
-      {/* Information Section */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
-        <div className="space-y-2">
-          {/* Subject & Grade Level Micro Badges */}
-          <div className="flex items-center gap-2">
-            <span
-              className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${theme.bg} ${theme.text} ${theme.border}`}
-            >
+      {/* Worksheet Metadata & Spec Body */}
+      <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
+        <div className="space-y-2.5">
+          {/* Subject & Grade Index Badges */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[10px] font-extrabold text-[#082340] bg-[#B5D5F2]/60 border border-[#082340] px-2 py-0.5">
               {product.subject}
             </span>
-            <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+            <span className="text-[10px] font-mono font-bold text-[#1C64B8] bg-[#FAFBFD] border border-[#1C64B8]/40 px-2 py-0.5">
               {product.grade_level}
             </span>
           </div>
 
           {/* Title */}
           <Link href={`/products/${product.slug}`} className="block group/title">
-            <h3 className="font-bold text-sm sm:text-base text-[#082340] group-hover/title:text-[#1C64B8] transition-colors leading-snug line-clamp-2">
+            <h3 className="font-extrabold text-sm sm:text-base text-[#082340] group-hover/title:text-[#1C64B8] transition-colors leading-snug line-clamp-2">
               {product.title}
             </h3>
           </Link>
 
-          {/* Paper Specs Summary */}
-          <div className="flex items-center gap-3 text-[11px] text-slate-500 pt-1">
-            <span className="flex items-center gap-1">
-              <FileText className="w-3.5 h-3.5 text-slate-400" />
-              <span>{product.page_count} หน้า A4</span>
-            </span>
-            {product.has_answer_key && (
-              <span className="flex items-center gap-1 text-emerald-700 font-medium">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                <span>มีเฉลยในชุด</span>
-              </span>
-            )}
+          {/* Spec Line */}
+          <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-[#082340]/70 border-t border-dashed border-[#082340]/20">
+            <span>SIZE: A4 (300 DPI)</span>
+            <span>{product.has_answer_key ? "+ รวมเฉลยท้ายเล่ม" : "ชุดฝึกทักษะ"}</span>
           </div>
         </div>
 
-        {/* Price & Action Section */}
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+        {/* Bottom Price & Action Block */}
+        <div className="pt-3 border-t-2 border-[#082340] flex items-center justify-between gap-2">
           <div>
             {isFree ? (
-              <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-extrabold text-emerald-600">
-                  ฟรี ฿0
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-base sm:text-lg font-extrabold text-[#1C64B8]">
+                  FREE ฿0
                 </span>
-                <span className="text-[10px] text-slate-400 font-normal">ทดลองสอน</span>
+                <span className="text-[10px] font-mono text-[#082340]/60 uppercase">
+                  SAMPLE
+                </span>
               </div>
             ) : (
               <div className="flex items-baseline gap-1.5">
-                <span className="text-lg sm:text-xl font-extrabold text-[#082340]">
+                <span className="text-lg sm:text-xl font-extrabold text-[#082340] font-mono">
                   ฿{product.price}
                 </span>
                 {product.original_price && (
-                  <span className="text-xs text-slate-400 line-through">
+                  <span className="text-xs font-mono text-slate-400 line-through">
                     ฿{product.original_price}
                   </span>
                 )}
               </div>
             )}
-            <span className="text-[9px] text-slate-400 block -mt-0.5">
-              ไฟล์ PDF A4 ปริ้นท์คมชัด
-            </span>
           </div>
 
-          {/* Add to Cart / Free Download Button */}
+          {/* Action CTA */}
           {product.is_coming_soon ? (
-            <span className="text-xs font-medium text-slate-400 bg-slate-100 px-3 py-1.5 rounded-lg">
-              เร็วๆ นี้
+            <span className="text-[11px] font-mono font-bold text-[#082340]/50 bg-[#FAFBFD] border border-[#082340]/30 px-3 py-1.5">
+              COMING SOON
             </span>
           ) : isFree ? (
             <Link
               href={`/products/${product.slug}`}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1 shadow-2xs"
+              className="bg-[#1C64B8] hover:bg-[#082340] text-white text-xs font-bold px-3.5 py-2 border-2 border-[#082340] shadow-[2px_2px_0px_#082340] transition-all flex items-center gap-1"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>รับไฟล์ฟรี</span>
+              <span>รับไฟล์ทดลอง</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           ) : (
             <button
               onClick={handleAddToCart}
-              className={`text-xs font-semibold px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-2xs active:scale-95 ${
+              className={`text-xs font-extrabold px-3.5 py-2 border-2 border-[#082340] shadow-[2px_2px_0px_#082340] active:translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer ${
                 justAdded
-                  ? "bg-emerald-600 text-white"
-                  : "bg-[#F5760A] hover:bg-[#d96303] text-white"
+                  ? "bg-[#082340] text-white"
+                  : "bg-[#F5760A] hover:bg-[#e06905] text-white"
               }`}
             >
               {justAdded ? (
                 <>
                   <Check className="w-3.5 h-3.5" />
-                  <span>ใส่แล้ว</span>
+                  <span>อยู่ในแฟ้มแล้ว</span>
                 </>
               ) : (
                 <>
-                  <ShoppingCart className="w-3.5 h-3.5" />
-                  <span>หยิบใส่ตะกร้า</span>
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>เลือกใส่แฟ้ม</span>
                 </>
               )}
             </button>

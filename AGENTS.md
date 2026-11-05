@@ -10,7 +10,8 @@
 1. **`docs/STATUS.md`** — ดูว่าปัจจุบันงานถึงขั้นตอนไหน อะไรเสร็จแล้ว อะไรค้างอยู่ และขั้นตอนถัดไปคืออะไร
 2. **`docs/MASTER_CHECKLIST.md`** — ตารางเช็กลิสต์หลักของโครงการ (Module M0 ถึง M6)
 3. **`docs/BLUEPRINT.md`** — พิมพ์เขียวสถาปัตยกรรมระบบ จุดเชื่อมต่อ ชื่อตารางฐานข้อมูล มาตรฐานสี และภาพร่างหน้าจอทั้ง 5 หน้า
-4. **`docs/ACCOUNT_SETUP_GUIDE.md`** — คู่มือการตั้งค่าบัญชีฟรี (GitHub, Vercel, Supabase, Telegram/EasySlip)
+4. **`.agents/skills/anti-ai-ui-brand-dna/SKILL.md`** — **(บังคับเมื่อออกแบบ/แก้ไขหน้าเว็บ UI)** สกิลฉีกกฎโค้ด AI สำเร็จรูปและบังคับใช้ DNA แบรนด์ ClassPic (*Bright Outside — Clear Inside*)
+5. **`docs/ACCOUNT_SETUP_GUIDE.md`** — คู่มือการตั้งค่าบัญชีฟรี (GitHub, Vercel, Supabase, Telegram/EasySlip)
 
 ---
 

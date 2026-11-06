@@ -207,10 +207,10 @@ export default function AdminDashboard() {
       <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
         <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
           <div className="text-center space-y-3">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#082340] text-[#F5760A] flex items-center justify-center shadow-md">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#142E4F] text-[#F26C28] flex items-center justify-center shadow-md">
               <Lock className="w-7 h-7" />
             </div>
-            <h2 className="text-2xl font-extrabold text-[#082340]">เข้าสู่ระบบแอดมิน</h2>
+            <h2 className="text-2xl font-extrabold text-[#142E4F]">เข้าสู่ระบบแอดมิน</h2>
             <p className="text-xs text-slate-500">
               ระบบจัดการหลังบ้าน ClassPic Studio (อนุมัติสลิป & ทยอยลงใบงานใหม่)
             </p>
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 placeholder="ระบุรหัสผ่าน (เริ่มต้น: admin1234)"
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1C64B8] transition-all"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2856B0] transition-all"
                 required
               />
             </div>
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
             <button
               type="submit"
               disabled={authLoading}
-              className="w-full bg-[#082340] hover:bg-[#1C64B8] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+              className="w-full bg-[#142E4F] hover:bg-[#2856B0] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
             >
               {authLoading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
           </form>
 
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center text-[11px] text-slate-400">
-            รหัสผ่านเริ่มต้นช่วงพัฒนา: <code className="text-[#082340] font-bold">admin1234</code>
+            รหัสผ่านเริ่มต้นช่วงพัฒนา: <code className="text-[#142E4F] font-bold">admin1234</code>
           </div>
         </div>
       </div>
@@ -271,11 +271,11 @@ export default function AdminDashboard() {
       {/* Top Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold text-[#1C64B8] uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-2 text-xs font-bold text-[#2856B0] uppercase tracking-wider mb-1">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>ClassPic Admin Center</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340]">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
             ระบบจัดการร้านค้าหลังบ้าน
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -313,7 +313,7 @@ export default function AdminDashboard() {
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#082340]">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
             ฿{totalRevenue.toLocaleString()}
           </div>
           <p className="text-[11px] text-emerald-600 font-medium">
@@ -329,7 +329,7 @@ export default function AdminDashboard() {
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#F5760A]">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[#F26C28]">
             {pendingOrders.length}
           </div>
           <p className="text-[11px] text-amber-600 font-medium">ต้องกดอนุมัติเพื่อปลดล็อกไฟล์</p>
@@ -339,11 +339,11 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">ออเดอร์ทั้งหมด</span>
-            <div className="p-2 rounded-xl bg-blue-50 text-[#1C64B8]">
+            <div className="p-2 rounded-xl bg-blue-50 text-[#2856B0]">
               <ShoppingCart className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#082340]">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
             {orders.length}
           </div>
           <p className="text-[11px] text-slate-400">ประวัติคำสั่งซื้อทั้งหมดในระบบ</p>
@@ -357,7 +357,7 @@ export default function AdminDashboard() {
               <Package className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#082340]">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
             {products.length}
           </div>
           <p className="text-[11px] text-slate-400">ชุดใบงานดิจิทัลพร้อมขาย</p>
@@ -370,14 +370,14 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab("orders")}
           className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeTab === "orders"
-              ? "border-[#F5760A] text-[#082340]"
+              ? "border-[#F26C28] text-[#142E4F]"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
           <ShoppingCart className="w-4 h-4" />
           <span>จัดการออเดอร์ & ตรวจสลิป</span>
           {pendingOrders.length > 0 && (
-            <span className="bg-[#F5760A] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+            <span className="bg-[#F26C28] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
               {pendingOrders.length}
             </span>
           )}
@@ -387,7 +387,7 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab("products")}
           className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeTab === "products"
-              ? "border-[#F5760A] text-[#082340]"
+              ? "border-[#F26C28] text-[#142E4F]"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -399,11 +399,11 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab("new_product")}
           className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeTab === "new_product"
-              ? "border-[#F5760A] text-[#082340]"
+              ? "border-[#F26C28] text-[#142E4F]"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
-          <PlusCircle className="w-4 h-4 text-[#F5760A]" />
+          <PlusCircle className="w-4 h-4 text-[#F26C28]" />
           <span>เพิ่มใบงานชุดใหม่</span>
         </button>
 
@@ -411,11 +411,11 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab("deploy")}
           className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeTab === "deploy"
-              ? "border-[#F5760A] text-[#082340]"
+              ? "border-[#F26C28] text-[#142E4F]"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
-          <Database className="w-4 h-4 text-[#1C64B8]" />
+          <Database className="w-4 h-4 text-[#2856B0]" />
           <span>คู่มือ Supabase & ขึ้นออนไลน์</span>
         </button>
       </div>
@@ -425,7 +425,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs space-y-4">
           <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="font-bold text-base text-[#082340]">
+              <h3 className="font-bold text-base text-[#142E4F]">
                 รายการคำสั่งซื้อและการตรวจสอบสลิป
               </h3>
               <p className="text-xs text-slate-500">
@@ -454,11 +454,11 @@ export default function AdminDashboard() {
 
                   return (
                     <tr key={order.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="p-4 font-bold text-[#082340]">
+                      <td className="p-4 font-bold text-[#142E4F]">
                         <Link
                           href={`/downloads/${order.id}`}
                           target="_blank"
-                          className="hover:text-[#1C64B8] flex items-center gap-1"
+                          className="hover:text-[#2856B0] flex items-center gap-1"
                         >
                           <span>{order.id}</span>
                           <ExternalLink className="w-3 h-3 text-slate-400" />
@@ -484,7 +484,7 @@ export default function AdminDashboard() {
                         </div>
                       </td>
 
-                      <td className="p-4 font-bold text-base text-[#F5760A]">
+                      <td className="p-4 font-bold text-base text-[#F26C28]">
                         ฿{order.total_amount}
                       </td>
 
@@ -518,7 +518,7 @@ export default function AdminDashboard() {
                           {order.slip_image_url && (
                             <button
                               onClick={() => setSelectedSlipOrder(order)}
-                              className="p-1.5 bg-[#1C64B8]/10 hover:bg-[#1C64B8]/20 text-[#1C64B8] rounded-lg transition-colors"
+                              className="p-1.5 bg-[#2856B0]/10 hover:bg-[#2856B0]/20 text-[#2856B0] rounded-lg transition-colors"
                               title="ดูรูปสลิป"
                             >
                               <Eye className="w-4 h-4" />
@@ -561,7 +561,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-base text-[#082340]">
+              <h3 className="font-bold text-base text-[#142E4F]">
                 รายการชุดใบงานทั้งหมด ({products.length} ชุด)
               </h3>
               <p className="text-xs text-slate-500">
@@ -571,7 +571,7 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => setActiveTab("new_product")}
-              className="bg-[#F5760A] hover:bg-[#d96303] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-1.5"
+              className="bg-[#F26C28] hover:bg-[#d96303] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center gap-1.5"
             >
               <PlusCircle className="w-4 h-4" />
               <span>เพิ่มใบงานใหม่</span>
@@ -587,31 +587,31 @@ export default function AdminDashboard() {
                 <div>
                   <div className="relative aspect-[4/3] bg-slate-100">
                     <Image src={p.cover_image} alt={p.title} fill className="object-cover" />
-                    <span className="absolute top-2 left-2 bg-[#082340] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                    <span className="absolute top-2 left-2 bg-[#142E4F] text-white text-[10px] font-bold px-2 py-0.5 rounded">
                       {p.grade_level}
                     </span>
                     {p.is_coming_soon && (
-                      <span className="absolute bottom-2 right-2 bg-[#F5760A] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
+                      <span className="absolute bottom-2 right-2 bg-[#F26C28] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
                         Coming Soon
                       </span>
                     )}
                   </div>
                   <div className="p-4 space-y-2">
                     <div className="flex items-center justify-between text-xs text-slate-500">
-                      <span className="font-semibold text-[#1C64B8]">{p.subject}</span>
+                      <span className="font-semibold text-[#2856B0]">{p.subject}</span>
                       <span>{p.page_count} หน้า A4</span>
                     </div>
-                    <h4 className="font-bold text-sm text-[#082340] line-clamp-1">{p.title}</h4>
+                    <h4 className="font-bold text-sm text-[#142E4F] line-clamp-1">{p.title}</h4>
                     <p className="text-xs text-slate-500 line-clamp-2">{p.description}</p>
                   </div>
                 </div>
 
                 <div className="p-4 pt-0 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-base font-bold text-[#F5760A]">฿{p.price}</span>
+                  <span className="text-base font-bold text-[#F26C28]">฿{p.price}</span>
                   <Link
                     href={`/products/${p.slug}`}
                     target="_blank"
-                    className="text-xs text-[#1C64B8] hover:underline flex items-center gap-1"
+                    className="text-xs text-[#2856B0] hover:underline flex items-center gap-1"
                   >
                     <span>ดูหน้าร้าน</span>
                     <ExternalLink className="w-3 h-3" />
@@ -627,8 +627,8 @@ export default function AdminDashboard() {
       {activeTab === "new_product" && (
         <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 max-w-3xl mx-auto shadow-xs">
           <div className="border-b border-slate-100 pb-4">
-            <h3 className="font-extrabold text-xl text-[#082340] flex items-center gap-2">
-              <PlusCircle className="w-5 h-5 text-[#F5760A]" />
+            <h3 className="font-extrabold text-xl text-[#142E4F] flex items-center gap-2">
+              <PlusCircle className="w-5 h-5 text-[#F26C28]" />
               <span>เพิ่มชุดใบงานใหม่ (A4)</span>
             </h3>
             <p className="text-xs text-slate-500 mt-1">
@@ -653,7 +653,7 @@ export default function AdminDashboard() {
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="เช่น ชุดแบบฝึกหัดคำศัพท์ภาษาอังกฤษ ป.2 (Fun with Phonics)"
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
                 required
               />
             </div>
@@ -667,7 +667,7 @@ export default function AdminDashboard() {
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 placeholder="อธิบายเนื้อหา เหมาะสำหรับระดับชั้นใด จุดเด่นของภาพประกอบ..."
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
               />
             </div>
 
@@ -677,7 +677,7 @@ export default function AdminDashboard() {
                 <select
                   value={newGradeLevel}
                   onChange={(e) => setNewGradeLevel(e.target.value as GradeLevel)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
                 >
                   <option value="อนุบาล">อนุบาล</option>
                   <option value="ป.1-ป.3">ป.1-ป.3</option>
@@ -692,7 +692,7 @@ export default function AdminDashboard() {
                 <select
                   value={newSubject}
                   onChange={(e) => setNewSubject(e.target.value as SubjectCategory)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
                 >
                   <option value="ภาษาอังกฤษ">ภาษาอังกฤษ</option>
                   <option value="คณิตศาสตร์">คณิตศาสตร์</option>
@@ -714,7 +714,7 @@ export default function AdminDashboard() {
                   min={1}
                   value={newPageCount}
                   onChange={(e) => setNewPageCount(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
                   required
                 />
               </div>
@@ -728,7 +728,7 @@ export default function AdminDashboard() {
                   min={0}
                   value={newPrice}
                   onChange={(e) => setNewPrice(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none font-bold text-[#F5760A]"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none font-bold text-[#F26C28]"
                   required
                 />
               </div>
@@ -742,7 +742,7 @@ export default function AdminDashboard() {
                   min={0}
                   value={newOriginalPrice}
                   onChange={(e) => setNewOriginalPrice(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
                 />
               </div>
             </div>
@@ -756,7 +756,7 @@ export default function AdminDashboard() {
                 value={newCoverImage}
                 onChange={(e) => setNewCoverImage(e.target.value)}
                 placeholder="https://..."
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#1C64B8] outline-none"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">
                 ระบบจะคาดลายน้ำ ClassPic Studio บนรูปตัวอย่างหน้าร้านให้อัตโนมัติ
@@ -769,7 +769,7 @@ export default function AdminDashboard() {
                   type="checkbox"
                   checked={newHasAnswerKey}
                   onChange={(e) => setNewHasAnswerKey(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#1C64B8] focus:ring-[#1C64B8]"
+                  className="w-4 h-4 rounded text-[#2856B0] focus:ring-[#2856B0]"
                 />
                 <span>มีเฉลยละเอียดในเล่ม</span>
               </label>
@@ -779,7 +779,7 @@ export default function AdminDashboard() {
                   type="checkbox"
                   checked={newIsComingSoon}
                   onChange={(e) => setNewIsComingSoon(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#F5760A] focus:ring-[#F5760A]"
+                  className="w-4 h-4 rounded text-[#F26C28] focus:ring-[#F26C28]"
                 />
                 <span>สถานะ: เร็วๆ นี้ (Coming Soon)</span>
               </label>
@@ -788,7 +788,7 @@ export default function AdminDashboard() {
             <button
               type="submit"
               disabled={isSubmittingProduct}
-              className="w-full bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm active:scale-98"
+              className="w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm active:scale-98"
             >
               {isSubmittingProduct ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -807,8 +807,8 @@ export default function AdminDashboard() {
       {activeTab === "deploy" && (
         <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6">
           <div className="border-b border-slate-100 pb-4">
-            <h3 className="font-extrabold text-xl text-[#082340] flex items-center gap-2">
-              <Database className="w-5 h-5 text-[#1C64B8]" />
+            <h3 className="font-extrabold text-xl text-[#142E4F] flex items-center gap-2">
+              <Database className="w-5 h-5 text-[#2856B0]" />
               <span>คู่มือการเชื่อมต่อ Supabase & Vercel ขึ้นออนไลน์ (ฟรี ฿0)</span>
             </h3>
             <p className="text-xs text-slate-500 mt-1">
@@ -818,10 +818,10 @@ export default function AdminDashboard() {
 
           <div className="space-y-6 text-sm text-slate-700 leading-relaxed">
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
-              <h4 className="font-bold text-sm text-[#082340]">1. ตั้งค่าฐานข้อมูล Supabase</h4>
+              <h4 className="font-bold text-sm text-[#142E4F]">1. ตั้งค่าฐานข้อมูล Supabase</h4>
               <p className="text-xs text-slate-600">
                 เข้าสู่ระบบ Supabase ไปที่เมนู <strong>SQL Editor</strong> แล้วรันโค้ด SQL จากไฟล์{" "}
-                <code className="text-[#082340] bg-white px-1.5 py-0.5 rounded border border-slate-200 font-mono">
+                <code className="text-[#142E4F] bg-white px-1.5 py-0.5 rounded border border-slate-200 font-mono">
                   docs/BLUEPRINT.md
                 </code>{" "}
                 เพื่อสร้าง 4 ตารางหลัก:
@@ -835,7 +835,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
-              <h4 className="font-bold text-sm text-[#082340]">2. สร้าง Storage Buckets ทั้ง 3 ถัง</h4>
+              <h4 className="font-bold text-sm text-[#142E4F]">2. สร้าง Storage Buckets ทั้ง 3 ถัง</h4>
               <ul className="list-disc list-inside text-xs text-slate-600 pl-2">
                 <li><code>public-previews</code> (Public) — รูปหน้าปกและตัวอย่างใบงานติดลายน้ำ</li>
                 <li><code>private-pdfs</code> (Private) — ไฟล์ PDF มาสเตอร์ A4 ตัวจริง (ความปลอดภัยสูง)</li>
@@ -844,11 +844,11 @@ export default function AdminDashboard() {
             </div>
 
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
-              <h4 className="font-bold text-sm text-[#082340]">3. การนำขึ้นโฮสต์ Vercel (ฟรี ฿0)</h4>
+              <h4 className="font-bold text-sm text-[#142E4F]">3. การนำขึ้นโฮสต์ Vercel (ฟรี ฿0)</h4>
               <p className="text-xs text-slate-600">
                 นำโค้ดขึ้น GitHub จากนั้นกด Import ใน Vercel พร้อมใส่ตัวแปรใน <strong>Environment Variables</strong>:
               </p>
-              <pre className="bg-[#082340] text-[#B5D5F2] p-4 rounded-xl text-xs font-mono overflow-x-auto">
+              <pre className="bg-[#142E4F] text-[#AED6F4] p-4 rounded-xl text-xs font-mono overflow-x-auto">
 {`NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
@@ -868,7 +868,7 @@ EASYSLIP_API_KEY=optional-easyslip-key`}
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <h4 className="font-bold text-sm text-[#082340]">
+                <h4 className="font-bold text-sm text-[#142E4F]">
                   รูปสลิปของคำสั่งซื้อ: {selectedSlipOrder.id}
                 </h4>
                 <span className="text-xs text-slate-500">

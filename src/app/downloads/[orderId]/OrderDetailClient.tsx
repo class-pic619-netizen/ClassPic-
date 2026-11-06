@@ -121,14 +121,14 @@ export default function OrderDetailClient({ initialOrder }: Props) {
         <div className="mb-6 flex items-center justify-between">
           <Link
             href="/downloads"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-[#082340] transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-[#142E4F] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>กลับไปหน้าค้นหาใบงาน</span>
           </Link>
           <Link
             href="/"
-            className="text-xs text-[#1C64B8] hover:underline font-medium"
+            className="text-xs text-[#2856B0] hover:underline font-medium"
           >
             ไปหน้าร้านแคตตาล็อกหลัก
           </Link>
@@ -180,7 +180,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
             <div>
               <span className="text-slate-400 text-xs block">รหัสคำสั่งซื้อ</span>
-              <span className="font-mono font-bold text-[#082340] text-base">
+              <span className="font-mono font-bold text-[#142E4F] text-base">
                 #{order.id}
               </span>
             </div>
@@ -192,7 +192,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
             </div>
             <div>
               <span className="text-slate-400 text-xs block">ยอดชำระสุทธิ</span>
-              <span className="font-extrabold text-[#F5760A] text-base">
+              <span className="font-extrabold text-[#F26C28] text-base">
                 ฿{order.total_amount.toLocaleString()}
               </span>
             </div>
@@ -207,9 +207,9 @@ export default function OrderDetailClient({ initialOrder }: Props) {
 
         {/* If PENDING: Show Slip Upload Section */}
         {!isPaid && (
-          <div className="bg-white rounded-2xl border-2 border-dashed border-[#1C64B8]/40 p-6 sm:p-8 mb-8 shadow-sm">
-            <h2 className="text-lg font-bold text-[#082340] flex items-center gap-2 mb-2">
-              <Upload className="w-5 h-5 text-[#1C64B8]" />
+          <div className="bg-white rounded-2xl border-2 border-dashed border-[#2856B0]/40 p-6 sm:p-8 mb-8 shadow-sm">
+            <h2 className="text-lg font-bold text-[#142E4F] flex items-center gap-2 mb-2">
+              <Upload className="w-5 h-5 text-[#2856B0]" />
               แนบรูปสลิปโอนเงินเพื่อปลดล็อกไฟล์ทันที
             </h2>
             <p className="text-sm text-slate-500 mb-6">
@@ -232,7 +232,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
 
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="w-full sm:w-1/2">
-                <label className="block w-full border-2 border-slate-200 hover:border-[#1C64B8] rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-50 hover:bg-[#B5D5F2]/20">
+                <label className="block w-full border-2 border-slate-200 hover:border-[#2856B0] rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-50 hover:bg-[#AED6F4]/20">
                   <input
                     type="file"
                     accept="image/*"
@@ -262,7 +262,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                     type="button"
                     onClick={handleVerifySlip}
                     disabled={verifying}
-                    className="w-full py-3 bg-[#F5760A] hover:bg-[#e06800] text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-3 bg-[#F26C28] hover:bg-[#e06800] text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {verifying ? (
                       <>
@@ -285,8 +285,8 @@ export default function OrderDetailClient({ initialOrder }: Props) {
         {/* Worksheets Download Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-[#082340] flex items-center gap-2">
-              <FileText className="w-5 h-5 text-[#1C64B8]" />
+            <h2 className="text-xl font-bold text-[#142E4F] flex items-center gap-2">
+              <FileText className="w-5 h-5 text-[#2856B0]" />
               รายการใบงานในคำสั่งซื้อ ({order.items.length} รายการ)
             </h2>
             {isPaid && (
@@ -305,7 +305,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 transition-all hover:border-[#1C64B8]/40"
+                  className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 transition-all hover:border-[#2856B0]/40"
                 >
                   <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
                     {/* Thumbnail */}
@@ -322,7 +322,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                     {/* Details */}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap gap-1.5 mb-1.5">
-                        <span className="px-2 py-0.5 rounded-md bg-[#B5D5F2]/50 text-[#082340] text-xs font-medium">
+                        <span className="px-2 py-0.5 rounded-md bg-[#AED6F4]/50 text-[#142E4F] text-xs font-medium">
                           {product.grade_level}
                         </span>
                         <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">
@@ -334,7 +334,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                           </span>
                         )}
                       </div>
-                      <h3 className="text-base sm:text-lg font-bold text-[#082340] line-clamp-2">
+                      <h3 className="text-base sm:text-lg font-bold text-[#142E4F] line-clamp-2">
                         {product.title}
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -350,7 +350,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                             type="button"
                             onClick={() => handleDownloadDirect(product.id)}
                             disabled={isDownloading}
-                            className="px-5 py-3 bg-[#F5760A] hover:bg-[#e06800] text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
+                            className="px-5 py-3 bg-[#F26C28] hover:bg-[#e06800] text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
                           >
                             {isDownloading ? (
                               <RefreshCw className="w-4 h-4 animate-spin" />
@@ -394,11 +394,11 @@ export default function OrderDetailClient({ initialOrder }: Props) {
         </div>
 
         {/* Security Rule Card */}
-        <div className="bg-[#B5D5F2]/20 border border-[#B5D5F2] rounded-2xl p-6 text-sm text-[#082340]">
+        <div className="bg-[#AED6F4]/20 border border-[#AED6F4] rounded-2xl p-6 text-sm text-[#142E4F]">
           <div className="flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-[#1C64B8] shrink-0 mt-0.5" />
+            <ShieldCheck className="w-5 h-5 text-[#2856B0] shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h4 className="font-bold text-[#082340]">
+              <h4 className="font-bold text-[#142E4F]">
                 มาตรฐานความปลอดภัยในการส่งมอบไฟล์ของ ClassPic Store
               </h4>
               <p className="text-xs text-slate-600 leading-relaxed">

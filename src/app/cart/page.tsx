@@ -24,7 +24,7 @@ export default function CartPage() {
         <div className="mb-6 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#1C64B8] hover:text-[#082340] transition"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#2856B0] hover:text-[#142E4F] transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>กลับไปเลือกใบงานเพิ่มเติม</span>
@@ -42,10 +42,10 @@ export default function CartPage() {
 
         {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340] flex items-center gap-3">
-            <ShoppingBag className="w-8 h-8 text-[#F5760A]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F] flex items-center gap-3">
+            <ShoppingBag className="w-8 h-8 text-[#F26C28]" />
             <span>ตะกร้าสินค้าของคุณ</span>
-            <span className="text-sm font-semibold bg-[#B5D5F2]/40 text-[#1C64B8] px-3 py-1 rounded-full">
+            <span className="text-sm font-semibold bg-[#AED6F4]/40 text-[#2856B0] px-3 py-1 rounded-full">
               {totalItems} รายการ
             </span>
           </h1>
@@ -60,7 +60,7 @@ export default function CartPage() {
             <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
               <ShoppingBag className="w-10 h-10" />
             </div>
-            <h3 className="text-xl font-bold text-[#082340] mb-2">
+            <h3 className="text-xl font-bold text-[#142E4F] mb-2">
               ยังไม่มีใบงานในตะกร้า
             </h3>
             <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">
@@ -69,9 +69,9 @@ export default function CartPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center justify-center gap-2 bg-[#1C64B8] hover:bg-[#082340] text-white font-semibold px-6 py-3 rounded-xl transition shadow-sm"
+              className="inline-flex items-center justify-center gap-2 bg-[#2856B0] hover:bg-[#142E4F] text-white font-semibold px-6 py-3 rounded-xl transition shadow-sm"
             >
-              <Sparkles className="w-4 h-4 text-[#F5760A]" />
+              <Sparkles className="w-4 h-4 text-[#F26C28]" />
               <span>เลือกดูใบงานทั้งหมด</span>
             </Link>
           </div>
@@ -94,7 +94,7 @@ export default function CartPage() {
                         fill
                         className="object-cover"
                       />
-                      <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-[#082340]/80 text-white px-1.5 py-0.5 rounded">
+                      <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-[#142E4F]/80 text-white px-1.5 py-0.5 rounded">
                         A4
                       </span>
                     </div>
@@ -102,7 +102,7 @@ export default function CartPage() {
                     {/* Details */}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#B5D5F2]/40 text-[#1C64B8]">
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#AED6F4]/40 text-[#2856B0]">
                           {item.product.grade_level}
                         </span>
                         <span className="text-xs font-medium text-slate-500">
@@ -118,7 +118,7 @@ export default function CartPage() {
 
                       <Link
                         href={`/products/${item.product.slug}`}
-                        className="text-base sm:text-lg font-bold text-[#082340] hover:text-[#1C64B8] transition line-clamp-2"
+                        className="text-base sm:text-lg font-bold text-[#142E4F] hover:text-[#2856B0] transition line-clamp-2"
                       >
                         {item.product.title}
                       </Link>
@@ -136,7 +136,7 @@ export default function CartPage() {
                     {/* Price and Remove */}
                     <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                       <div className="text-right">
-                        <div className="text-lg sm:text-xl font-black text-[#F5760A]">
+                        <div className="text-lg sm:text-xl font-black text-[#F26C28]">
                           ฿{item.product.price.toFixed(2)}
                         </div>
                         {item.product.original_price && (
@@ -160,9 +160,9 @@ export default function CartPage() {
               </div>
 
               {/* Notice Banner */}
-              <div className="bg-[#B5D5F2]/20 border border-[#B5D5F2] rounded-xl p-4 flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 text-[#1C64B8] shrink-0 mt-0.5" />
-                <div className="text-xs text-[#082340] leading-relaxed">
+              <div className="bg-[#AED6F4]/20 border border-[#AED6F4] rounded-xl p-4 flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-[#2856B0] shrink-0 mt-0.5" />
+                <div className="text-xs text-[#142E4F] leading-relaxed">
                   <strong className="font-bold">จัดส่งทันทีผ่านระบบอัตโนมัติ:</strong>{" "}
                   ไฟล์ใบงาน PDF จะพร้อมให้ดาวน์โหลดทันทีที่ยืนยันการโอนเงิน
                   ไม่จำกัดระยะเวลา สามารถค้นหาและโหลดซ้ำได้ทุกเมื่อ
@@ -173,14 +173,14 @@ export default function CartPage() {
             {/* Right Summary Column */}
             <div className="lg:col-span-4">
               <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs sticky top-24 space-y-5">
-                <h3 className="text-lg font-bold text-[#082340] pb-3 border-b border-slate-100">
+                <h3 className="text-lg font-bold text-[#142E4F] pb-3 border-b border-slate-100">
                   สรุปคำสั่งซื้อ
                 </h3>
 
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between text-slate-600">
                     <span>จำนวนใบงาน</span>
-                    <span className="font-semibold text-[#082340]">{totalItems} รายการ</span>
+                    <span className="font-semibold text-[#142E4F]">{totalItems} รายการ</span>
                   </div>
                   <div className="flex justify-between text-slate-600">
                     <span>รูปแบบสินค้า</span>
@@ -193,14 +193,14 @@ export default function CartPage() {
 
                   <div className="pt-3 border-t border-slate-200 flex justify-between items-baseline">
                     <div>
-                      <span className="text-base font-bold text-[#082340] block">
+                      <span className="text-base font-bold text-[#142E4F] block">
                         ยอดชำระสุทธิ
                       </span>
                       <span className="text-[11px] text-slate-400">
                         (รวมภาษีมูลค่าเพิ่มแล้วถ้ามี)
                       </span>
                     </div>
-                    <span className="text-3xl font-black text-[#F5760A]">
+                    <span className="text-3xl font-black text-[#F26C28]">
                       ฿{totalAmount.toFixed(2)}
                     </span>
                   </div>
@@ -209,7 +209,7 @@ export default function CartPage() {
                 {/* Checkout CTA */}
                 <Link
                   href="/checkout"
-                  className="w-full bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 group active:scale-98"
+                  className="w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 group active:scale-98"
                 >
                   <span>ไปที่หน้าชำระเงิน</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

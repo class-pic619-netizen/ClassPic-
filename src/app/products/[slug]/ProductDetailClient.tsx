@@ -49,18 +49,18 @@ export default function ProductDetailClient({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
       {/* Top Studio Index Bar */}
-      <div className="flex items-center justify-between border-b-2 border-[#082340] pb-4">
+      <div className="flex items-center justify-between border-b-2 border-[#142E4F] pb-4">
         <Link
           href="/#catalog"
-          className="inline-flex items-center gap-2 text-xs font-extrabold text-[#082340] hover:text-[#F5760A] transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-extrabold text-[#142E4F] hover:text-[#F26C28] transition-colors"
         >
           <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
           <span>กลับสู่แฟ้มแคตตาล็อกใบงาน</span>
         </Link>
 
         <div className="flex items-center gap-2 text-xs font-mono">
-          <span className="text-[#082340]/60">SERIAL:</span>
-          <span className="font-bold text-[#082340] bg-[#B5D5F2]/40 border border-[#082340] px-2 py-0.5">
+          <span className="text-[#142E4F]/60">SERIAL:</span>
+          <span className="font-bold text-[#142E4F] bg-[#AED6F4]/40 border border-[#142E4F] px-2 py-0.5">
             {product.id.toUpperCase()}
           </span>
         </div>
@@ -70,18 +70,18 @@ export default function ProductDetailClient({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         {/* Left Column: Physical A4 Worksheet Studio Board */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="relative p-6 sm:p-8 bg-[#B5D5F2]/30 border-2 border-[#082340] shadow-[6px_6px_0px_#082340] flex flex-col items-center justify-center">
+          <div className="relative p-6 sm:p-8 bg-[#AED6F4]/30 border-2 border-[#142E4F] shadow-[6px_6px_0px_#142E4F] flex flex-col items-center justify-center">
             {/* Top Mat Header */}
-            <div className="w-full flex items-center justify-between text-[10px] font-mono font-bold text-[#082340] pb-3 mb-4 border-b border-[#082340]/20">
+            <div className="w-full flex items-center justify-between text-[10px] font-mono font-bold text-[#142E4F] pb-3 mb-4 border-b border-[#142E4F]/20">
               <span>CLASSPIC PROOF MAT • A4 (210×297 MM)</span>
-              <span className="text-[#1C64B8]">
+              <span className="text-[#2856B0]">
                 SHEET 0{activeImageIndex + 1} OF {product.page_count}
               </span>
             </div>
 
             {/* A4 Paper Sheet Display */}
             <div className="relative w-full max-w-[380px] aspect-[1/1.38]">
-              <div className="absolute inset-0 translate-x-2 translate-y-2 bg-[#082340] pointer-events-none" />
+              <div className="absolute inset-0 translate-x-2 translate-y-2 bg-[#142E4F] pointer-events-none" />
 
               <div className="relative z-10 w-full h-full bg-white">
                 <WorksheetPaperPreview
@@ -98,17 +98,17 @@ export default function ProductDetailClient({
               {/* Zoom Button */}
               <button
                 onClick={() => setIsZoomOpen(true)}
-                className="absolute top-3 right-3 z-30 bg-[#082340] hover:bg-[#1C64B8] text-white px-2.5 py-1.5 border border-white shadow-[2px_2px_0px_#F5760A] transition-all flex items-center gap-1.5 text-[11px] font-mono font-bold cursor-pointer"
+                className="absolute top-3 right-3 z-30 bg-[#142E4F] hover:bg-[#2856B0] text-white px-2.5 py-1.5 border border-white shadow-[2px_2px_0px_#F26C28] transition-all flex items-center gap-1.5 text-[11px] font-mono font-bold cursor-pointer"
                 title="ขยายดูหน้ากระดาษแผ่นใหญ่"
               >
-                <Maximize2 className="w-3.5 h-3.5 text-[#F5760A]" />
+                <Maximize2 className="w-3.5 h-3.5 text-[#F26C28]" />
                 <span>ZOOM A4</span>
               </button>
             </div>
 
             {/* Page Selector Index Tabs */}
             <div className="mt-6 flex items-center gap-2">
-              <span className="text-[11px] font-mono font-bold text-[#082340] mr-1">
+              <span className="text-[11px] font-mono font-bold text-[#142E4F] mr-1">
                 PREVIEW SHEET:
               </span>
               {[0, 1, 2].map((idx) => (
@@ -117,8 +117,8 @@ export default function ProductDetailClient({
                   onClick={() => setActiveImageIndex(idx)}
                   className={`text-xs font-mono px-3 py-1.5 font-bold transition-all border-2 cursor-pointer ${
                     activeImageIndex === idx
-                      ? "bg-[#082340] text-white border-[#082340] shadow-[2px_2px_0px_#F5760A]"
-                      : "bg-white text-[#082340] border-[#082340] hover:bg-[#B5D5F2]/40"
+                      ? "bg-[#142E4F] text-white border-[#142E4F] shadow-[2px_2px_0px_#F26C28]"
+                      : "bg-white text-[#142E4F] border-[#142E4F] hover:bg-[#AED6F4]/40"
                   }`}
                 >
                   0{idx + 1}
@@ -128,8 +128,8 @@ export default function ProductDetailClient({
           </div>
 
           {/* Watermark Protection Note */}
-          <div className="p-3.5 bg-white border-2 border-[#082340] text-xs text-[#082340]/80 flex items-start gap-3">
-            <span className="font-mono text-[10px] font-extrabold bg-[#082340] text-[#B5D5F2] px-1.5 py-0.5 shrink-0">
+          <div className="p-3.5 bg-white border-2 border-[#142E4F] text-xs text-[#142E4F]/80 flex items-start gap-3">
+            <span className="font-mono text-[10px] font-extrabold bg-[#142E4F] text-[#AED6F4] px-1.5 py-0.5 shrink-0">
               NOTE
             </span>
             <p>
@@ -143,61 +143,61 @@ export default function ProductDetailClient({
         <div className="lg:col-span-6 space-y-6">
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-extrabold text-[#082340] bg-[#B5D5F2] border-2 border-[#082340] px-2.5 py-0.5">
+              <span className="text-xs font-extrabold text-[#142E4F] bg-[#AED6F4] border-2 border-[#142E4F] px-2.5 py-0.5">
                 {product.subject}
               </span>
-              <span className="text-xs font-mono font-bold text-white bg-[#082340] border-2 border-[#082340] px-2.5 py-0.5">
+              <span className="text-xs font-mono font-bold text-white bg-[#142E4F] border-2 border-[#142E4F] px-2.5 py-0.5">
                 GRADE: {product.grade_level}
               </span>
               {isFree && (
-                <span className="text-xs font-mono font-bold text-white bg-[#F5760A] border-2 border-[#082340] px-2.5 py-0.5">
+                <span className="text-xs font-mono font-bold text-white bg-[#F26C28] border-2 border-[#142E4F] px-2.5 py-0.5">
                   FREE SAMPLE EDITION
                 </span>
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340] leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F] leading-tight">
               {product.title}
             </h1>
 
-            <p className="text-sm text-[#082340]/80 leading-relaxed">
+            <p className="text-sm text-[#142E4F]/80 leading-relaxed">
               {product.description}
             </p>
           </div>
 
           {/* Architectural Print Specification Table */}
-          <div className="bg-white border-2 border-[#082340] shadow-[4px_4px_0px_#B5D5F2]">
-            <div className="px-4 py-2 bg-[#082340] text-white flex items-center justify-between text-xs font-mono font-bold">
+          <div className="bg-white border-2 border-[#142E4F] shadow-[4px_4px_0px_#AED6F4]">
+            <div className="px-4 py-2 bg-[#142E4F] text-white flex items-center justify-between text-xs font-mono font-bold">
               <span className="flex items-center gap-1.5">
                 <ClassPicSpark className="w-3.5 h-3.5" />
                 <span>PRINT SPECIFICATIONS</span>
               </span>
-              <span className="text-[#B5D5F2]">CLASSPIC STANDARD</span>
+              <span className="text-[#AED6F4]">CLASSPIC STANDARD</span>
             </div>
-            <div className="grid grid-cols-2 divide-x-2 divide-y-2 divide-[#082340] text-xs">
+            <div className="grid grid-cols-2 divide-x-2 divide-y-2 divide-[#142E4F] text-xs">
               <div className="p-3.5">
-                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                <span className="block font-mono text-[10px] text-[#2856B0] font-bold">
                   PAPER SIZE
                 </span>
-                <strong className="text-[#082340] text-sm">A4 (210 × 297 มม.)</strong>
+                <strong className="text-[#142E4F] text-sm">A4 (210 × 297 มม.)</strong>
               </div>
               <div className="p-3.5">
-                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                <span className="block font-mono text-[10px] text-[#2856B0] font-bold">
                   TOTAL SHEETS
                 </span>
-                <strong className="text-[#082340] text-sm">{product.page_count} หน้าครบชุด</strong>
+                <strong className="text-[#142E4F] text-sm">{product.page_count} หน้าครบชุด</strong>
               </div>
               <div className="p-3.5">
-                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                <span className="block font-mono text-[10px] text-[#2856B0] font-bold">
                   FILE MASTER
                 </span>
-                <strong className="text-[#082340] text-sm">PDF 300 DPI คมชัดสูง</strong>
+                <strong className="text-[#142E4F] text-sm">PDF 300 DPI คมชัดสูง</strong>
               </div>
               <div className="p-3.5">
-                <span className="block font-mono text-[10px] text-[#1C64B8] font-bold">
+                <span className="block font-mono text-[10px] text-[#2856B0] font-bold">
                   ANSWER KEY
                 </span>
-                <strong className="text-[#082340] text-sm">
+                <strong className="text-[#142E4F] text-sm">
                   {product.has_answer_key ? "รวมเฉลยท้ายเล่ม" : "ชุดฝึกปฏิบัติ"}
                 </strong>
               </div>
@@ -205,20 +205,20 @@ export default function ProductDetailClient({
           </div>
 
           {/* Pricing & Checkout Box */}
-          <div className="bg-white border-2 border-[#082340] p-6 space-y-5 shadow-[6px_6px_0px_#082340]">
-            <div className="flex items-baseline justify-between border-b-2 border-[#082340] pb-4">
+          <div className="bg-white border-2 border-[#142E4F] p-6 space-y-5 shadow-[6px_6px_0px_#142E4F]">
+            <div className="flex items-baseline justify-between border-b-2 border-[#142E4F] pb-4">
               <div>
-                <span className="text-[11px] font-mono font-bold uppercase text-[#1C64B8] block">
+                <span className="text-[11px] font-mono font-bold uppercase text-[#2856B0] block">
                   EDITION PRICE
                 </span>
                 <div className="flex items-baseline gap-2.5 mt-0.5">
                   {isFree ? (
-                    <span className="text-3xl font-extrabold text-[#1C64B8] font-mono">
+                    <span className="text-3xl font-extrabold text-[#2856B0] font-mono">
                       FREE ฿0
                     </span>
                   ) : (
                     <>
-                      <span className="text-3xl font-extrabold text-[#082340] font-mono">
+                      <span className="text-3xl font-extrabold text-[#142E4F] font-mono">
                         ฿{product.price}
                       </span>
                       {product.original_price && (
@@ -231,7 +231,7 @@ export default function ProductDetailClient({
                 </div>
               </div>
 
-              <span className="text-[11px] font-mono font-bold text-[#082340] bg-[#B5D5F2]/40 px-2.5 py-1 border border-[#082340]">
+              <span className="text-[11px] font-mono font-bold text-[#142E4F] bg-[#AED6F4]/40 px-2.5 py-1 border border-[#142E4F]">
                 LIFETIME RE-DOWNLOAD
               </span>
             </div>
@@ -246,7 +246,7 @@ export default function ProductDetailClient({
             ) : isFree ? (
               <a
                 href="/downloads"
-                className="w-full bg-[#1C64B8] hover:bg-[#082340] text-white font-extrabold py-3.5 px-6 border-2 border-[#082340] shadow-[4px_4px_0px_#082340] transition-all flex items-center justify-center gap-2 text-sm"
+                className="w-full bg-[#2856B0] hover:bg-[#142E4F] text-white font-extrabold py-3.5 px-6 border-2 border-[#142E4F] shadow-[4px_4px_0px_#142E4F] transition-all flex items-center justify-center gap-2 text-sm"
               >
                 <Download className="w-4 h-4 stroke-[2.5]" />
                 <span>รับไฟล์ตัวอย่าง A4 ฟรีทันที</span>
@@ -255,10 +255,10 @@ export default function ProductDetailClient({
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className={`flex-1 font-extrabold py-3.5 px-6 border-2 border-[#082340] shadow-[4px_4px_0px_#082340] active:translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer ${
+                  className={`flex-1 font-extrabold py-3.5 px-6 border-2 border-[#142E4F] shadow-[4px_4px_0px_#142E4F] active:translate-y-0.5 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer ${
                     addedSuccess
-                      ? "bg-[#1C64B8] text-white"
-                      : "bg-[#F5760A] hover:bg-[#e06905] text-white"
+                      ? "bg-[#2856B0] text-white"
+                      : "bg-[#F26C28] hover:bg-[#e06905] text-white"
                   }`}
                 >
                   {addedSuccess ? (
@@ -276,26 +276,26 @@ export default function ProductDetailClient({
 
                 <button
                   onClick={handleBuyNow}
-                  className="bg-[#082340] hover:bg-[#1C64B8] text-white font-extrabold py-3.5 px-6 border-2 border-[#082340] shadow-[4px_4px_0px_#B5D5F2] active:translate-y-0.5 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer"
+                  className="bg-[#142E4F] hover:bg-[#2856B0] text-white font-extrabold py-3.5 px-6 border-2 border-[#142E4F] shadow-[4px_4px_0px_#AED6F4] active:translate-y-0.5 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>ชำระเงินทันที</span>
-                  <ArrowRight className="w-4 h-4 text-[#F5760A] stroke-[2.5]" />
+                  <ArrowRight className="w-4 h-4 text-[#F26C28] stroke-[2.5]" />
                 </button>
               </div>
             )}
 
-            <div className="flex items-center justify-between text-[11px] font-mono text-[#082340]/75 pt-2 border-t border-dashed border-[#082340]/25">
+            <div className="flex items-center justify-between text-[11px] font-mono text-[#142E4F]/75 pt-2 border-t border-dashed border-[#142E4F]/25">
               <span>PROMPTPAY QR (ALL BANKS)</span>
               <span>INSTANT PDF UNLOCK</span>
             </div>
           </div>
 
           {/* Educational License Box */}
-          <div className="border-2 border-[#082340] p-4 bg-[#FAFBFD] text-xs space-y-1">
-            <span className="font-mono text-[10px] font-bold text-[#1C64B8] uppercase tracking-wider block">
+          <div className="border-2 border-[#142E4F] p-4 bg-[#FAFBFD] text-xs space-y-1">
+            <span className="font-mono text-[10px] font-bold text-[#2856B0] uppercase tracking-wider block">
               CLASSPIC EDUCATIONAL LICENSE
             </span>
-            <p className="text-xs text-[#082340]/80 leading-relaxed">
+            <p className="text-xs text-[#142E4F]/80 leading-relaxed">
               อนุญาตให้คุณครูและผู้ปกครองพิมพ์ใบงานชุดนี้เพื่อใช้สอนนักเรียนในชั้นเรียนหรือที่บ้านได้ไม่จำกัดจำนวนครั้ง
               สงวนลิขสิทธิ์ห้ามนำไฟล์ดิจิทัลไปจำหน่ายต่อหรือเผยแพร่ซ้ำในกลุ่มสาธารณะ
             </p>
@@ -305,10 +305,10 @@ export default function ProductDetailClient({
 
       {/* Lightbox Modal */}
       {isZoomOpen && (
-        <div className="fixed inset-0 z-50 bg-[#082340]/90 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#142E4F]/90 backdrop-blur-xs flex items-center justify-center p-4">
           <button
             onClick={() => setIsZoomOpen(false)}
-            className="absolute top-5 right-5 text-white bg-[#F5760A] border-2 border-white p-2 cursor-pointer z-50"
+            className="absolute top-5 right-5 text-white bg-[#F26C28] border-2 border-white p-2 cursor-pointer z-50"
             title="ปิดหน้าต่าง"
           >
             <X className="w-6 h-6" />
@@ -330,14 +330,14 @@ export default function ProductDetailClient({
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="pt-8 border-t-2 border-[#082340] space-y-6">
+        <section className="pt-8 border-t-2 border-[#142E4F] space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-extrabold text-[#082340]">
+            <h3 className="text-xl font-extrabold text-[#142E4F]">
               แฟ้มใบงานอื่นๆ ในสตูดิโอ ClassPic
             </h3>
             <Link
               href="/#catalog"
-              className="text-xs font-mono font-bold text-[#1C64B8] hover:text-[#F5760A]"
+              className="text-xs font-mono font-bold text-[#2856B0] hover:text-[#F26C28]"
             >
               VIEW ALL FOLIOS →
             </Link>

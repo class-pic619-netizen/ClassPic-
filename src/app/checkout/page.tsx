@@ -269,13 +269,13 @@ export default function CheckoutPage() {
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
             <ShoppingBag className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-[#082340] mb-2">ไม่มีสินค้าที่ต้องชำระ</h2>
+          <h2 className="text-xl font-bold text-[#142E4F] mb-2">ไม่มีสินค้าที่ต้องชำระ</h2>
           <p className="text-sm text-slate-500 mb-6">
             ตะกร้าสินค้าของคุณยังว่างอยู่ กรุณาเลือกใบงานก่อนเข้าสู่หน้าชำระเงิน
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 bg-[#1C64B8] hover:bg-[#082340] text-white font-semibold px-6 py-2.5 rounded-xl transition shadow-xs text-sm"
+            className="inline-flex items-center gap-2 bg-[#2856B0] hover:bg-[#142E4F] text-white font-semibold px-6 py-2.5 rounded-xl transition shadow-xs text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>กลับไปเลือกใบงาน</span>
@@ -292,7 +292,7 @@ export default function CheckoutPage() {
         <div className="mb-6">
           <Link
             href="/cart"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#1C64B8] hover:text-[#082340] transition"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#2856B0] hover:text-[#142E4F] transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>กลับไปที่ตะกร้าสินค้า</span>
@@ -301,7 +301,7 @@ export default function CheckoutPage() {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#082340] flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F] flex items-center gap-2">
             <span>ชำระเงินและรับไฟล์ใบงาน</span>
             <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full">
               ดาวน์โหลดได้ทันที
@@ -318,11 +318,11 @@ export default function CheckoutPage() {
             {/* Step 1: Contact Information */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
               <div className="flex items-center gap-3 mb-4">
-                <span className="w-7 h-7 rounded-full bg-[#1C64B8] text-white flex items-center justify-center font-bold text-sm">
+                <span className="w-7 h-7 rounded-full bg-[#2856B0] text-white flex items-center justify-center font-bold text-sm">
                   1
                 </span>
                 <div>
-                  <h2 className="text-base font-bold text-[#082340]">
+                  <h2 className="text-base font-bold text-[#142E4F]">
                     ข้อมูลสำหรับรับไฟล์และค้นหาย้อนหลัง
                   </h2>
                   <p className="text-xs text-slate-500">
@@ -351,7 +351,7 @@ export default function CheckoutPage() {
                       if (contactError) setContactError("");
                     }}
                     placeholder="เช่น 0812345678 หรือ teacher@school.ac.th"
-                    className={`w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1C64B8] transition ${
+                    className={`w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2856B0] transition ${
                       contactError ? "border-rose-400 ring-rose-200" : "border-slate-300"
                     }`}
                   />
@@ -369,11 +369,11 @@ export default function CheckoutPage() {
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-full bg-[#1C64B8] text-white flex items-center justify-center font-bold text-sm">
+                  <span className="w-7 h-7 rounded-full bg-[#2856B0] text-white flex items-center justify-center font-bold text-sm">
                     2
                   </span>
                   <div>
-                    <h2 className="text-base font-bold text-[#082340]">
+                    <h2 className="text-base font-bold text-[#142E4F]">
                       สแกนจ่ายด้วยแอปธนาคารใดก็ได้
                     </h2>
                     <p className="text-xs text-slate-500">
@@ -387,7 +387,7 @@ export default function CheckoutPage() {
                     type="button"
                     onClick={() => generateQRCode()}
                     disabled={isGeneratingQR}
-                    className="text-xs font-semibold bg-[#1C64B8] hover:bg-[#082340] text-white px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="text-xs font-semibold bg-[#2856B0] hover:bg-[#142E4F] text-white px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     {isGeneratingQR ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -409,7 +409,7 @@ export default function CheckoutPage() {
                     type="button"
                     onClick={() => generateQRCode()}
                     disabled={isGeneratingQR}
-                    className="mt-2 inline-flex items-center gap-2 bg-[#F5760A] hover:bg-[#d96303] text-white font-bold px-6 py-2.5 rounded-xl shadow-xs transition cursor-pointer text-sm"
+                    className="mt-2 inline-flex items-center gap-2 bg-[#F26C28] hover:bg-[#d96303] text-white font-bold px-6 py-2.5 rounded-xl shadow-xs transition cursor-pointer text-sm"
                   >
                     {isGeneratingQR ? (
                       <>
@@ -427,10 +427,10 @@ export default function CheckoutPage() {
               ) : (
                 <div className="space-y-4">
                   {/* Thai QR Payment Container */}
-                  <div className="max-w-sm mx-auto bg-white rounded-2xl border-2 border-[#1C64B8] overflow-hidden shadow-md">
+                  <div className="max-w-sm mx-auto bg-white rounded-2xl border-2 border-[#2856B0] overflow-hidden shadow-md">
                     {/* Official Thai QR Header Style */}
-                    <div className="bg-[#082340] px-4 py-3 text-white text-center">
-                      <div className="text-xs font-medium tracking-wider text-[#B5D5F2]">
+                    <div className="bg-[#142E4F] px-4 py-3 text-white text-center">
+                      <div className="text-xs font-medium tracking-wider text-[#AED6F4]">
                         THAI QR PAYMENT
                       </div>
                       <div className="text-sm font-bold mt-0.5">
@@ -454,11 +454,11 @@ export default function CheckoutPage() {
                       )}
 
                       {/* Locked Amount Display */}
-                      <div className="mt-4 w-full bg-[#B5D5F2]/20 border border-[#B5D5F2] rounded-xl py-2 px-3">
+                      <div className="mt-4 w-full bg-[#AED6F4]/20 border border-[#AED6F4] rounded-xl py-2 px-3">
                         <div className="text-[11px] text-slate-500 font-medium">
                           ยอดโอนชำระสุทธิ (ล็อกยอดอัตโนมัติ)
                         </div>
-                        <div className="text-2xl font-black text-[#F5760A]">
+                        <div className="text-2xl font-black text-[#F26C28]">
                           ฿{totalAmount.toFixed(2)}
                         </div>
                       </div>
@@ -478,7 +478,7 @@ export default function CheckoutPage() {
                       <button
                         type="button"
                         onClick={handleDownloadQR}
-                        className="mt-4 w-full bg-slate-100 hover:bg-slate-200 text-[#082340] text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="mt-4 w-full bg-slate-100 hover:bg-slate-200 text-[#142E4F] text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>บันทึกภาพ QR Code ลงเครื่อง</span>
@@ -488,7 +488,7 @@ export default function CheckoutPage() {
 
                   {/* Transfer Instructions */}
                   <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/80 text-xs text-slate-600 space-y-1.5">
-                    <strong className="font-bold text-[#082340] block">
+                    <strong className="font-bold text-[#142E4F] block">
                       📌 ขั้นตอนการโอนเงิน:
                     </strong>
                     <ol className="list-decimal list-inside space-y-1">
@@ -505,11 +505,11 @@ export default function CheckoutPage() {
             {/* Step 3: Slip Upload & Verification */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
               <div className="flex items-center gap-3 mb-4">
-                <span className="w-7 h-7 rounded-full bg-[#1C64B8] text-white flex items-center justify-center font-bold text-sm">
+                <span className="w-7 h-7 rounded-full bg-[#2856B0] text-white flex items-center justify-center font-bold text-sm">
                   3
                 </span>
                 <div>
-                  <h2 className="text-base font-bold text-[#082340]">
+                  <h2 className="text-base font-bold text-[#142E4F]">
                     แนบรูปสลิปโอนเงิน
                   </h2>
                   <p className="text-xs text-slate-500">
@@ -526,10 +526,10 @@ export default function CheckoutPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
                   isDragging
-                    ? "border-[#1C64B8] bg-[#B5D5F2]/20"
+                    ? "border-[#2856B0] bg-[#AED6F4]/20"
                     : slipPreview
                     ? "border-emerald-300 bg-emerald-50/20"
-                    : "border-slate-300 hover:border-[#1C64B8] bg-slate-50"
+                    : "border-slate-300 hover:border-[#2856B0] bg-slate-50"
                 }`}
               >
                 <input
@@ -588,7 +588,7 @@ export default function CheckoutPage() {
                 type="button"
                 onClick={handleVerifySlip}
                 disabled={isSubmitting}
-                className="mt-6 w-full bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-base active:scale-98 cursor-pointer disabled:opacity-50"
+                className="mt-6 w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-base active:scale-98 cursor-pointer disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
@@ -608,7 +608,7 @@ export default function CheckoutPage() {
           {/* Sidebar Summary (Right Column) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs sticky top-24 space-y-5">
-              <h3 className="text-lg font-bold text-[#082340] pb-3 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-[#142E4F] pb-3 border-b border-slate-100 flex items-center justify-between">
                 <span>สรุปรายการสั่งซื้อ</span>
                 <span className="text-xs font-normal text-slate-500">
                   {totalItems} รายการ
@@ -628,14 +628,14 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-semibold text-[#082340] line-clamp-2">
+                      <h4 className="text-xs font-semibold text-[#142E4F] line-clamp-2">
                         {item.product.title}
                       </h4>
                       <p className="text-[11px] text-slate-400 mt-0.5">
                         {item.product.grade_level} • {item.product.page_count} หน้า PDF
                       </p>
                     </div>
-                    <div className="text-xs font-bold text-[#F5760A] shrink-0">
+                    <div className="text-xs font-bold text-[#F26C28] shrink-0">
                       ฿{item.product.price.toFixed(2)}
                     </div>
                   </div>
@@ -653,17 +653,17 @@ export default function CheckoutPage() {
                   <span className="text-emerald-600 font-medium">฿0.00 (ดาวน์โหลดทันที)</span>
                 </div>
                 <div className="pt-3 border-t border-slate-200 flex justify-between items-baseline">
-                  <span className="text-sm font-bold text-[#082340]">ยอดชำระสุทธิ</span>
-                  <span className="text-2xl font-black text-[#F5760A]">
+                  <span className="text-sm font-bold text-[#142E4F]">ยอดชำระสุทธิ</span>
+                  <span className="text-2xl font-black text-[#F26C28]">
                     ฿{totalAmount.toFixed(2)}
                   </span>
                 </div>
               </div>
 
               {/* Guarantee Box */}
-              <div className="bg-[#B5D5F2]/20 border border-[#B5D5F2] rounded-xl p-3.5 space-y-2 text-[11px] text-[#082340]">
+              <div className="bg-[#AED6F4]/20 border border-[#AED6F4] rounded-xl p-3.5 space-y-2 text-[11px] text-[#142E4F]">
                 <div className="flex items-center gap-1.5 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-[#1C64B8]" />
+                  <ShieldCheck className="w-4 h-4 text-[#2856B0]" />
                   <span>การันตีความปลอดภัยและคุณภาพ ClassPic</span>
                 </div>
                 <ul className="space-y-1 text-slate-600 list-disc list-inside">

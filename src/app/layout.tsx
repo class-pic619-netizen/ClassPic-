@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th" className={`${promptFont.variable}`}>
-      <body className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#082340] font-sans antialiased">
+      <body className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#142E4F] font-sans antialiased">
         <Providers>
           <Navbar />
           <CartDrawer />

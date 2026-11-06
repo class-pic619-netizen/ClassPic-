@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แบบร่าง v2 — ClassPic หน้าแรก</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Mitr:wght@400;500;600;700&family=Anuphan:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#142E4F; --blue:#2856B0; --sky:#AED6F4; --orange:#F26C28;
+    --head:"Nunito","Mitr",sans-serif; --body:"Anuphan","Nunito",sans-serif;
+    --ink:#1d2733; --muted:#5d6b7a; --line:#e3e8ee; --paper:#fff; --bg:#f7f8fa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:#fff;line-height:1.6;font-size:17px}
+  h1,h2,h3,.btn,.price,nav a,.cart,.tabs,.link,.add,.steps .n{font-family:var(--head)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+
+  .draft-note{background:#fff7ef;color:#8a4a10;font-size:14px;text-align:center;padding:8px 16px;border-bottom:1px solid #f5dcc3}
+
+  /* nav */
+  header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:10}
+  .nav{display:flex;align-items:center;gap:36px;height:72px}
+  .logo{height:34px;overflow:hidden;display:block}
+  .logo img{height:52px;display:block}
+  nav{display:flex;gap:28px;font-size:15px;font-weight:500;color:var(--muted)}
+  nav a:hover,nav a.on{color:var(--navy)}
+  .cart{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--head);font-weight:500;font-size:15px;color:var(--navy)}
+  .cart b{background:var(--navy);color:#fff;font-size:12px;border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;padding:72px 0 80px}
+  .hero h1{font-size:46px;line-height:1.25;color:var(--navy);font-weight:800;letter-spacing:-.01em}
+  .hero h1 em{font-style:normal;color:var(--orange)}
+  .hero p.lead{font-size:19px;color:var(--muted);margin:20px 0 32px;max-width:30em}
+  .ctas{display:flex;align-items:center;gap:24px}
+  .btn{display:inline-block;background:var(--orange);color:#fff;font-weight:600;padding:14px 28px;border-radius:10px;font-size:16px}
+  .btn:hover{background:#D95A18}
+  .link{font-family:var(--head);font-weight:500;color:var(--blue);border-bottom:1.5px solid currentColor;padding-bottom:1px}
+  .facts{display:flex;gap:32px;margin-top:44px;padding-top:24px;border-top:1px solid var(--line);font-size:15px;color:var(--muted)}
+  .facts strong{display:block;color:var(--navy);font-family:var(--head);font-weight:600;font-size:16px}
+
+  .desk{position:relative;aspect-ratio:1.1/1;background:#eaf3fb;border-radius:20px}
+  .desk .sheet{position:absolute;width:48%}
+  .desk .s1{left:6%;top:14%;transform:rotate(-6deg)}
+  .desk .s2{left:30%;top:8%;transform:rotate(3deg);z-index:2}
+  .desk .s3{right:5%;top:22%;transform:rotate(9deg)}
+  .desk .tag{position:absolute;left:24px;bottom:22px;font-size:14px;color:var(--navy);background:#fff;border-radius:8px;padding:6px 12px;z-index:3}
+
+  /* worksheet page (placeholder for real scans) */
+  /* sizes are in em so the page scales with its width (base = 4% of sheet width) */
+  .thumb,.desk{container-type:inline-size}
+  .thumb .sheet{font-size:2.95cqw}
+  .desk .sheet{font-size:1.9cqw}
+  .sheet{aspect-ratio:210/297;background:var(--paper);box-shadow:0 1px 2px rgba(20,46,79,.08),0 10px 28px rgba(20,46,79,.12);padding:7%;font-family:var(--body);color:#222;overflow:hidden;position:relative;line-height:1.4}
+  .sheet .hd{display:flex;justify-content:space-between;font-size:.8em;color:#777;border-bottom:1px solid #ccc;padding-bottom:.4em;margin-bottom:.8em}
+  .sheet h4{font-family:var(--head);font-size:1.35em;font-weight:600;margin-bottom:.4em;color:#111}
+  .sheet .inst{font-size:.9em;color:#555;margin-bottom:.8em}
+  .sheet .wm{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .sheet .wm span{transform:rotate(-30deg);font-family:var(--head);font-weight:600;font-size:2.8em;color:rgba(20,46,79,.07);white-space:nowrap}
+  .row{display:flex;align-items:center;gap:.6em;margin:.7em 0}
+  .pic{width:3.4em;height:3.4em;border:1px solid #bbb;border-radius:.4em;display:grid;place-items:center;flex:none;font-size:1em}
+  .dots{flex:1;border-bottom:1.5px dotted #999;height:1.4em}
+  .trace{font-family:var(--head);font-size:2.4em;color:transparent;-webkit-text-stroke:1px #aaa;letter-spacing:.25em;line-height:1.3}
+  .trace b{color:#222;-webkit-text-stroke:0}
+  .math{display:grid;grid-template-columns:1fr 1fr;gap:.6em 1.4em;font-family:var(--head);font-size:1.25em}
+  .math div{border-bottom:1px solid #ddd;padding:.4em 0}
+  .shapes{display:flex;gap:.8em;margin:.6em 0 1em}
+  .shapes svg{width:2.8em;height:2.8em}
+
+  @media (max-width:980px){
+    .hero{grid-template-columns:1fr;gap:40px;padding:48px 0}
+    .hero h1{font-size:38px}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:1fr;gap:24px}
+    nav{display:none}
+    .desk .sheet{width:44%}
+    .desk .sheet{font-size:1.76cqw}
+  }
+
+  /* catalog */
+  .catalog{padding:24px 0 88px}
+  .sec-hd{display:flex;align-items:end;justify-content:space-between;margin-bottom:24px}
+  h2{font-size:30px;color:var(--navy);font-weight:600}
+  .search{border:1px solid var(--line);border-radius:10px;padding:11px 16px;width:300px;font-family:inherit;font-size:15px;color:var(--muted)}
+  .tabs{display:flex;gap:28px;border-bottom:1px solid var(--line);font-family:var(--head);font-size:15px;font-weight:500;color:var(--muted)}
+  .tabs a{padding:12px 0;margin-bottom:-1px;border-bottom:2px solid transparent}
+  .tabs a.on{color:var(--navy);border-color:var(--navy)}
+  .tabs a small{color:#9aa6b2;font-weight:400;margin-left:4px}
+  .subj{display:flex;gap:8px;margin:18px 0 36px;flex-wrap:wrap}
+  .subj a{font-size:14px;padding:6px 14px;border-radius:99px;background:var(--bg);color:var(--muted)}
+  .subj a.on{background:var(--sky);color:var(--navy);font-weight:600}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px 32px}
+  .card .thumb{background:var(--bg);border-radius:14px;padding:28px 44px;transition:background .2s}
+  .card .thumb .sheet{transition:transform .2s}
+  .card:hover .thumb{background:#eef4fa}
+  .card:hover .thumb .sheet{transform:translateY(-4px)}
+  .meta{font-size:14px;color:var(--muted);margin:14px 0 4px}
+  .card h3{font-size:18px;font-weight:600;color:var(--navy);line-height:1.4}
+  .info{font-size:14px;color:var(--muted);margin-top:4px}
+  .buy{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+  .price{font-size:20px;font-weight:600;color:var(--navy)}
+  .price s{font-size:14px;color:#9aa6b2;font-weight:400;margin-left:6px}
+  .price.free{color:#1b8a4b}
+  .add{font-family:var(--head);font-size:14px;font-weight:500;color:var(--navy);border:1px solid #cfd7e0;border-radius:8px;padding:7px 14px;background:#fff}
+  .add:hover{border-color:var(--navy)}
+  .soon .thumb{opacity:.55}
+  .soon .add{color:var(--muted)}
+
+  /* how */
+  .how{background:var(--bg);padding:72px 0}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:32px}
+  .steps .n{font-family:var(--head);font-size:15px;font-weight:600;color:var(--orange)}
+  .steps h3{font-size:19px;color:var(--navy);margin:6px 0}
+  .steps p{color:var(--muted);font-size:16px}
+
+  footer{padding:40px 0;font-size:14px;color:var(--muted);border-top:1px solid var(--line)}
+  footer .wrap{display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<div class="draft-note">แบบร่าง v2 · รูปใบงานในหน้านี้เป็นภาพจำลอง ของจริงจะใช้ภาพสแกนหน้าใบงานจริงแทน</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#"><img src="../../public/logo.png" alt="ClassPic"></a>
+    <nav>
+      <a class="on" href="#catalog">ใบงานทั้งหมด</a>
+      <a href="#">ชุดฟรี</a>
+      <a href="#">โหลดไฟล์ที่ซื้อแล้ว</a>
+    </nav>
+    <a class="cart" href="#">ตะกร้า <b>0</b></a>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div>
+      <h1>ใบงาน A4 พร้อมพิมพ์<br>สำหรับครู<em>อนุบาล–ป.6</em></h1>
+      <p class="lead">เลือกชุดที่ต้องการ จ่ายผ่านพร้อมเพย์ แล้วดาวน์โหลด PDF ได้เลย ไม่ต้องสมัครสมาชิก พิมพ์ได้ทั้งขาวดำและสี</p>
+      <div class="ctas">
+        <a class="btn" href="#catalog">ดูใบงานทั้งหมด</a>
+        <a class="link" href="#">ลองชุดฟรี 2 แผ่นก่อน</a>
+      </div>
+      <div class="facts">
+        <div><strong>มีเฉลยทุกชุด</strong>อยู่ท้ายไฟล์</div>
+        <div><strong>ได้ไฟล์ทันที</strong>หลังแนบสลิป</div>
+        <div><strong>โหลดซ้ำได้</strong>ด้วยเบอร์โทร</div>
+      </div>
+    </div>
+
+    <div class="desk">
+      <div class="sheet s1">
+        <div class="hd"><span>คณิตศาสตร์ ป.2</span><span>ชื่อ ..................</span></div>
+        <h4>บวกเลขสองหลัก</h4>
+        <div class="math"><div>25 + 14 = ___</div><div>31 + 22 = ___</div><div>40 + 18 = ___</div><div>17 + 52 = ___</div><div>63 + 25 = ___</div><div>44 + 33 = ___</div></div>
+        <div class="wm"><span>ClassPic</span></div>
+      </div>
+      <div class="sheet s2">
+        <div class="hd"><span>ภาษาอังกฤษ ป.1</span><span>ชื่อ ..................</span></div>
+        <h4>Match the words</h4>
+        <div class="inst">ดูภาพ แล้วเขียนคำศัพท์ให้ถูกต้อง</div>
+        <div class="row"><div class="pic">🍎</div><div class="dots"></div></div>
+        <div class="row"><div class="pic">📕</div><div class="dots"></div></div>
+        <div class="row"><div class="pic">🐱</div><div class="dots"></div></div>
+        <div class="row"><div class="pic">☀️</div><div class="dots"></div></div>
+        <div class="wm"><span>ClassPic</span></div>
+      </div>
+      <div class="sheet s3">
+        <div class="hd"><span>ภาษาไทย อนุบาล</span><span>ชื่อ ..................</span></div>
+        <h4>ฝึกเขียน ก ข ค</h4>
+        <div class="trace"><b>ก</b>กกกก</div>
+        <div class="trace"><b>ข</b>ขขขข</div>
+        <div class="trace"><b>ค</b>คคคค</div>
+        <div class="wm"><span>ClassPic</span></div>
+      </div>
+      <div class="tag">ตัวอย่างจากชุดที่ขายอยู่</div>
+    </div>
+  </section>
+
+  <section class="wrap catalog" id="catalog">
+    <div class="sec-hd">
+      <h2>ใบงานทั้งหมด</h2>
+      <input class="search" placeholder="ค้นหา เช่น บวกเลข, คำศัพท์">
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">ทั้งหมด<small>6</small></a>
+      <a href="#">อนุบาล<small>1</small></a>
+      <a href="#">ป.1–3<small>3</small></a>
+      <a href="#">ป.4–6<small>1</small></a>
+      <a href="#">การศึกษาพิเศษ<small>1</small></a>
+      <a href="#">2 ภาษา<small>2</small></a>
+    </div>
+    <div class="subj">
+      <a class="on" href="#">ทุกวิชา</a><a href="#">ภาษาไทย</a><a href="#">ภาษาอังกฤษ</a><a href="#">คณิตศาสตร์</a><a href="#">วิทยาศาสตร์</a><a href="#">เชาวน์ปัญญา</a><a href="#">ศิลปะ</a>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <div class="thumb"><div class="sheet">
+          <div class="hd"><span>ภาษาอังกฤษ ป.1</span><span>ชื่อ ..........</span></div>
+          <h4>First Words 100 คำ</h4><div class="inst">ดูภาพ แล้วเขียนคำศัพท์</div>
+          <div class="row"><div class="pic">🍎</div><div class="dots"></div></div>
+          <div class="row"><div class="pic">📕</div><div class="dots"></div></div>
+          <div class="row"><div class="pic">🐱</div><div class="dots"></div></div>
+          <div class="row"><div class="pic">☀️</div><div class="dots"></div></div>
+          <div class="wm"><span>ClassPic</span></div>
+        </div></div>
+        <div class="meta">ภาษาอังกฤษ · ป.1–3</div>
+        <h3>คำศัพท์พื้นฐาน 100 คำ พร้อมภาพ</h3>
+        <div class="info">25 หน้า · มีเฉลย</div>
+        <div class="buy"><span class="price">฿59 <s>฿99</s></span><button class="add">ใส่ตะกร้า</button></div>
+      </article>
+
+      <article class="card">
+        <div class="thumb"><div class="sheet">
+          <div class="hd"><span>เชาวน์ปัญญา อนุบาล</span><span>ชื่อ ..........</span></div>
+          <h4>รูปต่อไปคืออะไร</h4><div class="inst">วงกลมรูปที่ควรอยู่ในช่องว่าง</div>
+          <div class="shapes">
+            <svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="11" fill="none" stroke="#333" stroke-width="2"/></svg>
+            <svg viewBox="0 0 30 30"><polygon points="15,4 27,26 3,26" fill="none" stroke="#333" stroke-width="2"/></svg>
+            <svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="11" fill="none" stroke="#333" stroke-width="2"/></svg>
+            <svg viewBox="0 0 30 30"><rect x="5" y="5" width="20" height="20" fill="none" stroke="#999" stroke-dasharray="3 3" stroke-width="2"/></svg>
+          </div>
+          <div class="shapes">
+            <svg viewBox="0 0 30 30"><rect x="5" y="5" width="20" height="20" fill="none" stroke="#333" stroke-width="2"/></svg>
+            <svg viewBox="0 0 30 30"><rect x="5" y="5" width="20" height="20" fill="#333"/></svg>
+            <svg viewBox="0 0 30 30"><rect x="5" y="5" width="20" height="20" fill="none" stroke="#333" stroke-width="2"/></svg>
+            <svg viewBox="0 0 30 30"><rect x="5" y="5" width="20" height="20" fill="none" stroke="#999" stroke-dasharray="3 3" stroke-width="2"/></svg>
+          </div>
+          <div class="wm"><span>ClassPic</span></div>
+        </div></div>
+        <div class="meta">เชาวน์ปัญญา · อนุบาล</div>
+        <h3>ฝึกสังเกตรูปทรงและแบบรูป</h3>
+        <div class="info">30 หน้า · มีเฉลย</div>
+        <div class="buy"><span class="price">฿69</span><button class="add">ใส่ตะกร้า</button></div>
+      </article>
+
+      <article class="card">
+        <div class="thumb"><div class="sheet">
+          <div class="hd"><span>คณิตศาสตร์ ป.2</span><span>ชื่อ ..........</span></div>
+          <h4>บวกเลขสองหลัก</h4><div class="inst">หาผลบวก</div>
+          <div class="math"><div>25 + 14 = ___</div><div>31 + 22 = ___</div><div>40 + 18 = ___</div><div>17 + 52 = ___</div><div>63 + 25 = ___</div><div>44 + 33 = ___</div><div>12 + 71 = ___</div><div>58 + 20 = ___</div></div>
+          <div class="wm"><span>ClassPic</span></div>
+        </div></div>
+        <div class="meta">คณิตศาสตร์ · ป.1–3</div>
+        <h3>คิดเลขเร็ว บวก–ลบ ป.2</h3>
+        <div class="info">35 หน้า · มีเฉลย</div>
+        <div class="buy"><span class="price">฿79 <s>฿129</s></span><button class="add">ใส่ตะกร้า</button></div>
+      </article>
+
+      <article class="card">
+        <div class="thumb"><div class="sheet">
+          <div class="hd"><span>ภาษาไทย อนุบาล</span><span>ชื่อ ..........</span></div>
+          <h4>ฝึกเขียน ก ข ค</h4>
+          <div class="trace"><b>ก</b>กกกก</div><div class="trace"><b>ข</b>ขขขข</div><div class="trace"><b>ค</b>คคคค</div><div class="trace"><b>ง</b>งงงง</div>
+          <div class="wm"><span>ClassPic</span></div>
+        </div></div>
+        <div class="meta">ภาษาไทย · อนุบาล</div>
+        <h3>ชุดทดลอง ฝึกเขียนพยัญชนะ</h3>
+        <div class="info">2 หน้า · แจกฟรี</div>
+        <div class="buy"><span class="price free">ฟรี</span><button class="add">ดาวน์โหลด</button></div>
+      </article>
+
+      <article class="card">
+        <div class="thumb"><div class="sheet">
+          <div class="hd"><span>วิทยาศาสตร์ ป.4</span><span>ชื่อ ..........</span></div>
+          <h4>ส่วนประกอบของพืช</h4><div class="inst">เขียนชื่อส่วนต่าง ๆ ของต้นไม้</div>
+          <svg viewBox="0 0 120 120" style="width:62%;display:block;margin:4px auto">
+            <line x1="60" y1="50" x2="60" y2="100" stroke="#333" stroke-width="3"/>
+            <ellipse cx="42" cy="62" rx="14" ry="7" fill="none" stroke="#333" stroke-width="2" transform="rotate(-25 42 62)"/>
+            <ellipse cx="78" cy="72" rx="14" ry="7" fill="none" stroke="#333" stroke-width="2" transform="rotate(25 78 72)"/>
+            <circle cx="60" cy="38" r="12" fill="none" stroke="#333" stroke-width="2"/>
+            <path d="M60 100 l-14 14 M60 100 l14 14 M60 100 v16" stroke="#333" stroke-width="2"/>
+            <line x1="74" y1="38" x2="104" y2="30" stroke="#999"/><line x1="28" y1="60" x2="8" y2="54" stroke="#999"/><line x1="74" y1="112" x2="104" y2="112" stroke="#999"/>
+          </svg>
+          <div class="wm"><span>ClassPic</span></div>
+        </div></div>
+        <div class="meta">วิทยาศาสตร์ · ป.4–6</div>
+        <h3>ทดลองวิทย์ใกล้ตัว ป.4–6</h3>
+        <div class="info">40 หน้า · มีเฉลย</div>
+        <div class="buy"><span class="price">฿89 <s>฿149</s></span><button class="add">ใส่ตะกร้า</button></div>
+      </article>
+
+      <article class="card soon">
+        <div class="thumb"><div class="sheet">
+          <div class="hd"><span>การศึกษาพิเศษ</span><span>ชื่อ ..........</span></div>
+          <h4>ลากเส้นตามรอย</h4>
+          <svg viewBox="0 0 120 80" style="width:100%;margin-top:8px"><path d="M8 40 Q 30 8 52 40 T 96 40 T 116 40" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="4 4"/><path d="M8 70 L 30 52 L 52 70 L 74 52 L 96 70 L 116 52" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="4 4"/></svg>
+          <div class="wm"><span>ClassPic</span></div>
+        </div></div>
+        <div class="meta">การศึกษาพิเศษ · IEP</div>
+        <h3>ฝึกกล้ามเนื้อมัดเล็ก ลากเส้นตามรอย</h3>
+        <div class="info">32 หน้า · เปิดขายเร็ว ๆ นี้</div>
+        <div class="buy"><span class="price">฿79</span><button class="add">แจ้งเตือนเมื่อเปิด</button></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="wrap">
+      <h2>ซื้อแล้วได้ไฟล์ยังไง</h2>
+      <div class="steps">
+        <div><div class="n">1</div><h3>เลือกชุดใบงาน</h3><p>ใส่ตะกร้าได้หลายชุด กรอกแค่เบอร์โทรหรืออีเมล</p></div>
+        <div><div class="n">2</div><h3>สแกนจ่ายพร้อมเพย์</h3><p>ยอดเงินขึ้นให้อัตโนมัติ โอนเสร็จแล้วแนบสลิป</p></div>
+        <div><div class="n">3</div><h3>ดาวน์โหลด PDF</h3><p>ได้ไฟล์ทันที ถ้าหาย กลับมาโหลดใหม่ได้ด้วยเบอร์เดิม</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 ClassPic Learning &amp; Creative Studio</span><span>ติดต่อ LINE: @classpic</span></div>
+</footer>
+</body>
+</html>

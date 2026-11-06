@@ -11,12 +11,12 @@ export default function Navbar() {
   const { totalItems, setIsCartOpen } = useCart();
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-[#082340]">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-[#142E4F]">
       {/* Studio Top Spec Ribbon */}
-      <div className="bg-[#082340] text-white text-[10px] sm:text-[11px] py-1.5 px-4 border-b border-[#1C64B8]/40">
+      <div className="bg-[#142E4F] text-white text-[10px] sm:text-[11px] py-1.5 px-4 border-b border-[#2856B0]/40">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-mono tracking-wider uppercase text-[#B5D5F2]">
-            <span className="inline-block w-2 h-2 bg-[#F5760A]" />
+          <div className="flex items-center gap-2 font-mono tracking-wider uppercase text-[#AED6F4]">
+            <span className="inline-block w-2 h-2 bg-[#F26C28]" />
             <span>BRIGHT OUTSIDE — CLEAR INSIDE</span>
             <span className="hidden md:inline text-white/30">|</span>
             <span className="hidden md:inline text-white/85">
@@ -27,10 +27,10 @@ export default function Navbar() {
           <div className="flex items-center gap-4 text-[10px] font-medium">
             <Link
               href="/downloads"
-              className="text-[#B5D5F2] hover:text-white transition-colors flex items-center gap-1"
+              className="text-[#AED6F4] hover:text-white transition-colors flex items-center gap-1"
             >
               <span>ค้นหาใบงานที่เคยซื้อ</span>
-              <ArrowUpRight className="w-3 h-3 text-[#F5760A]" />
+              <ArrowUpRight className="w-3 h-3 text-[#F26C28]" />
             </Link>
             <span className="text-white/25">|</span>
             <Link
@@ -53,28 +53,28 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Editorial Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 border-2 border-[#082340] bg-[#F8FAFC] p-1">
+          <nav className="hidden lg:flex items-center gap-1 border-2 border-[#142E4F] bg-[#F8FAFC] p-1">
             <Link
               href="/"
-              className="px-3.5 py-1.5 text-xs font-bold text-[#082340] hover:bg-[#B5D5F2]/40 transition-colors flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-xs font-bold text-[#142E4F] hover:bg-[#AED6F4]/40 transition-colors flex items-center gap-1.5"
             >
-              <span className="font-mono text-[10px] text-[#1C64B8]">01</span>
+              <span className="font-mono text-[10px] text-[#2856B0]">01</span>
               <span>หน้าแรกสตูดิโอ</span>
             </Link>
-            <span className="h-4 w-[1px] bg-[#082340]/15" />
+            <span className="h-4 w-[1px] bg-[#142E4F]/15" />
             <Link
               href="/#catalog"
-              className="px-3.5 py-1.5 text-xs font-bold text-[#082340] hover:bg-[#B5D5F2]/40 transition-colors flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-xs font-bold text-[#142E4F] hover:bg-[#AED6F4]/40 transition-colors flex items-center gap-1.5"
             >
-              <span className="font-mono text-[10px] text-[#F5760A]">02</span>
+              <span className="font-mono text-[10px] text-[#F26C28]">02</span>
               <span>แฟ้มใบงาน A4 ทั้งหมด</span>
             </Link>
-            <span className="h-4 w-[1px] bg-[#082340]/15" />
+            <span className="h-4 w-[1px] bg-[#142E4F]/15" />
             <Link
               href="/downloads"
-              className="px-3.5 py-1.5 text-xs font-bold text-[#082340] hover:bg-[#B5D5F2]/40 transition-colors flex items-center gap-1.5"
+              className="px-3.5 py-1.5 text-xs font-bold text-[#142E4F] hover:bg-[#AED6F4]/40 transition-colors flex items-center gap-1.5"
             >
-              <Download className="w-3.5 h-3.5 text-[#1C64B8]" />
+              <Download className="w-3.5 h-3.5 text-[#2856B0]" />
               <span>โหลดไฟล์เดิมซ้ำ</span>
             </Link>
           </nav>
@@ -83,12 +83,12 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-2.5 bg-[#F5760A] hover:bg-[#e06905] text-white border-2 border-[#082340] px-4 py-2 text-xs sm:text-sm font-extrabold tracking-tight shadow-[3px_3px_0px_#082340] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#082340] active:translate-y-[1px] active:shadow-[1px_1px_0px_#082340] transition-all cursor-pointer"
+              className="relative flex items-center gap-2.5 bg-[#F26C28] hover:bg-[#e06905] text-white border-2 border-[#142E4F] px-4 py-2 text-xs sm:text-sm font-extrabold tracking-tight shadow-[3px_3px_0px_#142E4F] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#142E4F] active:translate-y-[1px] active:shadow-[1px_1px_0px_#142E4F] transition-all cursor-pointer"
               aria-label="Open Cart"
             >
               <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
               <span className="hidden sm:inline">แฟ้มสั่งซื้อ</span>
-              <span className="inline-flex items-center justify-center bg-[#082340] text-white font-mono text-xs font-bold h-5 min-w-5 px-1.5">
+              <span className="inline-flex items-center justify-center bg-[#142E4F] text-white font-mono text-xs font-bold h-5 min-w-5 px-1.5">
                 {totalItems}
               </span>
             </button>
@@ -96,7 +96,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 border-2 border-[#082340] bg-white text-[#082340] hover:bg-[#B5D5F2]/30 transition-colors"
+              className="lg:hidden p-2 border-2 border-[#142E4F] bg-white text-[#142E4F] hover:bg-[#AED6F4]/30 transition-colors"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -107,35 +107,35 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t-2 border-[#082340] px-4 pt-3 pb-5 space-y-2">
+        <div className="lg:hidden bg-white border-t-2 border-[#142E4F] px-4 pt-3 pb-5 space-y-2">
           <Link
             href="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-3 py-2.5 border border-[#082340]/20 text-sm font-bold text-[#082340] hover:bg-[#B5D5F2]/30"
+            className="flex items-center justify-between px-3 py-2.5 border border-[#142E4F]/20 text-sm font-bold text-[#142E4F] hover:bg-[#AED6F4]/30"
           >
             <span>01 — หน้าแรกสตูดิโอ</span>
-            <ArrowUpRight className="w-4 h-4 text-[#1C64B8]" />
+            <ArrowUpRight className="w-4 h-4 text-[#2856B0]" />
           </Link>
           <Link
             href="/#catalog"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-3 py-2.5 border border-[#082340]/20 text-sm font-bold text-[#082340] hover:bg-[#B5D5F2]/30"
+            className="flex items-center justify-between px-3 py-2.5 border border-[#142E4F]/20 text-sm font-bold text-[#142E4F] hover:bg-[#AED6F4]/30"
           >
             <span>02 — แฟ้มใบงาน A4 ทั้งหมด</span>
-            <ArrowUpRight className="w-4 h-4 text-[#F5760A]" />
+            <ArrowUpRight className="w-4 h-4 text-[#F26C28]" />
           </Link>
           <Link
             href="/downloads"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-3 py-2.5 border border-[#082340]/20 text-sm font-bold text-[#1C64B8] bg-[#B5D5F2]/20"
+            className="flex items-center justify-between px-3 py-2.5 border border-[#142E4F]/20 text-sm font-bold text-[#2856B0] bg-[#AED6F4]/20"
           >
             <span>03 — ค้นหาและดาวน์โหลดไฟล์เดิม</span>
-            <Download className="w-4 h-4 text-[#F5760A]" />
+            <Download className="w-4 h-4 text-[#F26C28]" />
           </Link>
           <Link
             href="/admin"
             onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-xs font-mono text-slate-500 hover:text-[#082340]"
+            className="block px-3 py-2 text-xs font-mono text-slate-500 hover:text-[#142E4F]"
           >
             [ADMIN CONSOLE /admin]
           </Link>

@@ -72,34 +72,34 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full space-y-8 scroll-mt-24"
     >
       {/* Editorial Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-[#082340] pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-[#142E4F] pb-6">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#1C64B8]">
+          <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#2856B0]">
             <ClassPicSpark className="w-4 h-4" />
             <span>CLASSPIC WORKSHEET ARCHIVE</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#082340] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F] tracking-tight">
             แฟ้มแคตตาล็อกชุดใบงาน A4
           </h2>
-          <p className="text-xs sm:text-sm text-[#082340]/70">
+          <p className="text-xs sm:text-sm text-[#142E4F]/70">
             เลือกเปิดดูตามดัชนีระดับชั้นเรียน หรือกรองตามกลุ่มทักษะที่ต้องการสอน
           </p>
         </div>
 
         {/* Architectural Search Input */}
         <div className="w-full md:w-80 relative">
-          <Search className="w-4 h-4 text-[#082340] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#142E4F] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="ค้นหาชื่อใบงาน, ทักษะ, ระดับชั้น..."
-            className="w-full pl-10 pr-8 py-2.5 bg-white border-2 border-[#082340] text-sm font-medium text-[#082340] focus:outline-none focus:bg-[#B5D5F2]/15 shadow-[3px_3px_0px_#B5D5F2] transition-all placeholder:text-slate-400"
+            className="w-full pl-10 pr-8 py-2.5 bg-white border-2 border-[#142E4F] text-sm font-medium text-[#142E4F] focus:outline-none focus:bg-[#AED6F4]/15 shadow-[3px_3px_0px_#AED6F4] transition-all placeholder:text-slate-400"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#082340] hover:text-[#F5760A] p-1"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#142E4F] hover:text-[#F26C28] p-1"
             >
               [X]
             </button>
@@ -108,11 +108,11 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
       </div>
 
       {/* Studio Binder Index Filter Bar */}
-      <div className="space-y-4 bg-white border-2 border-[#082340] p-4 sm:p-5 shadow-[4px_4px_0px_#082340]">
-        <div className="flex items-center justify-between border-b border-[#082340]/15 pb-3">
+      <div className="space-y-4 bg-white border-2 border-[#142E4F] p-4 sm:p-5 shadow-[4px_4px_0px_#142E4F]">
+        <div className="flex items-center justify-between border-b border-[#142E4F]/15 pb-3">
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 bg-[#F5760A] border border-[#082340]" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#082340]">
+            <span className="inline-block w-2.5 h-2.5 bg-[#F26C28] border border-[#142E4F]" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#142E4F]">
               INDEX 01 — เลือกระดับชั้นเรียน (GRADE LEVEL)
             </span>
           </div>
@@ -120,7 +120,7 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
           {hasActiveFilter && (
             <button
               onClick={resetFilters}
-              className="text-xs font-mono font-bold text-[#F5760A] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#F26C28] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>RESET ({filteredProducts.length})</span>
@@ -138,15 +138,15 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
                 onClick={() => setSelectedGrade(tab.value)}
                 className={`text-xs px-3.5 py-2 font-bold shrink-0 transition-all flex items-center gap-2 border-2 cursor-pointer ${
                   isActive
-                    ? "bg-[#082340] text-white border-[#082340] shadow-[2px_2px_0px_#F5760A]"
-                    : "bg-[#FAFBFD] text-[#082340] border-[#082340]/30 hover:border-[#082340] hover:bg-[#B5D5F2]/25"
+                    ? "bg-[#142E4F] text-white border-[#142E4F] shadow-[2px_2px_0px_#F26C28]"
+                    : "bg-[#FAFBFD] text-[#142E4F] border-[#142E4F]/30 hover:border-[#142E4F] hover:bg-[#AED6F4]/25"
                 }`}
               >
                 <span
                   className={`font-mono text-[10px] px-1 py-0.5 ${
                     isActive
-                      ? "bg-[#F5760A] text-white"
-                      : "bg-[#B5D5F2]/50 text-[#082340]"
+                      ? "bg-[#F26C28] text-white"
+                      : "bg-[#AED6F4]/50 text-[#142E4F]"
                   }`}
                 >
                   {tab.code}
@@ -158,8 +158,8 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
         </div>
 
         {/* Subject Filter Strip */}
-        <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[#082340]/10">
-          <span className="text-[11px] font-mono font-bold uppercase text-[#1C64B8] mr-1">
+        <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[#142E4F]/10">
+          <span className="text-[11px] font-mono font-bold uppercase text-[#2856B0] mr-1">
             SUBJECT:
           </span>
           {SUBJECT_LIST.map((sub) => {
@@ -170,8 +170,8 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
                 onClick={() => setSelectedSubject(sub.value)}
                 className={`text-xs px-3 py-1 transition-all border cursor-pointer ${
                   isActive
-                    ? "bg-[#1C64B8] text-white border-[#082340] font-bold"
-                    : "bg-white text-[#082340]/80 border-[#082340]/25 hover:border-[#082340] font-medium"
+                    ? "bg-[#2856B0] text-white border-[#142E4F] font-bold"
+                    : "bg-white text-[#142E4F]/80 border-[#142E4F]/25 hover:border-[#142E4F] font-medium"
                 }`}
               >
                 {sub.label}
@@ -189,21 +189,21 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white border-2 border-[#082340] shadow-[4px_4px_0px_#B5D5F2] p-8 space-y-4">
-          <div className="font-mono text-xs font-bold uppercase tracking-widest text-[#F5760A]">
+        <div className="text-center py-16 bg-white border-2 border-[#142E4F] shadow-[4px_4px_0px_#AED6F4] p-8 space-y-4">
+          <div className="font-mono text-xs font-bold uppercase tracking-widest text-[#F26C28]">
             [NO MATCHING WORKSHEET FOUND]
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-extrabold text-[#082340]">
+            <h3 className="text-lg font-extrabold text-[#142E4F]">
               ไม่พบชุดใบงานในหมวดที่เลือก
             </h3>
-            <p className="text-xs text-[#082340]/70 max-w-sm mx-auto">
+            <p className="text-xs text-[#142E4F]/70 max-w-sm mx-auto">
               ลองล้างตัวกรองเพื่อเปิดดูแฟ้มใบงานทั้งหมดในสตูดิโอ ClassPic
             </p>
           </div>
           <button
             onClick={resetFilters}
-            className="bg-[#082340] hover:bg-[#1C64B8] text-white text-xs font-bold px-5 py-2.5 border-2 border-[#082340] transition-colors cursor-pointer"
+            className="bg-[#142E4F] hover:bg-[#2856B0] text-white text-xs font-bold px-5 py-2.5 border-2 border-[#142E4F] transition-colors cursor-pointer"
           >
             แสดงใบงานทั้งหมด
           </button>

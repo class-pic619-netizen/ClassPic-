@@ -21,9 +21,9 @@ export default function CartDrawer() {
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
           {/* Header */}
-          <div className="p-4 sm:p-6 bg-[#082340] text-white flex items-center justify-between">
+          <div className="p-4 sm:p-6 bg-[#142E4F] text-white flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#F5760A]" />
+              <ShoppingBag className="w-5 h-5 text-[#F26C28]" />
               <h2 className="text-lg font-bold">ตะกร้าของคุณ ({totalItems} รายการ)</h2>
             </div>
             <button
@@ -43,7 +43,7 @@ export default function CartDrawer() {
                 <p className="text-xs text-slate-400">เลือกดูใบงานที่ต้องการแล้วกดหยิบใส่ตะกร้าได้เลยครับ</p>
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="mt-4 px-4 py-2 bg-[#1C64B8] text-white rounded-xl text-sm font-medium hover:bg-[#154d8f] transition cursor-pointer"
+                  className="mt-4 px-4 py-2 bg-[#2856B0] text-white rounded-xl text-sm font-medium hover:bg-[#154d8f] transition cursor-pointer"
                 >
                   เลือกดูใบงานทั้งหมด
                 </button>
@@ -65,7 +65,7 @@ export default function CartDrawer() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-sm font-semibold text-[#082340] line-clamp-2">
+                        <h4 className="text-sm font-semibold text-[#142E4F] line-clamp-2">
                           {item.product.title}
                         </h4>
                         <button
@@ -84,7 +84,7 @@ export default function CartDrawer() {
                       <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">
                         PDF ดิจิทัล
                       </span>
-                      <span className="text-sm font-bold text-[#F5760A]">
+                      <span className="text-sm font-bold text-[#F26C28]">
                         ฿{item.product.price.toFixed(2)}
                       </span>
                     </div>
@@ -103,8 +103,8 @@ export default function CartDrawer() {
                   <span>{totalItems} รายการ</span>
                 </div>
                 <div className="flex justify-between items-baseline pt-2 border-t border-slate-200">
-                  <span className="text-base font-bold text-[#082340]">ยอดชำระทั้งหมด</span>
-                  <span className="text-2xl font-black text-[#F5760A]">
+                  <span className="text-base font-bold text-[#142E4F]">ยอดชำระทั้งหมด</span>
+                  <span className="text-2xl font-black text-[#F26C28]">
                     ฿{totalAmount.toFixed(2)}
                   </span>
                 </div>
@@ -118,7 +118,7 @@ export default function CartDrawer() {
               <Link
                 href="/checkout"
                 onClick={() => setIsCartOpen(false)}
-                className="w-full bg-[#F5760A] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 active:scale-98"
+                className="w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 active:scale-98"
               >
                 <span>ไปที่หน้าชำระเงิน</span>
                 <ArrowRight className="w-4 h-4" />

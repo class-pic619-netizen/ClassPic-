@@ -36,7 +36,7 @@ async function OrderContent({ params }: Props) {
           <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 mx-auto mb-4">
             <AlertCircle className="w-6 h-6" />
           </div>
-          <h1 className="text-xl font-bold text-[#082340] mb-2">
+          <h1 className="text-xl font-bold text-[#142E4F] mb-2">
             ไม่พบคำสั่งซื้อหมายเลข #{orderId}
           </h1>
           <p className="text-sm text-slate-500 mb-6">
@@ -44,7 +44,7 @@ async function OrderContent({ params }: Props) {
           </p>
           <Link
             href="/downloads"
-            className="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#082340] hover:bg-[#1C64B8] text-white font-semibold rounded-xl transition-colors text-sm"
+            className="inline-flex items-center justify-center gap-2 w-full py-3 bg-[#142E4F] hover:bg-[#2856B0] text-white font-semibold rounded-xl transition-colors text-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>กลับไปหน้าค้นหาใบงาน</span>
@@ -62,7 +62,7 @@ export default function OrderDetailPage(props: Props) {
     <Suspense
       fallback={
         <div className="min-h-screen bg-[#F8FAFC] py-16 px-4 flex items-center justify-center">
-          <div className="w-8 h-8 border-3 border-[#1C64B8] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-3 border-[#2856B0] border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

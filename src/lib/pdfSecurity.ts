@@ -110,27 +110,27 @@ export function generateMasterA4Pdf(params: {
     stream += "0.85 0.88 0.92 RG 1.5 w\n";
     stream += "28.35 28.35 538.58 785.19 re s\n";
 
-    // 2. แถบ Header สีกรมท่า #082340 (0.03 0.14 0.25)
-    stream += "0.03 0.14 0.25 rg\n";
+    // 2. แถบ Header สีกรมท่า #142E4F (0.08 0.18 0.31)
+    stream += "0.08 0.18 0.31 rg\n";
     stream += "28.35 770.0 538.58 43.54 re f\n";
 
-    // แถบเส้นสีส้ม #F5760A (0.96 0.46 0.04)
-    stream += "0.96 0.46 0.04 rg\n";
+    // แถบเส้นสีส้ม #F26C28 (0.95 0.42 0.16)
+    stream += "0.95 0.42 0.16 rg\n";
     stream += "28.35 766.0 538.58 4.0 re f\n";
 
     // ข้อความใน Header
     stream += "BT\n/F1 14 Tf 1 1 1 rg 45 788 Td (ClassPic - Learning & Creative Studio) Tj ET\n";
-    stream += `BT\n/F2 9 Tf 0.71 0.84 0.95 rg 45 775 Td (Standard Thai A4 Master Sheet | 300 DPI Quality) Tj ET\n`;
+    stream += `BT\n/F2 9 Tf 0.68 0.84 0.96 rg 45 775 Td (Standard Thai A4 Master Sheet | 300 DPI Quality) Tj ET\n`;
 
     // 3. กล่องข้อมูลนักเรียน (Name / Date / Score)
     stream += "0.95 0.97 1.0 rg 45 710 505 40 re f\n";
     stream += "0.8 0.85 0.9 RG 1 w 45 710 505 40 re s\n";
-    stream += "BT\n/F1 10 Tf 0.03 0.14 0.25 rg 55 732 Td (Name: ______________________________________) Tj ET\n";
-    stream += "BT\n/F1 10 Tf 0.03 0.14 0.25 rg 320 732 Td (Date: ____________) Tj ET\n";
-    stream += "BT\n/F1 10 Tf 0.03 0.14 0.25 rg 440 732 Td (Score: ____ / 10) Tj ET\n";
+    stream += "BT\n/F1 10 Tf 0.08 0.18 0.31 rg 55 732 Td (Name: ______________________________________) Tj ET\n";
+    stream += "BT\n/F1 10 Tf 0.08 0.18 0.31 rg 320 732 Td (Date: ____________) Tj ET\n";
+    stream += "BT\n/F1 10 Tf 0.08 0.18 0.31 rg 440 732 Td (Score: ____ / 10) Tj ET\n";
 
     // 4. หัวข้อใบงานและหมวดหมู่
-    stream += `BT\n/F1 16 Tf 0.03 0.14 0.25 rg 45 670 Td (${p.isAnswer ? "[ANSWER KEY] " : ""}${safeTitle}) Tj ET\n`;
+    stream += `BT\n/F1 16 Tf 0.08 0.18 0.31 rg 45 670 Td (${p.isAnswer ? "[ANSWER KEY] " : ""}${safeTitle}) Tj ET\n`;
     stream += `BT\n/F2 11 Tf 0.2 0.35 0.55 rg 45 650 Td (Subject: ${subject} | Level: ${gradeLevel} | Total: ${pageCount} Pages) Tj ET\n`;
 
     // 5. พื้นที่กิจกรรมแบบฝึกหัด (Exercise Box)
@@ -139,14 +139,14 @@ export function generateMasterA4Pdf(params: {
 
     if (p.isAnswer) {
       // หน้าเฉลย
-      stream += "0.96 0.46 0.04 rg 55 580 485 30 re f\n";
+      stream += "0.95 0.42 0.16 rg 55 580 485 30 re f\n";
       stream += "BT\n/F1 12 Tf 1 1 1 rg 70 592 Td (OFFICIAL ANSWER KEYS & STEP-BY-STEP SOLUTIONS) Tj ET\n";
       stream += "BT\n/F2 11 Tf 0.1 0.1 0.1 rg 70 540 Td (1. Solution item A: Complete correctly) Tj ET\n";
       stream += "BT\n/F2 11 Tf 0.1 0.1 0.1 rg 70 510 Td (2. Solution item B: Full credit answer) Tj ET\n";
       stream += "BT\n/F2 11 Tf 0.1 0.1 0.1 rg 70 480 Td (3. Solution item C: Extra review notes) Tj ET\n";
     } else {
       // หน้าแบบฝึกหัด
-      stream += "BT\n/F1 12 Tf 0.03 0.14 0.25 rg 65 590 Td (Directions: Complete each activity carefully on this A4 sheet.) Tj ET\n";
+      stream += "BT\n/F1 12 Tf 0.08 0.18 0.31 rg 65 590 Td (Directions: Complete each activity carefully on this A4 sheet.) Tj ET\n";
       stream += "BT\n/F2 11 Tf 0.2 0.2 0.2 rg 65 550 Td (Question 1: Fill in the missing answers and practice.) Tj ET\n";
       stream += "BT\n/F2 11 Tf 0.2 0.2 0.2 rg 65 490 Td (Question 2: Match the pairs and draw the connection lines.) Tj ET\n";
       stream += "BT\n/F2 11 Tf 0.2 0.2 0.2 rg 65 430 Td (Question 3: Write your reflection or creative response below.) Tj ET\n";
@@ -162,13 +162,13 @@ export function generateMasterA4Pdf(params: {
     // 6. ลายน้ำระบุลิขสิทธิ์ผู้สั่งซื้อ (Watermark / Security License Box)
     stream += "0.98 0.98 0.98 rg 45 60 505 85 re f\n";
     stream += "0.85 0.85 0.85 RG 0.5 w 45 60 505 85 re s\n";
-    stream += `BT\n/F1 9 Tf 0.03 0.14 0.25 rg 55 125 Td (ClassPic Authenticated License - Order #${safeOrderId}) Tj ET\n`;
+    stream += `BT\n/F1 9 Tf 0.08 0.18 0.31 rg 55 125 Td (ClassPic Authenticated License - Order #${safeOrderId}) Tj ET\n`;
     stream += `BT\n/F2 8 Tf 0.4 0.4 0.4 rg 55 110 Td (Licensed to Customer: ${safeContact}) Tj ET\n`;
     stream += "BT\n/F2 8 Tf 0.4 0.4 0.4 rg 55 95 Td (For personal, classroom, or homeschooling educational use. Resale prohibited.) Tj ET\n";
     stream += `BT\n/F2 8 Tf 0.4 0.4 0.4 rg 55 80 Td (Generated at: ${new Date().toISOString()} | Secure A4 Vector Stream) Tj ET\n`;
 
     // 7. หมายเลขหน้า
-    stream += `BT\n/F1 9 Tf 0.03 0.14 0.25 rg 480 40 Td (Page ${p.pageNum} of ${totalRenderPages}) Tj ET\n`;
+    stream += `BT\n/F1 9 Tf 0.08 0.18 0.31 rg 480 40 Td (Page ${p.pageNum} of ${totalRenderPages}) Tj ET\n`;
 
     addObj(`${contentObjNum} 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}\nendstream\nendobj`);
   });

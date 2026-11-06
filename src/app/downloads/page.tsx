@@ -59,11 +59,11 @@ export default function DownloadsSearchPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#B5D5F2]/40 text-[#082340] text-sm font-medium mb-3 border border-[#B5D5F2]">
-            <ShieldCheck className="w-4 h-4 text-[#1C64B8]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#AED6F4]/40 text-[#142E4F] text-sm font-medium mb-3 border border-[#AED6F4]">
+            <ShieldCheck className="w-4 h-4 text-[#2856B0]" />
             ระบบรับไฟล์ใบงานและค้นหาประวัติสั่งซื้อ
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#082340] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#142E4F] tracking-tight">
             ค้นหาใบงานที่คุณเคยซื้อ
           </h1>
           <p className="mt-3 text-base text-slate-600 max-w-xl mx-auto">
@@ -89,13 +89,13 @@ export default function DownloadsSearchPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="กรอกเบอร์โทร เช่น 081-234-5678 หรืออีเมลของคุณ"
-                className="w-full pl-11 pr-4 py-3.5 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#1C64B8] focus:border-transparent transition-all"
+                className="w-full pl-11 pr-4 py-3.5 text-base rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2856B0] focus:border-transparent transition-all"
               />
             </div>
             <button
               type="submit"
               disabled={loading || !searchTerm.trim()}
-              className="px-7 py-3.5 bg-[#F5760A] hover:bg-[#e06800] text-white font-semibold rounded-xl transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base shrink-0"
+              className="px-7 py-3.5 bg-[#F26C28] hover:bg-[#e06800] text-white font-semibold rounded-xl transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base shrink-0"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -111,23 +111,23 @@ export default function DownloadsSearchPage() {
           {/* Quick Demo Search Chips */}
           <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-500">
             <span className="flex items-center gap-1 font-medium text-slate-600">
-              <Sparkles className="w-3.5 h-3.5 text-[#F5760A]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#F26C28]" />
               ทดลองค้นหาตัวอย่าง:
             </span>
             <button
               type="button"
               onClick={() => fillQuickSearch("081-234-5678")}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-[#B5D5F2]/50 text-slate-700 hover:text-[#082340] border border-slate-200 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-[#AED6F4]/50 text-slate-700 hover:text-[#142E4F] border border-slate-200 transition-colors"
             >
-              <Phone className="w-3 h-3 text-[#1C64B8]" />
+              <Phone className="w-3 h-3 text-[#2856B0]" />
               081-234-5678 (ออเดอร์พร้อมโหลด)
             </button>
             <button
               type="button"
               onClick={() => fillQuickSearch("teacher@example.com")}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-[#B5D5F2]/50 text-slate-700 hover:text-[#082340] border border-slate-200 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-[#AED6F4]/50 text-slate-700 hover:text-[#142E4F] border border-slate-200 transition-colors"
             >
-              <Mail className="w-3 h-3 text-[#1C64B8]" />
+              <Mail className="w-3 h-3 text-[#2856B0]" />
               teacher@example.com
             </button>
           </div>
@@ -144,7 +144,7 @@ export default function DownloadsSearchPage() {
         {hasSearched && !loading && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-[#082340]">
+              <h2 className="text-lg font-bold text-[#142E4F]">
                 ผลการค้นหา ({orders.length} รายการ)
               </h2>
             </div>
@@ -168,12 +168,12 @@ export default function DownloadsSearchPage() {
                   return (
                     <div
                       key={order.id}
-                      className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 transition-all hover:border-[#1C64B8]/40 hover:shadow-md"
+                      className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 transition-all hover:border-[#2856B0]/40 hover:shadow-md"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-sm font-bold text-[#082340]">
+                            <span className="font-mono text-sm font-bold text-[#142E4F]">
                               #{order.id}
                             </span>
                             {isPaid ? (
@@ -195,7 +195,7 @@ export default function DownloadsSearchPage() {
 
                         <div className="text-right sm:text-right flex items-center justify-between sm:block">
                           <span className="text-xs text-slate-500 block">ยอดรวมทั้งสิ้น</span>
-                          <span className="text-lg font-extrabold text-[#F5760A]">
+                          <span className="text-lg font-extrabold text-[#F26C28]">
                             ฿{order.total_amount.toLocaleString()}
                           </span>
                         </div>
@@ -206,7 +206,7 @@ export default function DownloadsSearchPage() {
                         {order.items.map((item, idx) => (
                           <div key={idx} className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-2 text-slate-700">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#1C64B8]" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#2856B0]" />
                               <span className="font-medium">{item.product.title}</span>
                               <span className="text-xs text-slate-400">
                                 ({item.product.page_count} หน้า A4)
@@ -223,7 +223,7 @@ export default function DownloadsSearchPage() {
                           href={`/downloads/${order.id}`}
                           className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm ${
                             isPaid
-                              ? "bg-[#082340] hover:bg-[#1C64B8] text-white"
+                              ? "bg-[#142E4F] hover:bg-[#2856B0] text-white"
                               : "bg-slate-100 hover:bg-slate-200 text-slate-800"
                           }`}
                         >
@@ -251,19 +251,19 @@ export default function DownloadsSearchPage() {
         {/* Security & FAQ notice */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-xl p-5 border border-slate-200/80">
-            <div className="w-10 h-10 rounded-lg bg-[#B5D5F2]/40 flex items-center justify-center text-[#1C64B8] mb-3">
+            <div className="w-10 h-10 rounded-lg bg-[#AED6F4]/40 flex items-center justify-center text-[#2856B0] mb-3">
               <ShieldCheck className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-[#082340] text-sm">ไฟล์แท้ ปลอดภัย 100%</h4>
+            <h4 className="font-bold text-[#142E4F] text-sm">ไฟล์แท้ ปลอดภัย 100%</h4>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               ไฟล์ PDF A4 จัดเก็บในพื้นที่ส่วนตัว จ่ายผ่านระบบ Signed URL ปลอดภัย ไร้ไวรัสและโฆษณา
             </p>
           </div>
           <div className="bg-white rounded-xl p-5 border border-slate-200/80">
-            <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-[#F5760A] mb-3">
+            <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-[#F26C28] mb-3">
               <FileText className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-[#082340] text-sm">สัดส่วน A4 มาตรฐานไทย</h4>
+            <h4 className="font-bold text-[#142E4F] text-sm">สัดส่วน A4 มาตรฐานไทย</h4>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               ความละเอียดระดับ 300 DPI ออกแบบมาสำหรับปริ้นท์ลงกระดาษ A4 ไม่ล้นขอบ ไม่ตกหล่น
             </p>
@@ -272,7 +272,7 @@ export default function DownloadsSearchPage() {
             <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 mb-3">
               <Clock className="w-5 h-5" />
             </div>
-            <h4 className="font-bold text-[#082340] text-sm">ดาวน์โหลดซ้ำได้ตลอดชีพ</h4>
+            <h4 className="font-bold text-[#142E4F] text-sm">ดาวน์โหลดซ้ำได้ตลอดชีพ</h4>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
               หากเปลี่ยนเครื่องหรือไฟล์หาย เพียงกรอกเบอร์โทรหรืออีเมลเดิมเพื่อกลับมารับไฟล์ได้ตลอดเวลา
             </p>

@@ -35,22 +35,22 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group bg-white border-2 border-[#082340] shadow-[4px_4px_0px_#082340] hover:shadow-[6px_6px_0px_#F5760A] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between">
+    <div className="group bg-white border-2 border-[#142E4F] shadow-[4px_4px_0px_#142E4F] hover:shadow-[6px_6px_0px_#F26C28] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between">
       {/* Top Studio Folio Header Strip */}
-      <div className="px-3.5 py-2 bg-[#FAFBFD] border-b-2 border-[#082340] flex items-center justify-between text-[10px] font-mono">
-        <span className="font-bold text-[#082340]">
+      <div className="px-3.5 py-2 bg-[#FAFBFD] border-b-2 border-[#142E4F] flex items-center justify-between text-[10px] font-mono">
+        <span className="font-bold text-[#142E4F]">
           FOLIO #{String(index).padStart(2, "0")}
         </span>
-        <span className="font-bold text-[#1C64B8] uppercase">
+        <span className="font-bold text-[#2856B0] uppercase">
           A4 • {product.page_count} PGS
         </span>
       </div>
 
       {/* Physical A4 Paper Mat Display */}
-      <div className="relative p-4 bg-[#B5D5F2]/30 border-b-2 border-[#082340] flex items-center justify-center">
+      <div className="relative p-4 bg-[#AED6F4]/30 border-b-2 border-[#142E4F] flex items-center justify-center">
         <div className="relative w-full aspect-[1/1.33] max-w-[270px]">
           {/* Offset Backing Paper */}
-          <div className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-[#082340] pointer-events-none" />
+          <div className="absolute inset-0 translate-x-1.5 translate-y-1.5 bg-[#142E4F] pointer-events-none" />
 
           {/* Main Printable Worksheet Sheet */}
           <Link
@@ -72,10 +72,10 @@ export default function ProductCard({
           {/* Studio Hover Inspect Bar */}
           <Link
             href={`/products/${product.slug}`}
-            className="absolute inset-0 z-20 bg-[#082340]/0 hover:bg-[#082340]/15 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
+            className="absolute inset-0 z-20 bg-[#142E4F]/0 hover:bg-[#142E4F]/15 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
           >
-            <span className="bg-[#082340] text-white border-2 border-white text-[11px] font-bold px-3.5 py-1.5 shadow-[3px_3px_0px_#F5760A] flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-[#F5760A]" />
+            <span className="bg-[#142E4F] text-white border-2 border-white text-[11px] font-bold px-3.5 py-1.5 shadow-[3px_3px_0px_#F26C28] flex items-center gap-1.5">
+              <Eye className="w-3.5 h-3.5 text-[#F26C28]" />
               <span>เปิดดูตัวอย่างใบงาน</span>
             </span>
           </Link>
@@ -87,43 +87,43 @@ export default function ProductCard({
         <div className="space-y-2.5">
           {/* Subject & Grade Index Badges */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[10px] font-extrabold text-[#082340] bg-[#B5D5F2]/60 border border-[#082340] px-2 py-0.5">
+            <span className="text-[10px] font-extrabold text-[#142E4F] bg-[#AED6F4]/60 border border-[#142E4F] px-2 py-0.5">
               {product.subject}
             </span>
-            <span className="text-[10px] font-mono font-bold text-[#1C64B8] bg-[#FAFBFD] border border-[#1C64B8]/40 px-2 py-0.5">
+            <span className="text-[10px] font-mono font-bold text-[#2856B0] bg-[#FAFBFD] border border-[#2856B0]/40 px-2 py-0.5">
               {product.grade_level}
             </span>
           </div>
 
           {/* Title */}
           <Link href={`/products/${product.slug}`} className="block group/title">
-            <h3 className="font-extrabold text-sm sm:text-base text-[#082340] group-hover/title:text-[#1C64B8] transition-colors leading-snug line-clamp-2">
+            <h3 className="font-extrabold text-sm sm:text-base text-[#142E4F] group-hover/title:text-[#2856B0] transition-colors leading-snug line-clamp-2">
               {product.title}
             </h3>
           </Link>
 
           {/* Spec Line */}
-          <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-[#082340]/70 border-t border-dashed border-[#082340]/20">
+          <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-[#142E4F]/70 border-t border-dashed border-[#142E4F]/20">
             <span>SIZE: A4 (300 DPI)</span>
             <span>{product.has_answer_key ? "+ รวมเฉลยท้ายเล่ม" : "ชุดฝึกทักษะ"}</span>
           </div>
         </div>
 
         {/* Bottom Price & Action Block */}
-        <div className="pt-3 border-t-2 border-[#082340] flex items-center justify-between gap-2">
+        <div className="pt-3 border-t-2 border-[#142E4F] flex items-center justify-between gap-2">
           <div>
             {isFree ? (
               <div className="flex items-baseline gap-1.5">
-                <span className="text-base sm:text-lg font-extrabold text-[#1C64B8]">
+                <span className="text-base sm:text-lg font-extrabold text-[#2856B0]">
                   FREE ฿0
                 </span>
-                <span className="text-[10px] font-mono text-[#082340]/60 uppercase">
+                <span className="text-[10px] font-mono text-[#142E4F]/60 uppercase">
                   SAMPLE
                 </span>
               </div>
             ) : (
               <div className="flex items-baseline gap-1.5">
-                <span className="text-lg sm:text-xl font-extrabold text-[#082340] font-mono">
+                <span className="text-lg sm:text-xl font-extrabold text-[#142E4F] font-mono">
                   ฿{product.price}
                 </span>
                 {product.original_price && (
@@ -137,13 +137,13 @@ export default function ProductCard({
 
           {/* Action CTA */}
           {product.is_coming_soon ? (
-            <span className="text-[11px] font-mono font-bold text-[#082340]/50 bg-[#FAFBFD] border border-[#082340]/30 px-3 py-1.5">
+            <span className="text-[11px] font-mono font-bold text-[#142E4F]/50 bg-[#FAFBFD] border border-[#142E4F]/30 px-3 py-1.5">
               COMING SOON
             </span>
           ) : isFree ? (
             <Link
               href={`/products/${product.slug}`}
-              className="bg-[#1C64B8] hover:bg-[#082340] text-white text-xs font-bold px-3.5 py-2 border-2 border-[#082340] shadow-[2px_2px_0px_#082340] transition-all flex items-center gap-1"
+              className="bg-[#2856B0] hover:bg-[#142E4F] text-white text-xs font-bold px-3.5 py-2 border-2 border-[#142E4F] shadow-[2px_2px_0px_#142E4F] transition-all flex items-center gap-1"
             >
               <span>รับไฟล์ทดลอง</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -151,10 +151,10 @@ export default function ProductCard({
           ) : (
             <button
               onClick={handleAddToCart}
-              className={`text-xs font-extrabold px-3.5 py-2 border-2 border-[#082340] shadow-[2px_2px_0px_#082340] active:translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`text-xs font-extrabold px-3.5 py-2 border-2 border-[#142E4F] shadow-[2px_2px_0px_#142E4F] active:translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer ${
                 justAdded
-                  ? "bg-[#082340] text-white"
-                  : "bg-[#F5760A] hover:bg-[#e06905] text-white"
+                  ? "bg-[#142E4F] text-white"
+                  : "bg-[#F26C28] hover:bg-[#e06905] text-white"
               }`}
             >
               {justAdded ? (

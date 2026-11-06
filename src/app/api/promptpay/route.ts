@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       width: 400,
       margin: 2,
       color: {
-        dark: "#082340", // Navy from ClassPic Brand
+        dark: "#142E4F", // Navy from ClassPic Brand
         light: "#FFFFFF",
       },
     });

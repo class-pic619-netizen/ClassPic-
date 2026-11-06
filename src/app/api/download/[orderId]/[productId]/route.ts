@@ -78,9 +78,9 @@ export async function GET(req: NextRequest, props: RouteParams) {
           <body style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #F8FAFC; margin: 0;">
             <div style="background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; max-width: 440px;">
               <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
-              <h2 style="color: #082340; margin: 0 0 8px;">ลิงก์ดาวน์โหลดหมดอายุ</h2>
+              <h2 style="color: #142E4F; margin: 0 0 8px;">ลิงก์ดาวน์โหลดหมดอายุ</h2>
               <p style="color: #64748B; font-size: 14px; line-height: 1.6;">${verification.reason || "ลิงก์มีความปลอดภัยและมีอายุ 15 นาที"}</p>
-              <a href="/downloads/${order.id}" style="display: inline-block; margin-top: 16px; padding: 12px 24px; background: #F5760A; color: white; border-radius: 8px; text-decoration: none; font-weight: bold;">
+              <a href="/downloads/${order.id}" style="display: inline-block; margin-top: 16px; padding: 12px 24px; background: #F26C28; color: white; border-radius: 8px; text-decoration: none; font-weight: bold;">
                 กลับไปหน้ารับไฟล์เพื่อกดขอลิงก์ใหม่
               </a>
             </div>

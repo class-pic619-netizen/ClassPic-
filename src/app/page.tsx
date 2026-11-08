@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MOCK_PRODUCTS } from "@/data/mockProducts";
+import { getPublishedProducts } from "@/lib/db";
 import CatalogSection from "@/components/CatalogSection";
 import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
 
@@ -22,8 +22,9 @@ const STEPS = [
   { icon: "/icons/download-tray.svg", title: "ดาวน์โหลด PDF", text: "ได้ไฟล์ทันที ถ้าหาย กลับมาโหลดใหม่ได้ด้วยเบอร์เดิม" },
 ];
 
-export default function Home() {
-  const freeSample = MOCK_PRODUCTS.find((p) => p.is_free_sample);
+export default async function Home() {
+  const products = await getPublishedProducts();
+  const freeSample = products.find((p) => p.is_free_sample);
 
   return (
     <>
@@ -79,7 +80,7 @@ export default function Home() {
         </div>
       </section>
 
-      <CatalogSection products={MOCK_PRODUCTS} />
+      <CatalogSection products={products} />
 
       {/* ขั้นตอนการซื้อ */}
       <section className="bg-cp-bg py-16 lg:py-20">

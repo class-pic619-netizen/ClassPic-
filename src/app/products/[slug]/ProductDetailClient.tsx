@@ -134,9 +134,9 @@ export default function ProductDetailClient({
                 เปิดขายเร็ว ๆ นี้
               </button>
             ) : isFree ? (
-              <Link href="/downloads" className="btn-primary w-full sm:w-auto px-8">
-                ดาวน์โหลดฟรี
-              </Link>
+              <button onClick={handleBuyNow} className="btn-primary w-full sm:w-auto px-8 cursor-pointer">
+                รับฟรี
+              </button>
             ) : (
               <div className="flex flex-col sm:flex-row gap-3">
                 <button onClick={handleBuyNow} className="btn-primary px-8 cursor-pointer">

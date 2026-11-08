@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOrder } from "@/lib/ordersStore";
+import { getOrder, signedPdfUrl } from "@/lib/db";
 import { generateSignedDownloadUrl, verifyDownloadToken, generateMasterA4Pdf } from "@/lib/pdfSecurity";
 
 
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, props: RouteParams) {
     const format = searchParams.get("format");
 
     // 1. ตรวจสอบว่ามีคำสั่งซื้อนี้จริงหรือไม่
-    const order = getOrder(orderId);
+    const order = await getOrder(orderId);
     if (!order) {
       return NextResponse.json(
         { success: false, error: `ไม่พบคำสั่งซื้อหมายเลข ${orderId}` },
@@ -93,7 +93,20 @@ export async function GET(req: NextRequest, props: RouteParams) {
       }
     }
 
-    // 5. ส่งมอบไฟล์ PDF คมชัด A4 ตัวจริง พร้อมใส่ลายน้ำรับรองสิทธิ์เฉพาะผู้สั่งซื้อ
+    const safeFilename = `ClassPic-${product.slug || product.id}.pdf`;
+
+    // 5. มีไฟล์ PDF ตัวจริงในถัง private-pdfs → ส่งลิงก์ชั่วคราว 2 นาทีจาก Supabase Storage
+    if (product.pdf_file_url) {
+      const signed = await signedPdfUrl(product.pdf_file_url, safeFilename);
+      if (signed) return NextResponse.redirect(signed, 302);
+      console.error("Cannot sign PDF for", product.id, product.pdf_file_url);
+      return NextResponse.json(
+        { success: false, error: "ไฟล์ใบงานชุดนี้ยังเปิดไม่ได้ กรุณาติดต่อร้านทาง LINE" },
+        { status: 500 }
+      );
+    }
+
+    // ยังไม่ได้อัปโหลด PDF จริง → ส่งไฟล์ตัวอย่างที่ระบบสร้าง (ใช้ระหว่างทดสอบ)
     const pdfBuffer = generateMasterA4Pdf({
       productTitle: product.title,
       gradeLevel: product.grade_level,
@@ -103,8 +116,6 @@ export async function GET(req: NextRequest, props: RouteParams) {
       orderId: order.id,
       hasAnswerKey: product.has_answer_key
     });
-
-    const safeFilename = `ClassPic-${product.slug || product.id}-A4-Master.pdf`;
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,

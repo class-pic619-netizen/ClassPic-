@@ -17,7 +17,7 @@ interface WorksheetPaperProps {
 
 /**
  * ภาพหน้าใบงานจำลองสัดส่วน A4
- * - ถ้ามีรูปสแกนใบงานจริงในเว็บ (coverImage ขึ้นต้นด้วย "/") จะแสดงรูปนั้นแทน
+ * - ถ้ามีรูปสแกนใบงานจริง (พาธในเว็บ "/..." หรือรูปในถัง public-previews ของ Supabase) จะแสดงรูปนั้นแทน
  * - ถ้ายังไม่มี จะวาดหน้าใบงานตัวอย่างตามวิชา ให้แต่ละชุดหน้าตาไม่ซ้ำกัน
  * ขนาดตัวอักษรอิงความกว้างกระดาษ (container query) จึงคมชัดทุกขนาดการ์ด
  */
@@ -29,7 +29,8 @@ export default function WorksheetPaperPreview({
   coverImage,
 }: WorksheetPaperProps) {
   const shortTitle = title.replace(/\(.*?\)/g, "").replace(/^ชุด(ใบงาน|แบบฝึก|ฝึก|สื่อ)?/, "").trim();
-  const realScan = coverImage && coverImage.startsWith("/") ? coverImage : null;
+  const realScan =
+    coverImage && (coverImage.startsWith("/") || coverImage.includes("/storage/v1/object/public/")) ? coverImage : null;
 
   return (
     <div className="@container relative w-full h-full">

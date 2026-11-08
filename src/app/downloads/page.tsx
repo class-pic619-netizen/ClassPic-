@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Order } from "@/types";
@@ -11,7 +11,6 @@ export default function DownloadsSearchPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [, startTransition] = useTransition();
 
   const handleSearch = async (termToSearch?: string) => {
     const term = (termToSearch !== undefined ? termToSearch : searchTerm).trim();
@@ -34,13 +33,6 @@ export default function DownloadsSearchPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillQuickSearch = (value: string) => {
-    setSearchTerm(value);
-    startTransition(() => {
-      handleSearch(value);
-    });
   };
 
   return (
@@ -73,16 +65,6 @@ export default function DownloadsSearchPage() {
         </button>
       </form>
 
-      <p className="text-sm text-muted mt-3">
-        ลองดูตัวอย่าง:{" "}
-        <button
-          type="button"
-          onClick={() => fillQuickSearch("081-234-5678")}
-          className="text-cp-blue underline hover:text-cp-navy cursor-pointer"
-        >
-          081-234-5678
-        </button>
-      </p>
 
       {error && (
         <div className="mt-6 rounded-xl bg-[#c0392b]/5 border border-[#c0392b]/20 p-4 text-sm text-[#c0392b] flex items-center gap-2">

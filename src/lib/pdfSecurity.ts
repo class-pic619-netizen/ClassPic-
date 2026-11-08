@@ -1,6 +1,8 @@
 import crypto from "crypto";
+import { requireEnv } from "./supabaseAdmin";
 
-const SECRET_KEY = process.env.DOWNLOAD_SECRET || "classpic-secure-download-token-secret-2026";
+// ไม่มีค่าสำรองในโค้ด — ต้องตั้ง DOWNLOAD_SECRET (SEC.3)
+const secretKey = () => requireEnv("DOWNLOAD_SECRET");
 
 /**
  * สร้างลิงก์ดาวน์โหลดที่มีลายเซ็นดิจิทัล (Signed URL) และกำหนดอายุการใช้งาน (ค่าเริ่มต้น 15 นาที = 900 วินาที)
@@ -12,7 +14,7 @@ export function generateSignedDownloadUrl(
 ): { url: string; expiresAt: number; token: string } {
   const expiresAt = Math.floor(Date.now() / 1000) + validitySeconds;
   const payload = `${orderId}:${productId}:${expiresAt}`;
-  const token = crypto.createHmac("sha256", SECRET_KEY).update(payload).digest("hex");
+  const token = crypto.createHmac("sha256", secretKey()).update(payload).digest("hex");
 
   const url = `/api/download/${orderId}/${productId}?expires=${expiresAt}&token=${token}`;
   return { url, expiresAt, token };
@@ -34,9 +36,9 @@ export function verifyDownloadToken(
   }
 
   const payload = `${orderId}:${productId}:${expiresAt}`;
-  const expectedToken = crypto.createHmac("sha256", SECRET_KEY).update(payload).digest("hex");
+  const expectedToken = crypto.createHmac("sha256", secretKey()).update(payload).digest("hex");
 
-  if (token !== expectedToken) {
+  if (token.length !== expectedToken.length || !crypto.timingSafeEqual(Buffer.from(token), Buffer.from(expectedToken))) {
     return { valid: false, reason: "ลายเซ็นความปลอดภัยของลิงก์ดาวน์โหลดไม่ถูกต้อง" };
   }
 

@@ -24,6 +24,8 @@ export default function OrderDetailClient({ initialOrder }: Props) {
   const [verifySuccessMsg, setVerifySuccessMsg] = useState<string | null>(null);
 
   const isPaid = order.status === "PAID" || order.status === "VERIFIED";
+  const isReview = order.status === "PENDING_REVIEW";
+  const isRejected = order.status === "REJECTED";
 
   const handleCopyLink = async (productId: string) => {
     try {
@@ -84,13 +86,8 @@ export default function OrderDetailClient({ initialOrder }: Props) {
 
       if (res.ok && data.success) {
         setVerifySuccessMsg(data.message || "ตรวจสอบสลิปสำเร็จ ปลดล็อกไฟล์แล้ว");
-        // อัปเดตสถานะออเดอร์ในหน้าจอเป็น PAID ทันที
-        setOrder((prev) => ({
-          ...prev,
-          status: "PAID",
-          trans_ref: data.transRef,
-          paid_at: new Date().toISOString()
-        }));
+        // ใช้สถานะจริงจากเซิร์ฟเวอร์ (PAID หรือ PENDING_REVIEW รอร้านตรวจ)
+        setOrder((prev) => ({ ...prev, status: data.status ?? prev.status }));
       } else {
         setVerifyError(data.error || "ไม่สามารถตรวจสอบสลิปได้");
       }
@@ -120,13 +117,27 @@ export default function OrderDetailClient({ initialOrder }: Props) {
             <h1 className="text-[30px] font-bold text-cp-navy mt-3">ดาวน์โหลดไฟล์ได้เลย</h1>
             <p className="text-muted mt-1">ขอบคุณที่อุดหนุน ClassPic ไฟล์อยู่ด้านล่าง กดโหลดซ้ำได้ตลอด</p>
           </>
+        ) : isReview ? (
+          <>
+            <span className="inline-flex text-sm font-medium text-cp-blue bg-cp-mist px-2.5 py-0.5 rounded-full">
+              รอร้านตรวจสลิป
+            </span>
+            <h1 className="text-[30px] font-bold text-cp-navy mt-3">ได้รับสลิปแล้ว</h1>
+            <p className="text-muted mt-1">
+              ร้านกำลังตรวจยอดโอน พอตรวจเสร็จ ปุ่มดาวน์โหลดจะขึ้นที่หน้านี้ กลับมาเปิดหน้านี้ หรือค้นหาด้วยเบอร์โทรได้ทุกเมื่อ
+            </p>
+          </>
         ) : (
           <>
             <span className="inline-flex text-sm font-medium text-cp-orange-dark bg-cp-orange/10 px-2.5 py-0.5 rounded-full">
-              รอชำระเงิน
+              {isRejected ? "สลิปไม่ผ่านการตรวจ" : "รอชำระเงิน"}
             </span>
             <h1 className="text-[30px] font-bold text-cp-navy mt-3">แนบสลิปเพื่อรับไฟล์</h1>
-            <p className="text-muted mt-1">คำสั่งซื้อนี้ยังไม่มีสลิป แนบรูปสลิปด้านล่างแล้วไฟล์จะเปิดให้โหลด</p>
+            <p className="text-muted mt-1">
+              {isRejected
+                ? "ร้านตรวจแล้วยอดหรือสลิปไม่ตรง แนบสลิปที่ถูกต้องอีกครั้ง หรือทัก LINE @classpic"
+                : "คำสั่งซื้อนี้ยังไม่มีสลิป แนบรูปสลิปด้านล่างแล้วร้านจะตรวจให้"}
+            </p>
           </>
         )}
       </div>
@@ -146,7 +157,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
         </div>
       </dl>
 
-      {!isPaid && (
+      {!isPaid && !isReview && (
         <section className="panel p-6 mt-8">
           <h2 className="text-lg font-semibold text-cp-navy">แนบสลิป</h2>
           <p className="text-sm text-muted mb-5">รูปสลิปจากแอปธนาคาร (JPG, PNG)</p>
@@ -256,7 +267,7 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                   ) : (
                     <p className="text-sm text-muted mt-3 flex items-center gap-2">
                       <BrandIcon name="padlock-square-1" className="w-5 h-5" />
-                      แนบสลิปแล้วปุ่มดาวน์โหลดจะขึ้นตรงนี้
+                      {isReview ? "ร้านตรวจสลิปเสร็จแล้วปุ่มดาวน์โหลดจะขึ้นตรงนี้" : "แนบสลิปแล้วปุ่มดาวน์โหลดจะขึ้นตรงนี้"}
                     </p>
                   )}
                 </div>

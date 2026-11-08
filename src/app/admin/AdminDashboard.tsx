@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Product, Order, GradeLevel, SubjectCategory } from "@/types";
 import {
@@ -49,22 +48,24 @@ export default function AdminDashboard() {
   const [newPrice, setNewPrice] = useState<number>(59);
   const [newOriginalPrice, setNewOriginalPrice] = useState<number>(99);
   const [newHasAnswerKey, setNewHasAnswerKey] = useState<boolean>(true);
-  const [newCoverImage, setNewCoverImage] = useState<string>(
-    "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=60"
-  );
+  const [newCoverImage, setNewCoverImage] = useState<string>("");
   const [newIsComingSoon, setNewIsComingSoon] = useState<boolean>(false);
   const [isSubmittingProduct, setIsSubmittingProduct] = useState<boolean>(false);
   const [productSuccessMsg, setProductSuccessMsg] = useState<string>("");
 
   // Check initial login session
   useEffect(() => {
-    const token = localStorage.getItem("cp_admin_token");
-    if (token) {
-      setIsAuthenticated(true);
-      fetchDashboardData();
-    } else {
-      setLoading(false);
-    }
+    fetch("/api/admin/auth")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+          fetchDashboardData();
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -81,7 +82,6 @@ export default function AdminDashboard() {
       const data = await res.json();
 
       if (data.success) {
-        localStorage.setItem("cp_admin_token", data.token);
         setIsAuthenticated(true);
         setPasswordInput("");
         fetchDashboardData();
@@ -96,8 +96,7 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("cp_admin_token");
-    setIsAuthenticated(false);
+    fetch("/api/admin/auth", { method: "DELETE" }).finally(() => setIsAuthenticated(false));
   };
 
   const fetchDashboardData = async () => {
@@ -225,7 +224,7 @@ export default function AdminDashboard() {
                 type="password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="ระบุรหัสผ่าน (เริ่มต้น: admin1234)"
+                placeholder="รหัสผ่านหลังบ้าน"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2856B0] transition-all"
                 required
               />
@@ -250,10 +249,6 @@ export default function AdminDashboard() {
               )}
             </button>
           </form>
-
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center text-[11px] text-slate-400">
-            รหัสผ่านเริ่มต้นช่วงพัฒนา: <code className="text-[#142E4F] font-bold">admin1234</code>
-          </div>
         </div>
       </div>
     );
@@ -263,7 +258,7 @@ export default function AdminDashboard() {
   const totalRevenue = orders
     .filter((o) => o.status === "PAID")
     .reduce((sum, o) => sum + o.total_amount, 0);
-  const pendingOrders = orders.filter((o) => o.status === "PENDING");
+  const pendingOrders = orders.filter((o) => o.status === "PENDING" || o.status === "PENDING_REVIEW");
   const paidOrders = orders.filter((o) => o.status === "PAID");
 
   return (
@@ -450,7 +445,7 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-slate-100">
                 {orders.map((order) => {
                   const isPaid = order.status === "PAID";
-                  const isPending = order.status === "PENDING";
+                  const isPending = order.status === "PENDING" || order.status === "PENDING_REVIEW";
 
                   return (
                     <tr key={order.id} className="hover:bg-slate-50/80 transition-colors">
@@ -498,7 +493,7 @@ export default function AdminDashboard() {
                         {isPending && (
                           <span className="bg-amber-50 text-amber-700 font-bold px-2.5 py-1 rounded-md border border-amber-200 inline-flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            รอตรวจสลิป
+                            {order.status === "PENDING_REVIEW" ? "มีสลิป รอตรวจ" : "ยังไม่แนบสลิป"}
                           </span>
                         )}
                         {order.status === "REJECTED" && (
@@ -586,7 +581,12 @@ export default function AdminDashboard() {
               >
                 <div>
                   <div className="relative aspect-[4/3] bg-slate-100">
-                    <Image src={p.cover_image} alt={p.title} fill className="object-cover" />
+                    {p.cover_image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.cover_image} alt={p.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <div className="absolute inset-0 grid place-items-center text-xs text-slate-400">ยังไม่มีรูปตัวอย่าง</div>
+                    )}
                     <span className="absolute top-2 left-2 bg-[#142E4F] text-white text-[10px] font-bold px-2 py-0.5 rounded">
                       {p.grade_level}
                     </span>
@@ -885,11 +885,11 @@ EASYSLIP_API_KEY=optional-easyslip-key`}
 
             <div className="relative aspect-[3/4] bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
               {selectedSlipOrder.slip_image_url ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={selectedSlipOrder.slip_image_url}
-                  alt="Payment Slip"
-                  fill
-                  className="object-contain"
+                  alt="สลิปโอนเงิน"
+                  className="absolute inset-0 w-full h-full object-contain"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">
@@ -898,7 +898,7 @@ EASYSLIP_API_KEY=optional-easyslip-key`}
               )}
             </div>
 
-            {selectedSlipOrder.status === "PENDING" && (
+            {(selectedSlipOrder.status === "PENDING" || selectedSlipOrder.status === "PENDING_REVIEW") && (
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => handleApproveOrder(selectedSlipOrder.id)}

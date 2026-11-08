@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
@@ -16,7 +15,6 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { totalItems, setIsCartOpen } = useCart();
-  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
@@ -34,20 +32,11 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-7 font-head text-[15px] font-medium">
-            {NAV_LINKS.map((link) => {
-              const active = link.href === "/downloads" && pathname.startsWith("/downloads");
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`transition-colors ${
-                    active ? "text-cp-navy" : "text-muted hover:text-cp-navy"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+            {NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className="text-muted hover:text-cp-navy transition-colors">
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
           <div className="ml-auto flex items-center gap-2">

@@ -1,71 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createOrder, getOrder, findOrdersByContact } from "@/lib/ordersStore";
+import { createOrder, getOrder, OrderInputError } from "@/lib/db";
 
+/**
+ * สร้างคำสั่งซื้อ — รับแค่เบอร์/อีเมลกับรายการ id ใบงาน
+ * ยอดเงินคำนวณจากราคาในฐานข้อมูลเท่านั้น
+ */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { contact, items, totalAmount } = body;
+    const contact: unknown = body.contact;
+    const items: unknown = body.items;
 
-    if (!contact || typeof contact !== "string") {
-      return NextResponse.json(
-        { success: false, error: "กรุณาระบุข้อมูลติดต่อ (เบอร์โทรศัพท์ หรือ อีเมล)" },
-        { status: 400 }
-      );
+    if (typeof contact !== "string" || !Array.isArray(items)) {
+      return NextResponse.json({ success: false, error: "ข้อมูลคำสั่งซื้อไม่ครบ" }, { status: 400 });
     }
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "ไม่มีรายการสินค้าในคำสั่งซื้อ" },
-        { status: 400 }
-      );
-    }
+    const productIds = items
+      .map((item) => (typeof item === "string" ? item : item?.product?.id ?? item?.productId))
+      .filter((id): id is string => typeof id === "string");
 
-    const order = createOrder(contact, items, Number(totalAmount) || 0);
-
-    return NextResponse.json({
-      success: true,
-      order,
-    });
+    const order = await createOrder(contact, productIds);
+    return NextResponse.json({ success: true, order });
   } catch (err) {
+    if (err instanceof OrderInputError) {
+      return NextResponse.json({ success: false, error: err.message }, { status: 400 });
+    }
     console.error("Order creation error:", err);
-    return NextResponse.json(
-      { success: false, error: "ไม่สามารถสร้างคำสั่งซื้อได้" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: "ไม่สามารถสร้างคำสั่งซื้อได้" }, { status: 500 });
   }
 }
 
+/** ดูคำสั่งซื้อด้วยเลขคำสั่งซื้อ */
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const orderId = searchParams.get("orderId");
-    const contact = searchParams.get("contact");
-
-    if (orderId) {
-      const order = getOrder(orderId);
-      if (!order) {
-        return NextResponse.json(
-          { success: false, error: "ไม่พบคำสั่งซื้อ" },
-          { status: 404 }
-        );
-      }
-      return NextResponse.json({ success: true, order });
+    const orderId = req.nextUrl.searchParams.get("orderId");
+    if (!orderId) {
+      return NextResponse.json({ success: false, error: "กรุณาระบุ orderId" }, { status: 400 });
     }
-
-    if (contact) {
-      const orders = findOrdersByContact(contact);
-      return NextResponse.json({ success: true, orders });
+    const order = await getOrder(orderId);
+    if (!order) {
+      return NextResponse.json({ success: false, error: "ไม่พบคำสั่งซื้อ" }, { status: 404 });
     }
-
-    return NextResponse.json(
-      { success: false, error: "กรุณาระบุ orderId หรือ contact" },
-      { status: 400 }
-    );
+    return NextResponse.json({ success: true, order });
   } catch (err) {
-    console.error("Fetch orders error:", err);
-    return NextResponse.json(
-      { success: false, error: "เกิดข้อผิดพลาดในการค้นหาคำสั่งซื้อ" },
-      { status: 500 }
-    );
+    console.error("Fetch order error:", err);
+    return NextResponse.json({ success: false, error: "เกิดข้อผิดพลาดในการค้นหาคำสั่งซื้อ" }, { status: 500 });
   }
 }

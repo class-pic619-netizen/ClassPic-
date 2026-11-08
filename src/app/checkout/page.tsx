@@ -35,6 +35,31 @@ export default function CheckoutPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [orderTotal, setOrderTotal] = useState<number | null>(null);
+
+  // สร้างคำสั่งซื้อในระบบ (ครั้งเดียวต่อการชำระเงิน) คืนค่าเลขคำสั่งซื้อและยอดจริง
+  const ensureOrder = async (contactValue: string): Promise<{ id: string; total: number } | null> => {
+    if (currentOrderId && orderTotal !== null) return { id: currentOrderId, total: orderTotal };
+    try {
+      const orderRes = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: contactValue, items: cart.map((item) => item.product.id) }),
+      });
+      const orderData = await orderRes.json();
+      if (!orderRes.ok || !orderData.success) {
+        setSubmitError(orderData.error || "สร้างคำสั่งซื้อไม่สำเร็จ กรุณาลองใหม่");
+        return null;
+      }
+      setCurrentOrderId(orderData.order.id);
+      setOrderTotal(orderData.order.total_amount);
+      return { id: orderData.order.id, total: orderData.order.total_amount };
+    } catch {
+      setSubmitError("เชื่อมต่อไม่ได้ กรุณาตรวจอินเทอร์เน็ตแล้วลองใหม่");
+      return null;
+    }
+  };
+
   // Generate QR Code and initialize pending order
   const generateQRCode = async (contactVal?: string) => {
     const val = contactVal !== undefined ? contactVal : contact;
@@ -47,33 +72,16 @@ export default function CheckoutPage() {
     setSubmitError(null);
 
     try {
-      // 1. Create or ensure Order exists in system
-      let orderId = currentOrderId;
-      try {
-        const orderRes = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contact: val.trim(),
-            items: cart,
-            totalAmount,
-          }),
-        });
-        const orderData = await orderRes.json();
-        if (orderData.success && orderData.order?.id) {
-          orderId = orderData.order.id;
-          setCurrentOrderId(orderId);
-        }
-      } catch (orderErr) {
-        console.warn("Order creation API note:", orderErr);
-      }
+      // 1. สร้างคำสั่งซื้อครั้งเดียว (ยอดเงินคิดจากฐานข้อมูลฝั่งเซิร์ฟเวอร์)
+      const ensured = await ensureOrder(val.trim());
+      if (!ensured) return;
 
       // 2. Fetch PromptPay QR Code
       const res = await fetch("/api/promptpay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalAmount,
+          amount: ensured.total,
         }),
       });
 
@@ -139,7 +147,7 @@ export default function CheckoutPage() {
     if (!qrDataUrl) return;
     const a = document.createElement("a");
     a.href = qrDataUrl;
-    a.download = `PromptPay-ClassPic-${totalAmount.toFixed(2)}THB.png`;
+    a.download = `PromptPay-ClassPic-${orderTotal ?? totalAmount}THB.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -160,91 +168,27 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    let activeOrderId = currentOrderId;
-
-    // If order was not created yet, create it now
-    if (!activeOrderId) {
-      try {
-        const orderRes = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contact: contact.trim(),
-            items: cart,
-            totalAmount,
-          }),
-        });
-        const orderData = await orderRes.json();
-        if (orderData.success && orderData.order?.id) {
-          activeOrderId = orderData.order.id;
-          setCurrentOrderId(activeOrderId);
-        }
-      } catch (err) {
-        console.warn("Order creation error:", err);
-      }
-    }
-
-    // Fallback order ID if API failed
-    if (!activeOrderId) {
-      activeOrderId = `CP-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.floor(
-        1000 + Math.random() * 9000
-      )}`;
+    const ensured = await ensureOrder(contact.trim());
+    if (!ensured) {
+      setIsSubmitting(false);
+      return;
     }
 
     try {
-      // Create FormData to send slip to /api/verify-slip
       const formData = new FormData();
-      if (slipFile) {
-        formData.append("slip", slipFile);
-      }
-      formData.append("orderId", activeOrderId);
-      formData.append("contact", contact.trim());
-      formData.append("amount", totalAmount.toString());
+      if (slipFile) formData.append("slip", slipFile);
+      formData.append("orderId", ensured.id);
 
-      const response = await fetch("/api/verify-slip", {
-        method: "POST",
-        body: formData,
-      });
-
+      const response = await fetch("/api/verify-slip", { method: "POST", body: formData });
       const resData = await response.json();
-
       if (!response.ok || !resData.success) {
-        throw new Error(resData.error || "การตรวจสอบสลิปไม่ผ่าน กรุณาตรวจสอบรูปภาพ");
+        throw new Error(resData.error || "ส่งสลิปไม่สำเร็จ กรุณาตรวจสอบรูปแล้วลองใหม่");
       }
 
-      const finalOrderId = resData.orderId || activeOrderId;
-
-      // Save order record to localStorage for fast client-side download fallback
-      const orderRecord = {
-        id: finalOrderId,
-        customer_contact: contact.trim(),
-        total_amount: totalAmount,
-        status: "PAID",
-        items: cart,
-        slip_image_url: slipPreview || "",
-        trans_ref: resData.transRef || `REF-${Date.now()}`,
-        paid_at: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-      };
-
-      try {
-        const existingOrders = JSON.parse(localStorage.getItem("classpic_orders") || "[]");
-        existingOrders.unshift(orderRecord);
-        localStorage.setItem("classpic_orders", JSON.stringify(existingOrders));
-        localStorage.setItem("classpic_latest_order", JSON.stringify(orderRecord));
-      } catch (storageErr) {
-        console.error("Local storage error:", storageErr);
-      }
-
-      // Clear shopping cart
       clearCart();
-
-      // Redirect to downloads page
-      router.push(`/downloads/${finalOrderId}`);
+      router.push(`/downloads/${resData.orderId || ensured.id}`);
     } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "เกิดข้อผิดพลาดในการตรวจสอบสลิป กรุณาลองใหม่อีกครั้ง";
-      setSubmitError(errorMessage);
+      setSubmitError(err instanceof Error ? err.message : "ส่งสลิปไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -309,6 +253,8 @@ export default function CheckoutPage() {
             )}
           </section>
 
+          {totalAmount > 0 && (
+            <>
           {/* ขั้นที่ 2 */}
           <section className="panel p-6">
             {stepTitle(2, "สแกนจ่ายพร้อมเพย์", "ใช้แอปธนาคารไหนก็ได้ ยอดเงินขึ้นให้อัตโนมัติ")}
@@ -354,14 +300,14 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <div className="text-sm text-muted">ยอดโอน</div>
-                  <div className="font-head text-[32px] font-bold text-cp-navy leading-tight">฿{totalAmount}</div>
+                  <div className="font-head text-[32px] font-bold text-cp-navy leading-tight">฿{orderTotal ?? totalAmount}</div>
                   <div className="text-sm text-muted mt-1">
                     ชื่อบัญชี ClassPic Studio · พร้อมเพย์ {promptpayId}
                   </div>
                   <ol className="mt-5 space-y-1.5 text-[15px] text-ink list-decimal pl-5">
                     <li>เปิดแอปธนาคาร เลือก &ldquo;สแกน&rdquo;</li>
                     <li>สแกน QR นี้ หรือเลือกรูป QR จากอัลบั้ม</li>
-                    <li>ตรวจยอดให้เป็น ฿{totalAmount} แล้วกดยืนยัน</li>
+                    <li>ตรวจยอดให้เป็น ฿{orderTotal ?? totalAmount} แล้วกดยืนยัน</li>
                     <li>เก็บรูปสลิปไว้แนบในขั้นถัดไป</li>
                   </ol>
                 </div>
@@ -426,6 +372,23 @@ export default function CheckoutPage() {
               )}
             </button>
           </section>
+            </>
+          )}
+
+          {totalAmount === 0 && (
+            <section className="panel p-6">
+              {stepTitle(2, "รับใบงานฟรี", "ไม่ต้องโอนเงิน กดปุ่มแล้วไปหน้าดาวน์โหลดได้เลย")}
+              {submitError && (
+                <div className="mb-4 rounded-xl bg-[#c0392b]/5 border border-[#c0392b]/20 p-3 text-sm text-[#c0392b] flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  {submitError}
+                </div>
+              )}
+              <button type="button" onClick={handleVerifySlip} disabled={isSubmitting} className="btn-primary w-full py-3.5 cursor-pointer">
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "รับใบงานฟรี"}
+              </button>
+            </section>
+          )}
         </div>
 
         {/* สรุปรายการ */}

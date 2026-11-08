@@ -2,242 +2,173 @@ import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import jsQR from "jsqr";
 import crypto from "crypto";
-import { getOrder, isSlipUsed, recordVerifiedSlip, markOrderPaid } from "@/lib/ordersStore";
+import { getOrder, isSlipUsed, recordSlip, setOrderStatus, uploadSlipImage } from "@/lib/db";
 
+const MAX_SLIP_BYTES = 8 * 1024 * 1024;
 
 /**
- * ดึงรหัสอ้างอิงจากข้อมูล Mini QR Code ของธนาคารไทย (0046 Standard PromptPay Slip)
+ * ดึงรหัสอ้างอิงจากข้อมูล Mini QR ของสลิปธนาคารไทย
+ * ถ้าไม่พบรูปแบบรหัส ใช้ hash ของข้อความ QR แทน (ยังกันสลิปซ้ำได้)
  */
 function extractBankTransRef(qrData: string): string {
-  if (!qrData) return "";
-
-  // กรณีสลิปมาตรฐานพร้อมเพย์ / Thai Bank Slip มักมี Subtag เช่น 0046... หรือรหัสอ้างอิง
-  // ตัวอย่าง Payload: 00460006000001010301402...
   const match = qrData.match(/(?:TR|REF|B)[A-Z0-9]{8,24}/i);
-  if (match) {
-    return match[0].toUpperCase();
-  }
-
-  // หากเป็น QR พร้อมเพย์ทั่วไปหรือรหัสอื่น ให้สร้างรหัสย่อที่แน่นอนจากข้อความ QR
-  const hash = crypto.createHash("sha256").update(qrData).digest("hex").slice(0, 12).toUpperCase();
-  return `QR-${hash}`;
+  if (match) return match[0].toUpperCase();
+  return `QR-${crypto.createHash("sha256").update(qrData).digest("hex").slice(0, 16).toUpperCase()}`;
 }
 
+function json(body: Record<string, unknown>, status = 200) {
+  return NextResponse.json(body, { status });
+}
+
+/**
+ * รับสลิปโอนเงิน
+ *
+ * - โหมดฟรี (ไม่มี EASYSLIP_API_KEY): เก็บสลิป + จองรหัสอ้างอิง แล้วตั้งสถานะ PENDING_REVIEW
+ *   ให้เจ้าของร้านกดอนุมัติในหน้า /admin ก่อน ไฟล์จึงจะเปิดให้โหลด (SEC.1)
+ * - โหมดอัตโนมัติ (มี EASYSLIP_API_KEY): ถ้า EasySlip ยืนยันยอดเงินพอ → PAID ทันที
+ *   ถ้า EasySlip ใช้ไม่ได้ชั่วคราว → ตกไปรอแอดมินตรวจเหมือนโหมดฟรี
+ */
 export async function POST(req: NextRequest) {
   try {
-    let orderId: string = "";
-    let imageBuffer: Buffer | null = null;
-    let slipUrl: string | undefined = undefined;
+    let orderId = "";
+    let image: Buffer | null = null;
+    let contentType = "image/jpeg";
 
-    const contentType = req.headers.get("content-type") || "";
-
-    if (contentType.includes("multipart/form-data")) {
+    if ((req.headers.get("content-type") || "").includes("multipart/form-data")) {
       const formData = await req.formData();
-      orderId = (formData.get("orderId") as string) || "";
+      orderId = String(formData.get("orderId") || "");
       const file = formData.get("slip") || formData.get("slipImage") || formData.get("file");
-
       if (file && typeof file === "object" && "arrayBuffer" in file) {
-        const arrayBuffer = await (file as Blob).arrayBuffer();
-        imageBuffer = Buffer.from(arrayBuffer);
-        slipUrl = `/uploads/slips/${orderId || Date.now()}.jpg`;
+        const blob = file as Blob;
+        contentType = blob.type || contentType;
+        image = Buffer.from(await blob.arrayBuffer());
       }
     } else {
       const body = await req.json();
-      orderId = body.orderId || "";
-      if (body.slipImageBase64) {
-        const base64Data = body.slipImageBase64.replace(/^data:image\/\w+;base64,/, "");
-        imageBuffer = Buffer.from(base64Data, "base64");
-        slipUrl = `/uploads/slips/${orderId || Date.now()}.jpg`;
+      orderId = String(body.orderId || "");
+      if (typeof body.slipImageBase64 === "string") {
+        const m = body.slipImageBase64.match(/^data:(image\/\w+);base64,/);
+        if (m) contentType = m[1];
+        image = Buffer.from(body.slipImageBase64.replace(/^data:image\/\w+;base64,/, ""), "base64");
       }
     }
 
-    if (!orderId) {
-      return NextResponse.json(
-        { success: false, error: "ไม่พบรหัสคำสั่งซื้อ (orderId)" },
-        { status: 400 }
-      );
-    }
+    if (!orderId) return json({ success: false, error: "ไม่พบเลขคำสั่งซื้อ" }, 400);
 
-    const order = getOrder(orderId);
-    if (!order) {
-      return NextResponse.json(
-        { success: false, error: `ไม่พบคำสั่งซื้อหมายเลข ${orderId} ในระบบ` },
-        { status: 404 }
-      );
-    }
+    const order = await getOrder(orderId);
+    if (!order) return json({ success: false, error: `ไม่พบคำสั่งซื้อ ${orderId}` }, 404);
 
     if (order.status === "PAID" || order.status === "VERIFIED") {
-      return NextResponse.json({
-        success: true,
-        orderId: order.id,
-        transRef: order.trans_ref || "ALREADY_PAID",
-        status: order.status,
-        message: "คำสั่งซื้อนี้ได้รับการชำระเงินเรียบร้อยแล้ว สามารถดาวน์โหลดไฟล์ได้ทันที"
-      });
+      return json({ success: true, orderId: order.id, status: order.status, message: "คำสั่งซื้อนี้ชำระแล้ว ดาวน์โหลดได้เลย" });
+    }
+    if (order.status === "PENDING_REVIEW") {
+      return json({ success: true, orderId: order.id, status: order.status, message: "ได้รับสลิปแล้ว รอร้านตรวจสอบ" });
     }
 
-    if (!imageBuffer || imageBuffer.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "กรุณาแนบรูปภาพสลิปการโอนเงิน" },
-        { status: 400 }
-      );
+    // ใบงานฟรีทั้งหมด ไม่ต้องใช้สลิป
+    if (order.total_amount === 0) {
+      await setOrderStatus(order.id, "PAID", { trans_ref: `FREE-${order.id}` });
+      return json({ success: true, orderId: order.id, status: "PAID", message: "รับใบงานฟรีได้เลย" });
     }
 
-    // คำนวณ SHA-256 ของรูปสลิป เพื่อกันการนำรูปเดิมมาอัปโหลดซ้ำ
-    const imageHash = crypto.createHash("sha256").update(imageBuffer).digest("hex");
+    if (!image || image.length === 0) return json({ success: false, error: "กรุณาแนบรูปสลิปการโอนเงิน" }, 400);
+    if (image.length > MAX_SLIP_BYTES) return json({ success: false, error: "รูปสลิปใหญ่เกิน 8 MB" }, 400);
+    if (!contentType.startsWith("image/")) return json({ success: false, error: "กรุณาแนบไฟล์รูปภาพเท่านั้น" }, 400);
 
-    // ด่านที่ 1: ตรวจหา Mini QR Code บนรูปสลิปด้วย sharp + jsQR
+    // ตรวจว่าเป็นรูปจริง และอ่าน Mini QR บนสลิป
     let qrPayload: string | null = null;
     try {
-      // แปลงรูปภาพเป็น RGBA Raw Buffer ขนาดมาตรฐานเพื่อสแกน QR
-      const { data, info } = await sharp(imageBuffer)
-        .ensureAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-
-      const qrCode = jsQR(new Uint8ClampedArray(data), info.width, info.height, {
-        inversionAttempts: "attemptBoth"
-      });
-
-      if (qrCode && qrCode.data) {
-        qrPayload = qrCode.data;
-      }
-    } catch (sharpError) {
-      console.warn("Sharp/jsQR decoding notice:", sharpError);
+      const { data, info } = await sharp(image).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      const qr = jsQR(new Uint8ClampedArray(data), info.width, info.height, { inversionAttempts: "attemptBoth" });
+      qrPayload = qr?.data ?? null;
+    } catch {
+      return json({ success: false, error: "เปิดรูปสลิปไม่ได้ กรุณาแนบเป็นไฟล์ JPG หรือ PNG" }, 400);
     }
 
-    // กำหนด TransRef จาก QR หรือจาก Image Hash
-    let transRef = "";
-    if (qrPayload) {
-      transRef = extractBankTransRef(qrPayload);
-    } else {
-      // โหมดสลิปไม่มี QR หรือสลิปทดสอบ: สกัดรหัสอ้างอิงจาก Hash ของรูป
-      transRef = `SLIP-${imageHash.slice(0, 14).toUpperCase()}`;
+    const imageHash = crypto.createHash("sha256").update(image).digest("hex");
+    let transRef = qrPayload ? extractBankTransRef(qrPayload) : `IMG-${imageHash.slice(0, 16).toUpperCase()}`;
+
+    if (await isSlipUsed(transRef, imageHash)) {
+      return json({ success: false, isDuplicate: true, error: "สลิปนี้เคยใช้กับคำสั่งซื้ออื่นไปแล้ว ใช้ซ้ำไม่ได้" }, 400);
     }
 
-    // ด่านที่ 2: ตรวจสอบความซ้ำซ้อนของ TransRef ใน verifiedSlips
-    if (isSlipUsed(transRef)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: `สลิปนี้เคยถูกบันทึกและใช้งานไปแล้วในระบบ ไม่สามารถใช้ซ้ำได้ (รหัสอ้างอิง: ${transRef})`,
-          transRef,
-          isDuplicate: true
-        },
-        { status: 400 }
-      );
-    }
-
-    // ด่านที่ 3 & 4 (โหมดคู่):
-    // โหมด 2: หากมี EASYSLIP_API_KEY ให้เชื่อมต่อไปยัง EasySlip API
+    // โหมดอัตโนมัติผ่าน EasySlip
+    let autoApproved = false;
+    let paidAmount = order.total_amount;
     if (process.env.EASYSLIP_API_KEY) {
       try {
-        const easySlipRes = await fetch("https://developer.easyslip.com/api/v1/verify", {
+        const res = await fetch("https://developer.easyslip.com/api/v1/verify", {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.EASYSLIP_API_KEY}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            image: imageBuffer.toString("base64")
-          })
+          headers: { Authorization: `Bearer ${process.env.EASYSLIP_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ image: image.toString("base64") }),
         });
-
-        if (!easySlipRes.ok) {
-          const errData = await easySlipRes.json().catch(() => ({}));
-          return NextResponse.json(
-            {
-              success: false,
-              error: errData.message || "การตรวจสอบสลิปผ่าน EasySlip API ไม่ผ่าน",
-              apiStatus: easySlipRes.status
-            },
-            { status: 400 }
-          );
-        }
-
-        const verifyData = await easySlipRes.json();
-        // ตรวจสอบยอดเงินว่าตรงกับคำสั่งซื้อหรือไม่
-        const paidAmount = verifyData.data?.amount?.amount || 0;
-        if (paidAmount < order.total_amount) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: `ยอดเงินในสลิป (฿${paidAmount}) ไม่พอกับยอดชำระของคำสั่งซื้อ (฿${order.total_amount})`
-            },
-            { status: 400 }
-          );
-        }
-
-        if (verifyData.data?.transRef) {
-          transRef = verifyData.data.transRef;
-          if (isSlipUsed(transRef)) {
-            return NextResponse.json(
-              {
-                success: false,
-                error: `สลิปธนาคารนี้เคยถูกใช้งานไปแล้ว (TransRef: ${transRef})`,
-                isDuplicate: true
-              },
-              { status: 400 }
-            );
+        if (res.ok) {
+          const result = await res.json();
+          const amount = Number(result.data?.amount?.amount || 0);
+          if (amount < order.total_amount) {
+            return json({ success: false, error: `ยอดในสลิป (฿${amount}) น้อยกว่ายอดที่ต้องชำระ (฿${order.total_amount})` }, 400);
           }
+          if (result.data?.transRef) {
+            transRef = String(result.data.transRef).toUpperCase();
+            if (await isSlipUsed(transRef, imageHash)) {
+              return json({ success: false, isDuplicate: true, error: "สลิปนี้เคยใช้กับคำสั่งซื้ออื่นไปแล้ว ใช้ซ้ำไม่ได้" }, 400);
+            }
+          }
+          paidAmount = amount;
+          autoApproved = true;
+        } else if (res.status >= 400 && res.status < 500) {
+          const err = await res.json().catch(() => ({}));
+          return json({ success: false, error: err.message || "ตรวจสลิปไม่ผ่าน กรุณาตรวจสอบรูปสลิปอีกครั้ง" }, 400);
         }
-      } catch (apiErr) {
-        console.error("EasySlip API connection error:", apiErr);
-        // หาก API ขัดข้อง ให้สลับมาใช้โหมดสำรอง
+        // 5xx: ระบบตรวจสลิปขัดข้อง → ให้แอดมินตรวจเอง
+      } catch (e) {
+        console.error("EasySlip error, falling back to manual review:", e);
       }
     }
 
-    // โหมด 1 (โหมดฟรี ฿0): บันทึกลงตาราง verifiedSlips และปรับสถานะออเดอร์เป็น PAID ทันที
-    recordVerifiedSlip({
+    const slipPath = await uploadSlipImage(order.id, image, contentType);
+
+    const reserved = await recordSlip({
       trans_ref: transRef,
-      amount: order.total_amount,
-      sender_bank: qrPayload ? "BANK_QR" : "PROMPTPAY_SLIP",
-      receiver_bank: "SCB_CLASSPIC",
-      verified_at: new Date().toISOString(),
-      order_id: order.id
+      image_hash: imageHash,
+      amount: paidAmount,
+      order_id: order.id,
+      sender_bank: qrPayload ? "BANK_QR" : "IMAGE_ONLY",
     });
-
-    markOrderPaid(order.id, transRef, slipUrl, "PAID");
-
-    // แจ้งเตือนเข้า Telegram Bot อัตโนมัติ (หากตั้งค่าไว้ใน Environment Variables)
-    if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
-      const msg =
-        `🔔 *ClassPic Store — มีออเดอร์ใหม่ชำระเงินสำเร็จ!*\n\n` +
-        `📦 *เลขออเดอร์:* \`${order.id}\`\n` +
-        `💰 *ยอดโอน:* ฿${order.total_amount}\n` +
-        `👤 *ผู้ซื้อ:* \`${order.customer_contact}\`\n` +
-        `🔖 *TransRef:* \`${transRef}\`\n` +
-        `🔍 *QR ตรวจพบ:* ${qrPayload ? "✅ มี Mini QR ธนาคาร" : "ℹ️ สลิปภาพทั่วไป"}\n` +
-        `⏰ *เวลา:* ${new Date().toLocaleString("th-TH")}\n\n` +
-        `🎉 ปลดล็อกไฟล์ PDF A4 ให้ลูกค้าเรียบร้อยแล้ว`;
-
-      fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: process.env.TELEGRAM_CHAT_ID,
-          text: msg,
-          parse_mode: "Markdown"
-        })
-      }).catch((e) => console.error("Telegram notification error:", e));
+    if (!reserved) {
+      return json({ success: false, isDuplicate: true, error: "สลิปนี้เคยใช้กับคำสั่งซื้ออื่นไปแล้ว ใช้ซ้ำไม่ได้" }, 400);
     }
 
-    return NextResponse.json({
+    const status = autoApproved ? "PAID" : "PENDING_REVIEW";
+    await setOrderStatus(order.id, status, { trans_ref: transRef, slip_image_url: slipPath });
+
+    notifyTelegram(
+      autoApproved
+        ? `ClassPic: ออเดอร์ ${order.id} ชำระแล้ว ฿${order.total_amount} (EasySlip ตรวจผ่าน)`
+        : `ClassPic: มีสลิปใหม่รอตรวจ ออเดอร์ ${order.id} ฿${order.total_amount}\nผู้ซื้อ: ${order.customer_contact}\nQR บนสลิป: ${qrPayload ? "มี" : "ไม่พบ"}\nเข้าไปอนุมัติที่หน้า /admin`
+    );
+
+    return json({
       success: true,
       orderId: order.id,
-      transRef,
-      hasQr: !!qrPayload,
-      status: "PAID",
-      message: "ตรวจสอบสลิปสำเร็จ ปลดล็อกไฟล์ PDF ขนาด A4 เรียบร้อยแล้ว"
+      status,
+      message: autoApproved
+        ? "ตรวจสลิปผ่าน ดาวน์โหลดไฟล์ได้เลย"
+        : "ได้รับสลิปแล้ว ร้านจะตรวจและเปิดให้ดาวน์โหลดโดยเร็ว",
     });
   } catch (error) {
-    console.error("verify-slip API error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "เกิดข้อผิดพลาดในการประมวลผลสลิป กรุณาลองใหม่อีกครั้ง"
-      },
-      { status: 500 }
-    );
+    console.error("verify-slip error:", error);
+    return json({ success: false, error: "เกิดข้อผิดพลาดในการรับสลิป กรุณาลองใหม่อีกครั้ง" }, 500);
   }
+}
+
+function notifyTelegram(text: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+  fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text }),
+  }).catch((e) => console.error("Telegram notify error:", e));
 }

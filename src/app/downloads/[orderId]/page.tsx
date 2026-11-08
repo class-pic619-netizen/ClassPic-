@@ -1,19 +1,11 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import Link from "next/link";
-import { getOrder } from "@/lib/ordersStore";
+import { getOrder } from "@/lib/db";
 import OrderDetailClient from "./OrderDetailClient";
 
 interface Props {
   params: Promise<{ orderId: string }>;
-}
-
-export async function generateStaticParams() {
-  return [
-    { orderId: "CP-20261105-001" },
-    { orderId: "CP-20261105-002" },
-    { orderId: "CP-20261105-003" },
-  ];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -26,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function OrderContent({ params }: Props) {
   const { orderId } = await params;
-  const order = getOrder(orderId);
+  const order = await getOrder(orderId);
 
   if (!order) {
     return (

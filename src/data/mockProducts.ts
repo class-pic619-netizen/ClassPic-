@@ -66,7 +66,7 @@ export const MOCK_PRODUCTS: Product[] = [
   {
     id: "cp-004",
     slug: "free-starter-pack-sample",
-    title: "🎁 ชุดใบงานทดลองสอนฟรี (Sample Pack ขนาด A4 2 แผ่น)",
+    title: "ชุดทดลองฟรี ใบงานสองภาษา 2 แผ่น",
     description: "ดาวน์โหลดทดลองปริ้นท์และใช้สอนได้ฟรีทันที 100% ไม่มีเงื่อนไข เพื่อทดสอบความคมชัดของเส้นและขนาดมาตรฐาน A4 จากสตูดิโอ ClassPic",
     grade_level: "2 ภาษา",
     subject: "ศิลปะและกิจกรรม",

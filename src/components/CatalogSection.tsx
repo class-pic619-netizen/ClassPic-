@@ -3,33 +3,29 @@
 import { useState, useMemo } from "react";
 import { Product, GradeLevel, SubjectCategory } from "@/types";
 import ProductCard from "./ProductCard";
-import { Search, RotateCcw } from "lucide-react";
-import { ClassPicSpark } from "./ClassPicLogo";
+import { Search, X } from "lucide-react";
 
 interface CatalogSectionProps {
   products: Product[];
 }
 
-/**
- * ระบบป้ายคั่นแฟ้มสตูดิโอ (Binder Index Tabs) — ไร้ Emoji แบบ AI Template
- */
-const GRADE_TABS: Array<{ code: string; label: string; value: GradeLevel | "all" }> = [
-  { code: "ALL", label: "แฟ้มทั้งหมด", value: "all" },
-  { code: "K-01", label: "อนุบาล / ปฐมวัย", value: "อนุบาล" },
-  { code: "P-13", label: "ประถมต้น (ป.1–ป.3)", value: "ป.1-ป.3" },
-  { code: "P-46", label: "ประถมปลาย (ป.4–ป.6)", value: "ป.4-ป.6" },
-  { code: "SP-ED", label: "การศึกษาพิเศษ", value: "การศึกษาพิเศษ" },
-  { code: "BI-2L", label: "สองภาษา (Bilingual)", value: "2 ภาษา" },
+const GRADE_TABS: Array<{ label: string; value: GradeLevel | "all" }> = [
+  { label: "ทั้งหมด", value: "all" },
+  { label: "อนุบาล", value: "อนุบาล" },
+  { label: "ป.1–3", value: "ป.1-ป.3" },
+  { label: "ป.4–6", value: "ป.4-ป.6" },
+  { label: "การศึกษาพิเศษ", value: "การศึกษาพิเศษ" },
+  { label: "2 ภาษา", value: "2 ภาษา" },
 ];
 
 const SUBJECT_LIST: Array<{ label: string; value: SubjectCategory | "all" }> = [
-  { label: "ทุกหมวดวิชา", value: "all" },
+  { label: "ทุกวิชา", value: "all" },
   { label: "ภาษาอังกฤษ", value: "ภาษาอังกฤษ" },
-  { label: "เชาวน์ปัญญา & EF", value: "เชาวน์ปัญญา" },
+  { label: "เชาวน์ปัญญา", value: "เชาวน์ปัญญา" },
   { label: "คณิตศาสตร์", value: "คณิตศาสตร์" },
   { label: "ภาษาไทย", value: "ภาษาไทย" },
   { label: "วิทยาศาสตร์", value: "วิทยาศาสตร์" },
-  { label: "ศิลปะและกิจกรรม", value: "ศิลปะและกิจกรรม" },
+  { label: "ศิลปะ", value: "ศิลปะและกิจกรรม" },
 ];
 
 export default function CatalogSection({ products }: CatalogSectionProps) {
@@ -66,147 +62,90 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
   const hasActiveFilter =
     searchQuery !== "" || selectedGrade !== "all" || selectedSubject !== "all";
 
-  return (
-    <section
-      id="catalog"
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full space-y-8 scroll-mt-24"
-    >
-      {/* Editorial Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-[#142E4F] pb-6">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#2856B0]">
-            <ClassPicSpark className="w-4 h-4" />
-            <span>CLASSPIC WORKSHEET ARCHIVE</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F] tracking-tight">
-            แฟ้มแคตตาล็อกชุดใบงาน A4
-          </h2>
-          <p className="text-xs sm:text-sm text-[#142E4F]/70">
-            เลือกเปิดดูตามดัชนีระดับชั้นเรียน หรือกรองตามกลุ่มทักษะที่ต้องการสอน
-          </p>
-        </div>
+  const countFor = (grade: GradeLevel | "all") =>
+    grade === "all" ? products.length : products.filter((p) => p.grade_level === grade).length;
 
-        {/* Architectural Search Input */}
-        <div className="w-full md:w-80 relative">
-          <Search className="w-4 h-4 text-[#142E4F] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+  return (
+    <section id="catalog" className="max-w-6xl mx-auto px-5 sm:px-7 w-full pt-6 pb-20 scroll-mt-24">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <h2 className="text-[28px] sm:text-[30px] font-semibold text-cp-navy">ใบงานทั้งหมด</h2>
+        <div className="relative w-full sm:w-[300px]">
+          <Search className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="ค้นหาชื่อใบงาน, ทักษะ, ระดับชั้น..."
-            className="w-full pl-10 pr-8 py-2.5 bg-white border-2 border-[#142E4F] text-sm font-medium text-[#142E4F] focus:outline-none focus:bg-[#AED6F4]/15 shadow-[3px_3px_0px_#AED6F4] transition-all placeholder:text-slate-400"
+            placeholder="ค้นหา เช่น บวกเลข, คำศัพท์"
+            className="input-field pl-10 pr-9"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#142E4F] hover:text-[#F26C28] p-1"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-muted hover:text-cp-navy cursor-pointer"
+              aria-label="ล้างคำค้นหา"
             >
-              [X]
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
 
-      {/* Studio Binder Index Filter Bar */}
-      <div className="space-y-4 bg-white border-2 border-[#142E4F] p-4 sm:p-5 shadow-[4px_4px_0px_#142E4F]">
-        <div className="flex items-center justify-between border-b border-[#142E4F]/15 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 bg-[#F26C28] border border-[#142E4F]" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#142E4F]">
-              INDEX 01 — เลือกระดับชั้นเรียน (GRADE LEVEL)
-            </span>
-          </div>
-
-          {hasActiveFilter && (
+      {/* แท็บระดับชั้น */}
+      <div className="flex gap-7 border-b border-line overflow-x-auto font-head text-[15px] font-medium">
+        {GRADE_TABS.map((tab) => {
+          const active = selectedGrade === tab.value;
+          return (
             <button
-              onClick={resetFilters}
-              className="text-xs font-mono font-bold text-[#F26C28] hover:underline flex items-center gap-1 cursor-pointer"
+              key={tab.value}
+              onClick={() => setSelectedGrade(tab.value)}
+              className={`shrink-0 py-3 -mb-px border-b-2 transition-colors cursor-pointer ${
+                active ? "text-cp-navy border-cp-navy" : "text-muted border-transparent hover:text-cp-navy"
+              }`}
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>RESET ({filteredProducts.length})</span>
+              {tab.label}
+              <small className="ml-1 font-normal text-[#9aa6b2]">{countFor(tab.value)}</small>
             </button>
-          )}
-        </div>
-
-        {/* Binder Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {GRADE_TABS.map((tab) => {
-            const isActive = selectedGrade === tab.value;
-            return (
-              <button
-                key={tab.value}
-                onClick={() => setSelectedGrade(tab.value)}
-                className={`text-xs px-3.5 py-2 font-bold shrink-0 transition-all flex items-center gap-2 border-2 cursor-pointer ${
-                  isActive
-                    ? "bg-[#142E4F] text-white border-[#142E4F] shadow-[2px_2px_0px_#F26C28]"
-                    : "bg-[#FAFBFD] text-[#142E4F] border-[#142E4F]/30 hover:border-[#142E4F] hover:bg-[#AED6F4]/25"
-                }`}
-              >
-                <span
-                  className={`font-mono text-[10px] px-1 py-0.5 ${
-                    isActive
-                      ? "bg-[#F26C28] text-white"
-                      : "bg-[#AED6F4]/50 text-[#142E4F]"
-                  }`}
-                >
-                  {tab.code}
-                </span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Subject Filter Strip */}
-        <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[#142E4F]/10">
-          <span className="text-[11px] font-mono font-bold uppercase text-[#2856B0] mr-1">
-            SUBJECT:
-          </span>
-          {SUBJECT_LIST.map((sub) => {
-            const isActive = selectedSubject === sub.value;
-            return (
-              <button
-                key={sub.value}
-                onClick={() => setSelectedSubject(sub.value)}
-                className={`text-xs px-3 py-1 transition-all border cursor-pointer ${
-                  isActive
-                    ? "bg-[#2856B0] text-white border-[#142E4F] font-bold"
-                    : "bg-white text-[#142E4F]/80 border-[#142E4F]/25 hover:border-[#142E4F] font-medium"
-                }`}
-              >
-                {sub.label}
-              </button>
-            );
-          })}
-        </div>
+          );
+        })}
       </div>
 
-      {/* Products Grid */}
+      {/* วิชา */}
+      <div className="flex flex-wrap gap-2 mt-4 mb-9">
+        {SUBJECT_LIST.map((sub) => {
+          const active = selectedSubject === sub.value;
+          return (
+            <button
+              key={sub.value}
+              onClick={() => setSelectedSubject(sub.value)}
+              className={`text-sm px-3.5 py-1.5 rounded-full transition-colors cursor-pointer ${
+                active ? "bg-cp-sky text-cp-navy font-semibold" : "bg-cp-bg text-muted hover:text-cp-navy"
+              }`}
+            >
+              {sub.label}
+            </button>
+          );
+        })}
+      </div>
+
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index + 1} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-11">
+          {filteredProducts.map((product) => (
+            <div key={product.id} id={product.is_free_sample ? "free" : undefined} className="flex scroll-mt-24">
+              <div className="w-full flex">
+                <ProductCard product={product} />
+              </div>
+            </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white border-2 border-[#142E4F] shadow-[4px_4px_0px_#AED6F4] p-8 space-y-4">
-          <div className="font-mono text-xs font-bold uppercase tracking-widest text-[#F26C28]">
-            [NO MATCHING WORKSHEET FOUND]
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-lg font-extrabold text-[#142E4F]">
-              ไม่พบชุดใบงานในหมวดที่เลือก
-            </h3>
-            <p className="text-xs text-[#142E4F]/70 max-w-sm mx-auto">
-              ลองล้างตัวกรองเพื่อเปิดดูแฟ้มใบงานทั้งหมดในสตูดิโอ ClassPic
-            </p>
-          </div>
-          <button
-            onClick={resetFilters}
-            className="bg-[#142E4F] hover:bg-[#2856B0] text-white text-xs font-bold px-5 py-2.5 border-2 border-[#142E4F] transition-colors cursor-pointer"
-          >
-            แสดงใบงานทั้งหมด
-          </button>
+        <div className="text-center py-16 rounded-2xl bg-cp-bg">
+          <h3 className="text-lg font-semibold text-cp-navy">ยังไม่มีใบงานที่ตรงกับที่เลือก</h3>
+          <p className="text-muted mt-1 mb-5">ลองเปลี่ยนชั้นหรือวิชา หรือค้นหาด้วยคำอื่น</p>
+          {hasActiveFilter && (
+            <button onClick={resetFilters} className="btn-secondary cursor-pointer">
+              ดูใบงานทั้งหมด
+            </button>
+          )}
         </div>
       )}
     </section>

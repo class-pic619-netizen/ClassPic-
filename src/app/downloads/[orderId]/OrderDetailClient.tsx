@@ -2,22 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { 
-  CheckCircle2, 
-  Download, 
-  Clock, 
-  AlertCircle, 
-  FileText, 
-  ShieldCheck, 
-  Copy, 
-  Check, 
-  ArrowLeft, 
-  Upload, 
-  Sparkles,
-  RefreshCw,
-  ExternalLink
-} from "lucide-react";
+import { CheckCircle2, AlertCircle, Copy, Check, ArrowLeft, Loader2 } from "lucide-react";
+import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
 import { Order } from "@/types";
 
 interface Props {
@@ -115,301 +101,161 @@ export default function OrderDetailClient({ initialOrder }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Navigation back */}
-        <div className="mb-6 flex items-center justify-between">
-          <Link
-            href="/downloads"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-[#142E4F] transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>กลับไปหน้าค้นหาใบงาน</span>
-          </Link>
-          <Link
-            href="/"
-            className="text-xs text-[#2856B0] hover:underline font-medium"
-          >
-            ไปหน้าร้านแคตตาล็อกหลัก
-          </Link>
-        </div>
+    <div className="max-w-3xl mx-auto px-5 sm:px-7 py-8 lg:py-10">
+      <Link
+        href="/downloads"
+        className="inline-flex items-center gap-1.5 font-head text-[15px] font-medium text-muted hover:text-cp-navy"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        ค้นหาคำสั่งซื้ออื่น
+      </Link>
 
-        {/* Status Banner */}
+      <div className="mt-6">
         {isPaid ? (
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-start sm:items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wider mb-1">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    ชำระเงินเรียบร้อย
-                  </div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                    ปลดล็อกไฟล์ PDF เรียบร้อยแล้ว!
-                  </h1>
-                  <p className="text-emerald-100 text-sm mt-1">
-                    ขอบคุณที่สนับสนุนผลงานสร้างสรรค์จาก ClassPic Studio สามารถกดดาวน์โหลดไฟล์ด้านล่างได้ทันที
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <>
+            <span className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1b8a4b] bg-[#1b8a4b]/10 px-2.5 py-0.5 rounded-full">
+              <CheckCircle2 className="w-4 h-4" /> ชำระแล้ว
+            </span>
+            <h1 className="text-[30px] font-bold text-cp-navy mt-3">ดาวน์โหลดไฟล์ได้เลย</h1>
+            <p className="text-muted mt-1">ขอบคุณที่อุดหนุน ClassPic ไฟล์อยู่ด้านล่าง กดโหลดซ้ำได้ตลอด</p>
+          </>
         ) : (
-          <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-6 sm:p-8 shadow-sm mb-8">
-            <div className="flex items-start sm:items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
-                <Clock className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-extrabold tracking-tight">
-                  รอการยืนยันการชำระเงิน
-                </h1>
-                <p className="text-amber-100 text-sm mt-1">
-                  คำสั่งซื้อนี้ยังไม่ได้รับการตรวจสอบสลิป กรุณาแนบรูปสลิปด้านล่างเพื่อปลดล็อกไฟล์ใบงาน A4
-                </p>
-              </div>
-            </div>
-          </div>
+          <>
+            <span className="inline-flex text-sm font-medium text-cp-orange-dark bg-cp-orange/10 px-2.5 py-0.5 rounded-full">
+              รอชำระเงิน
+            </span>
+            <h1 className="text-[30px] font-bold text-cp-navy mt-3">แนบสลิปเพื่อรับไฟล์</h1>
+            <p className="text-muted mt-1">คำสั่งซื้อนี้ยังไม่มีสลิป แนบรูปสลิปด้านล่างแล้วไฟล์จะเปิดให้โหลด</p>
+          </>
         )}
-
-        {/* Order Meta Card */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 mb-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-slate-400 text-xs block">รหัสคำสั่งซื้อ</span>
-              <span className="font-mono font-bold text-[#142E4F] text-base">
-                #{order.id}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400 text-xs block">ข้อมูลผู้ซื้อ</span>
-              <span className="font-medium text-slate-800 break-all">
-                {order.customer_contact}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400 text-xs block">ยอดชำระสุทธิ</span>
-              <span className="font-extrabold text-[#F26C28] text-base">
-                ฿{order.total_amount.toLocaleString()}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400 text-xs block">รหัสอ้างอิงธนาคาร (TransRef)</span>
-              <span className="font-mono text-xs text-slate-600 truncate block">
-                {order.trans_ref || "— ยังไม่มีสลิป —"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* If PENDING: Show Slip Upload Section */}
-        {!isPaid && (
-          <div className="bg-white rounded-2xl border-2 border-dashed border-[#2856B0]/40 p-6 sm:p-8 mb-8 shadow-sm">
-            <h2 className="text-lg font-bold text-[#142E4F] flex items-center gap-2 mb-2">
-              <Upload className="w-5 h-5 text-[#2856B0]" />
-              แนบรูปสลิปโอนเงินเพื่อปลดล็อกไฟล์ทันที
-            </h2>
-            <p className="text-sm text-slate-500 mb-6">
-              ระบบจะสแกน Mini QR บนสลิปและตรวจสอบกับฐานข้อมูลทันที เมื่อผ่านแล้วปุ่มดาวน์โหลดจะเปิดใช้งานอัตโนมัติ
-            </p>
-
-            {verifyError && (
-              <div className="mb-4 bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">{verifyError}</p>
-              </div>
-            )}
-
-            {verifySuccessMsg && (
-              <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl p-4 flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                <p className="text-sm font-medium">{verifySuccessMsg}</p>
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="w-full sm:w-1/2">
-                <label className="block w-full border-2 border-slate-200 hover:border-[#2856B0] rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-50 hover:bg-[#AED6F4]/20">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                  <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                  <span className="text-sm font-semibold text-slate-700 block">
-                    {slipFile ? slipFile.name : "กดเพื่อเลือกรูปภาพสลิป"}
-                  </span>
-                  <span className="text-xs text-slate-400 mt-1 block">
-                    รองรับ JPG, PNG, WebP (รูปถ่ายสลิปจากแอปธนาคาร)
-                  </span>
-                </label>
-              </div>
-
-              {slipPreview && (
-                <div className="w-full sm:w-1/2 flex flex-col items-center">
-                  <div className="relative w-40 h-52 rounded-lg overflow-hidden border border-slate-300 shadow-sm mb-3">
-                    <img
-                      src={slipPreview}
-                      alt="Slip preview"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleVerifySlip}
-                    disabled={verifying}
-                    className="w-full py-3 bg-[#F26C28] hover:bg-[#e06800] text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    {verifying ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>กำลังสแกนและตรวจสอบสลิป...</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShieldCheck className="w-5 h-5" />
-                        <span>ยืนยันและปลดล็อกไฟล์</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Worksheets Download Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-[#142E4F] flex items-center gap-2">
-              <FileText className="w-5 h-5 text-[#2856B0]" />
-              รายการใบงานในคำสั่งซื้อ ({order.items.length} รายการ)
-            </h2>
-            {isPaid && (
-              <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                พร้อมดาวน์โหลด A4 คมชัดสูง
-              </span>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            {order.items.map((item, idx) => {
-              const product = item.product;
-              const isCopied = copiedId === product.id;
-              const isDownloading = downloadingId === product.id;
-
-              return (
-                <div
-                  key={idx}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 transition-all hover:border-[#2856B0]/40"
-                >
-                  <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
-                    {/* Thumbnail */}
-                    <div className="relative w-20 h-28 sm:w-24 sm:h-32 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-200 shadow-inner">
-                      <Image
-                        src={product.cover_image}
-                        alt={product.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 80px, 96px"
-                      />
-                    </div>
-
-                    {/* Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap gap-1.5 mb-1.5">
-                        <span className="px-2 py-0.5 rounded-md bg-[#AED6F4]/50 text-[#142E4F] text-xs font-medium">
-                          {product.grade_level}
-                        </span>
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">
-                          {product.subject}
-                        </span>
-                        {product.has_answer_key && (
-                          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
-                            มีเฉลยละเอียด
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="text-base sm:text-lg font-bold text-[#142E4F] line-clamp-2">
-                        {product.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                        ขนาดกระดาษมาตรฐาน A4 (210 x 297 mm) • ความยาว {product.page_count} หน้า • มาสเตอร์คมชัด 300 DPI
-                      </p>
-                    </div>
-
-                    {/* Download Controls */}
-                    <div className="w-full sm:w-auto flex flex-col gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                      {isPaid ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => handleDownloadDirect(product.id)}
-                            disabled={isDownloading}
-                            className="px-5 py-3 bg-[#F26C28] hover:bg-[#e06800] text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2 text-sm"
-                          >
-                            {isDownloading ? (
-                              <RefreshCw className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Download className="w-4 h-4" />
-                            )}
-                            <span>ดาวน์โหลด PDF (A4 คมชัดสูง)</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => handleCopyLink(product.id)}
-                            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5"
-                          >
-                            {isCopied ? (
-                              <>
-                                <Check className="w-3.5 h-3.5 text-emerald-600" />
-                                <span className="text-emerald-700 font-semibold">คัดลอกลิงก์ 15 นาทีแล้ว!</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="w-3.5 h-3.5" />
-                                <span>คัดลอกลิงก์ลับ (อายุ 15 นาที)</span>
-                              </>
-                            )}
-                          </button>
-                        </>
-                      ) : (
-                        <div className="text-center sm:text-right">
-                          <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-400 text-xs font-medium">
-                            🔒 แนบสลิปเพื่อปลดล็อก
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Security Rule Card */}
-        <div className="bg-[#AED6F4]/20 border border-[#AED6F4] rounded-2xl p-6 text-sm text-[#142E4F]">
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-[#2856B0] shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <h4 className="font-bold text-[#142E4F]">
-                มาตรฐานความปลอดภัยในการส่งมอบไฟล์ของ ClassPic Store
-              </h4>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                • ลิงก์ดาวน์โหลดตรงมีอายุความปลอดภัย 15 นาที หากลิงก์หมดอายุ ท่านสามารถกดปุ่ม <strong>&quot;ดาวน์โหลด PDF&quot;</strong> หรือเข้ามาที่หน้านี้เพื่อขอรับลิงก์ใหม่ได้ตลอดชีพ<br />
-                • ไฟล์ใบงานทุกไฟล์ถูกสร้างและส่งตรงจากมาสเตอร์ A4 คมชัด 300 DPI ปริ้นท์แล้วตัวหนังสือไม่เบลอ ไม่แตก<br />
-                • หากมีข้อสงสัยหรือต้องการความช่วยเหลือ สามารถแจ้งทีมงาน ClassPic ได้ตลอด 24 ชั่วโมง
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
+
+      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8 py-5 border-y border-line text-[15px]">
+        <div>
+          <dt className="text-sm text-muted">คำสั่งซื้อ</dt>
+          <dd className="font-head font-semibold text-cp-navy">{order.id}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted">ผู้ซื้อ</dt>
+          <dd className="text-cp-navy break-all">{order.customer_contact}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted">ยอดชำระ</dt>
+          <dd className="font-head font-semibold text-cp-navy">฿{order.total_amount.toLocaleString()}</dd>
+        </div>
+      </dl>
+
+      {!isPaid && (
+        <section className="panel p-6 mt-8">
+          <h2 className="text-lg font-semibold text-cp-navy">แนบสลิป</h2>
+          <p className="text-sm text-muted mb-5">รูปสลิปจากแอปธนาคาร (JPG, PNG)</p>
+
+          {verifyError && (
+            <div className="mb-4 rounded-xl bg-[#c0392b]/5 border border-[#c0392b]/20 p-3 text-sm text-[#c0392b] flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" /> {verifyError}
+            </div>
+          )}
+          {verifySuccessMsg && (
+            <div className="mb-4 rounded-xl bg-[#1b8a4b]/5 border border-[#1b8a4b]/20 p-3 text-sm text-[#1b8a4b] flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" /> {verifySuccessMsg}
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-6 items-start">
+            <label className="flex-1 w-full rounded-xl border-2 border-dashed border-[#CFD7E0] hover:border-cp-blue bg-cp-bg p-6 text-center cursor-pointer">
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              <span className="font-head font-medium text-cp-navy block">
+                {slipFile ? slipFile.name : "กดเพื่อเลือกรูปสลิป"}
+              </span>
+              <span className="text-sm text-muted">{slipFile ? "กดเพื่อเปลี่ยนรูป" : "JPG, PNG, WebP"}</span>
+            </label>
+
+            {slipPreview && (
+              <div className="w-full sm:w-44 flex flex-col items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={slipPreview} alt="สลิปที่เลือก" className="w-36 h-48 object-contain rounded-lg border border-line bg-white" />
+                <button
+                  type="button"
+                  onClick={handleVerifySlip}
+                  disabled={verifying}
+                  className="btn-primary w-full cursor-pointer"
+                >
+                  {verifying ? <Loader2 className="w-4 h-4 animate-spin" /> : "ยืนยันสลิป"}
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <section className="mt-10">
+        <h2 className="text-lg font-semibold text-cp-navy mb-2">
+          ใบงานในคำสั่งซื้อ <span className="text-muted font-normal">({order.items.length})</span>
+        </h2>
+        <ul>
+          {order.items.map((item, idx) => {
+            const product = item.product;
+            const isCopied = copiedId === product.id;
+            const isDownloading = downloadingId === product.id;
+            return (
+              <li key={idx} className="flex gap-5 py-6 border-b border-line last:border-0">
+                <div className="w-20 shrink-0 aspect-[210/297]">
+                  <WorksheetPaperPreview
+                    slug={product.slug}
+                    title={product.title}
+                    gradeLevel={product.grade_level}
+                    subject={product.subject}
+                    coverImage={product.cover_image}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-muted">
+                    {product.subject} · {product.grade_level}
+                  </div>
+                  <h3 className="text-[17px] font-semibold text-cp-navy leading-snug mt-0.5">{product.title}</h3>
+                  <p className="text-sm text-muted mt-1">
+                    PDF A4 · {product.page_count} หน้า{product.has_answer_key ? " · มีเฉลย" : ""}
+                  </p>
+
+                  {isPaid ? (
+                    <div className="flex flex-wrap items-center gap-4 mt-4">
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadDirect(product.id)}
+                        disabled={isDownloading}
+                        className="btn-primary text-sm px-5 py-2.5 cursor-pointer"
+                      >
+                        {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : "ดาวน์โหลด PDF"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyLink(product.id)}
+                        className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-cp-navy cursor-pointer"
+                      >
+                        {isCopied ? (
+                          <>
+                            <Check className="w-4 h-4 text-[#1b8a4b]" /> คัดลอกแล้ว (ใช้ได้ 15 นาที)
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4" /> คัดลอกลิงก์ไปเปิดเครื่องอื่น
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted mt-3">แนบสลิปแล้วปุ่มดาวน์โหลดจะขึ้นตรงนี้</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <p className="text-sm text-muted mt-10 pt-6 border-t border-line">
+        ลิงก์ที่คัดลอกใช้ได้ 15 นาที ถ้าหมดอายุ กลับมาหน้านี้แล้วกดดาวน์โหลดใหม่ได้เสมอ · มีปัญหาติดต่อ LINE @classpic
+      </p>
     </div>
   );
 }

@@ -1,103 +1,76 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { ShoppingBag, Download, Menu, X, ArrowUpRight } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import ClassPicLogo, { ClassPicMark } from "./ClassPicLogo";
+
+const NAV_LINKS = [
+  { href: "/#catalog", label: "ใบงานทั้งหมด" },
+  { href: "/#free", label: "ชุดฟรี" },
+  { href: "/downloads", label: "โหลดไฟล์ที่ซื้อแล้ว" },
+];
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { totalItems, setIsCartOpen } = useCart();
+  const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-[#142E4F]">
-      {/* Studio Top Spec Ribbon */}
-      <div className="bg-[#142E4F] text-white text-[10px] sm:text-[11px] py-1.5 px-4 border-b border-[#2856B0]/40">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-mono tracking-wider uppercase text-[#AED6F4]">
-            <span className="inline-block w-2 h-2 bg-[#F26C28]" />
-            <span>BRIGHT OUTSIDE — CLEAR INSIDE</span>
-            <span className="hidden md:inline text-white/30">|</span>
-            <span className="hidden md:inline text-white/85">
-              A4 THAI PRINT STANDARD (210 × 297 MM • 300 DPI)
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 text-[10px] font-medium">
-            <Link
-              href="/downloads"
-              className="text-[#AED6F4] hover:text-white transition-colors flex items-center gap-1"
-            >
-              <span>ค้นหาใบงานที่เคยซื้อ</span>
-              <ArrowUpRight className="w-3 h-3 text-[#F26C28]" />
-            </Link>
-            <span className="text-white/25">|</span>
-            <Link
-              href="/admin"
-              className="text-white/60 hover:text-white transition-colors font-mono"
-            >
-              STUDIO ADMIN
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Bright Studio Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Brand Logo: Authentic ClassPicMark + ClassPic Wordmark */}
-          <Link href="/" className="flex items-center gap-3.5 group py-2">
-            <ClassPicMark className="w-11 h-11 shrink-0 transition-transform duration-200 group-hover:-rotate-3" />
-            <ClassPicLogo size="md" theme="light" showSubtitle={true} />
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
+      <div className="max-w-6xl mx-auto px-5 sm:px-7">
+        <div className="flex items-center gap-10 h-[72px]">
+          <Link href="/" aria-label="ClassPic หน้าแรก" className="shrink-0">
+            <Image
+              src="/logo-wordmark.png"
+              alt="ClassPic"
+              width={800}
+              height={167}
+              priority
+              className="h-8 w-auto"
+            />
           </Link>
 
-          {/* Desktop Editorial Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 border-2 border-[#142E4F] bg-[#F8FAFC] p-1">
-            <Link
-              href="/"
-              className="px-3.5 py-1.5 text-xs font-bold text-[#142E4F] hover:bg-[#AED6F4]/40 transition-colors flex items-center gap-1.5"
-            >
-              <span className="font-mono text-[10px] text-[#2856B0]">01</span>
-              <span>หน้าแรกสตูดิโอ</span>
-            </Link>
-            <span className="h-4 w-[1px] bg-[#142E4F]/15" />
-            <Link
-              href="/#catalog"
-              className="px-3.5 py-1.5 text-xs font-bold text-[#142E4F] hover:bg-[#AED6F4]/40 transition-colors flex items-center gap-1.5"
-            >
-              <span className="font-mono text-[10px] text-[#F26C28]">02</span>
-              <span>แฟ้มใบงาน A4 ทั้งหมด</span>
-            </Link>
-            <span className="h-4 w-[1px] bg-[#142E4F]/15" />
-            <Link
-              href="/downloads"
-              className="px-3.5 py-1.5 text-xs font-bold text-[#142E4F] hover:bg-[#AED6F4]/40 transition-colors flex items-center gap-1.5"
-            >
-              <Download className="w-3.5 h-3.5 text-[#2856B0]" />
-              <span>โหลดไฟล์เดิมซ้ำ</span>
-            </Link>
+          <nav className="hidden md:flex items-center gap-7 font-head text-[15px] font-medium">
+            {NAV_LINKS.map((link) => {
+              const active = link.href === "/downloads" && pathname.startsWith("/downloads");
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`transition-colors ${
+                    active ? "text-cp-navy" : "text-muted hover:text-cp-navy"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right Tactile Cart Button */}
-          <div className="flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2">
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-2.5 bg-[#F26C28] hover:bg-[#e06905] text-white border-2 border-[#142E4F] px-4 py-2 text-xs sm:text-sm font-extrabold tracking-tight shadow-[3px_3px_0px_#142E4F] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#142E4F] active:translate-y-[1px] active:shadow-[1px_1px_0px_#142E4F] transition-all cursor-pointer"
-              aria-label="Open Cart"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg font-head text-[15px] font-medium text-cp-navy hover:bg-cp-bg transition-colors cursor-pointer"
+              aria-label="เปิดตะกร้า"
             >
-              <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
-              <span className="hidden sm:inline">แฟ้มสั่งซื้อ</span>
-              <span className="inline-flex items-center justify-center bg-[#142E4F] text-white font-mono text-xs font-bold h-5 min-w-5 px-1.5">
+              <ShoppingBag className="w-5 h-5" strokeWidth={1.8} />
+              <span className="hidden sm:inline">ตะกร้า</span>
+              <span
+                className={`min-w-[22px] h-[22px] px-1.5 rounded-full text-xs font-bold grid place-items-center ${
+                  totalItems > 0 ? "bg-cp-orange text-white" : "bg-cp-navy text-white"
+                }`}
+              >
                 {totalItems}
               </span>
             </button>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 border-2 border-[#142E4F] bg-white text-[#142E4F] hover:bg-[#AED6F4]/30 transition-colors"
-              aria-label="Toggle Menu"
+              className="md:hidden p-2 rounded-lg text-cp-navy hover:bg-cp-bg cursor-pointer"
+              aria-label="เมนู"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -105,41 +78,19 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t-2 border-[#142E4F] px-4 pt-3 pb-5 space-y-2">
-          <Link
-            href="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-3 py-2.5 border border-[#142E4F]/20 text-sm font-bold text-[#142E4F] hover:bg-[#AED6F4]/30"
-          >
-            <span>01 — หน้าแรกสตูดิโอ</span>
-            <ArrowUpRight className="w-4 h-4 text-[#2856B0]" />
-          </Link>
-          <Link
-            href="/#catalog"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-3 py-2.5 border border-[#142E4F]/20 text-sm font-bold text-[#142E4F] hover:bg-[#AED6F4]/30"
-          >
-            <span>02 — แฟ้มใบงาน A4 ทั้งหมด</span>
-            <ArrowUpRight className="w-4 h-4 text-[#F26C28]" />
-          </Link>
-          <Link
-            href="/downloads"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-between px-3 py-2.5 border border-[#142E4F]/20 text-sm font-bold text-[#2856B0] bg-[#AED6F4]/20"
-          >
-            <span>03 — ค้นหาและดาวน์โหลดไฟล์เดิม</span>
-            <Download className="w-4 h-4 text-[#F26C28]" />
-          </Link>
-          <Link
-            href="/admin"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-xs font-mono text-slate-500 hover:text-[#142E4F]"
-          >
-            [ADMIN CONSOLE /admin]
-          </Link>
-        </div>
+        <nav className="md:hidden border-t border-line bg-white px-5 py-3 font-head">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-3 text-[16px] font-medium text-cp-navy border-b border-line last:border-0"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       )}
     </header>
   );

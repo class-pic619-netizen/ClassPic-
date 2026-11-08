@@ -1,12 +1,24 @@
 @import "tailwindcss";
 
+/*
+ * ClassPic design tokens — Bright Outside, Clear Inside
+ * สีจากแผ่นแบรนด์ v2 (assets/classpic-brand-sheet-v2.webp)
+ */
 @theme {
   --color-cp-navy: #142E4F;
   --color-cp-blue: #2856B0;
   --color-cp-sky: #AED6F4;
   --color-cp-orange: #F26C28;
-  --color-cp-bg: #F8FAFC;
-  --font-thai: var(--font-prompt), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --color-cp-orange-dark: #D95A18;
+  --color-cp-bg: #F6F8FB;
+  --color-cp-mist: #EDF5FC;
+  --color-ink: #1D2733;
+  --color-muted: #5D6B7A;
+  --color-line: #E3E8EE;
+
+  --font-head: var(--font-nunito), var(--font-mitr), sans-serif;
+  --font-body: var(--font-anuphan), var(--font-nunito), sans-serif;
+  --font-sans: var(--font-anuphan), var(--font-nunito), sans-serif;
 }
 
 :root {
@@ -14,35 +26,83 @@
   --cp-blue: #2856B0;
   --cp-sky: #AED6F4;
   --cp-orange: #F26C28;
-  --cp-bg: #F8FAFC;
-  --background: #F8FAFC;
-  --foreground: #142E4F;
+  --cp-bg: #F6F8FB;
+  --background: #FFFFFF;
+  --foreground: #1D2733;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--cp-bg);
-  color: var(--cp-navy);
-  font-family: var(--font-thai);
+  background-color: #FFFFFF;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom utility colors */
-.bg-cp-navy { background-color: #142E4F; }
-.bg-cp-blue { background-color: #2856B0; }
-.bg-cp-sky { background-color: #AED6F4; }
-.bg-cp-orange { background-color: #F26C28; }
-.bg-cp-bg { background-color: #F8FAFC; }
+h1, h2, h3, h4, button, .font-head {
+  font-family: var(--font-head);
+}
 
-.text-cp-navy { color: #142E4F; }
-.text-cp-blue { color: #2856B0; }
-.text-cp-sky { color: #AED6F4; }
-.text-cp-orange { color: #F26C28; }
+/* ปุ่มหลักของร้าน — ใช้สีส้มเฉพาะปุ่มที่พาไปซื้อ */
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-cp-orange);
+  color: #fff;
+  font-family: var(--font-head);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.15s;
+  &:hover { background-color: var(--color-cp-orange-dark); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
 
-.border-cp-navy { border-color: #142E4F; }
-.border-cp-blue { border-color: #2856B0; }
-.border-cp-sky { border-color: #AED6F4; }
-.border-cp-orange { border-color: #F26C28; }
+/* ปุ่มรอง — ขอบบาง พื้นขาว */
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  color: var(--color-cp-navy);
+  font-family: var(--font-head);
+  font-weight: 500;
+  border: 1px solid #CFD7E0;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  transition: border-color 0.15s;
+  &:hover { border-color: var(--color-cp-navy); }
+}
 
-.hover\:bg-cp-orange-dark:hover { background-color: #d96303; }
-.hover\:bg-cp-blue-dark:hover { background-color: #144e91; }
+/* กล่องเนื้อหาทั่วไป */
+@utility panel {
+  background-color: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+}
+
+/* กระดาษใบงาน — สัดส่วน A4 เงานุ่ม มุมคม */
+@utility paper {
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(20, 46, 79, 0.08), 0 10px 28px rgba(20, 46, 79, 0.12);
+}
+
+@utility input-field {
+  width: 100%;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 15px;
+  background: #fff;
+  color: var(--color-ink);
+  &:focus { outline: none; border-color: var(--color-cp-blue); box-shadow: 0 0 0 3px rgba(40, 86, 176, 0.12); }
+  &::placeholder { color: #9AA6B2; }
+}

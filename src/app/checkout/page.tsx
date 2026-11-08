@@ -5,20 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Upload,
-  AlertCircle,
-  Download,
-  Loader2,
-  Phone,
-  Mail,
-  ShieldCheck,
-  QrCode,
-  Sparkles,
-  ShoppingBag,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, AlertCircle, Download, Loader2 } from "lucide-react";
+import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -264,417 +252,214 @@ export default function CheckoutPage() {
   // If cart is empty on initial render
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen bg-slate-50 py-16 px-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-xs">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-            <ShoppingBag className="w-8 h-8" />
-          </div>
-          <h2 className="text-xl font-bold text-[#142E4F] mb-2">ไม่มีสินค้าที่ต้องชำระ</h2>
-          <p className="text-sm text-slate-500 mb-6">
-            ตะกร้าสินค้าของคุณยังว่างอยู่ กรุณาเลือกใบงานก่อนเข้าสู่หน้าชำระเงิน
-          </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 bg-[#2856B0] hover:bg-[#142E4F] text-white font-semibold px-6 py-2.5 rounded-xl transition shadow-xs text-sm"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>กลับไปเลือกใบงาน</span>
-          </Link>
-        </div>
+      <div className="max-w-md mx-auto px-5 py-24 text-center">
+        <h1 className="text-2xl font-bold text-cp-navy">ยังไม่มีใบงานที่ต้องชำระ</h1>
+        <p className="text-muted mt-2 mb-7">เลือกใบงานใส่ตะกร้าก่อน แล้วค่อยกลับมาที่หน้านี้</p>
+        <Link href="/#catalog" className="btn-primary">
+          ดูใบงานทั้งหมด
+        </Link>
       </div>
     );
   }
 
+  const stepTitle = (n: number, title: string, sub?: string) => (
+    <div className="flex items-start gap-3 mb-5">
+      <span className="w-8 h-8 shrink-0 rounded-full bg-cp-navy text-white grid place-items-center font-head font-semibold">
+        {n}
+      </span>
+      <div>
+        <h2 className="text-lg font-semibold text-cp-navy leading-8">{title}</h2>
+        {sub && <p className="text-sm text-muted">{sub}</p>}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-slate-50 py-10 sm:py-14">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navigation Breadcrumb */}
-        <div className="mb-6">
-          <Link
-            href="/cart"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#2856B0] hover:text-[#142E4F] transition"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>กลับไปที่ตะกร้าสินค้า</span>
-          </Link>
-        </div>
+    <div className="max-w-5xl mx-auto px-5 sm:px-7 py-8 lg:py-10">
+      <Link
+        href="/cart"
+        className="inline-flex items-center gap-1.5 font-head text-[15px] font-medium text-muted hover:text-cp-navy"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        กลับไปตะกร้า
+      </Link>
+      <h1 className="text-[30px] font-bold text-cp-navy mt-5 mb-8">ชำระเงิน</h1>
 
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F] flex items-center gap-2">
-            <span>ชำระเงินและรับไฟล์ใบงาน</span>
-            <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full">
-              ดาวน์โหลดได้ทันที
-            </span>
-          </h1>
-          <p className="text-slate-500 text-sm mt-1">
-            สแกนชำระผ่าน PromptPay QR ยอดตรง 100% แล้วแนบสลิปเพื่อปลดล็อกไฟล์ PDF คุณภาพสูง
-          </p>
-        </div>
+      <div className="grid lg:grid-cols-[1fr_340px] gap-10 items-start">
+        <div className="space-y-6">
+          {/* ขั้นที่ 1 */}
+          <section className="panel p-6">
+            {stepTitle(1, "เบอร์โทรหรืออีเมล", "ใช้สำหรับกลับมาโหลดไฟล์ซ้ำ ไม่ต้องสมัครสมาชิก")}
+            <input
+              type="text"
+              value={contact}
+              onChange={(e) => {
+                setContact(e.target.value);
+                if (contactError) setContactError("");
+              }}
+              placeholder="เช่น 0812345678 หรือ teacher@school.ac.th"
+              className={`input-field ${contactError ? "!border-[#c0392b]" : ""}`}
+            />
+            {contactError && (
+              <p className="text-sm text-[#c0392b] flex items-center gap-1.5 mt-2">
+                <AlertCircle className="w-4 h-4" />
+                {contactError}
+              </p>
+            )}
+          </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Main Form (Left Column) */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Step 1: Contact Information */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="w-7 h-7 rounded-full bg-[#2856B0] text-white flex items-center justify-center font-bold text-sm">
-                  1
-                </span>
+          {/* ขั้นที่ 2 */}
+          <section className="panel p-6">
+            {stepTitle(2, "สแกนจ่ายพร้อมเพย์", "ใช้แอปธนาคารไหนก็ได้ ยอดเงินขึ้นให้อัตโนมัติ")}
+
+            {!qrGenerated ? (
+              <div className="rounded-xl bg-cp-bg p-8 text-center">
+                <p className="text-muted mb-4">
+                  ยอดที่ต้องโอน <strong className="font-head text-cp-navy text-lg">฿{totalAmount}</strong>
+                </p>
+                <button
+                  type="button"
+                  onClick={() => generateQRCode()}
+                  disabled={isGeneratingQR}
+                  className="btn-primary cursor-pointer"
+                >
+                  {isGeneratingQR ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> กำลังสร้าง QR...
+                    </>
+                  ) : (
+                    "แสดง QR พร้อมเพย์"
+                  )}
+                </button>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-[220px_1fr] gap-6 items-start">
+                <div className="text-center">
+                  <div className="relative w-[220px] h-[220px] rounded-xl border border-line bg-white p-2 mx-auto">
+                    {qrDataUrl ? (
+                      <Image src={qrDataUrl} alt="QR พร้อมเพย์" fill className="object-contain p-2" unoptimized />
+                    ) : (
+                      <div className="w-full h-full bg-cp-bg animate-pulse rounded-lg" />
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleDownloadQR}
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm font-head font-medium text-cp-blue hover:text-cp-navy cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    บันทึกรูป QR
+                  </button>
+                </div>
                 <div>
-                  <h2 className="text-base font-bold text-[#142E4F]">
-                    ข้อมูลสำหรับรับไฟล์และค้นหาย้อนหลัง
-                  </h2>
-                  <p className="text-xs text-slate-500">
-                    ไม่ต้องสมัครสมาชิก ใช้เบอร์โทรหรืออีเมลเพื่อดาวน์โหลดซ้ำได้ตลอดเวลา
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold text-slate-700">
-                  เบอร์โทรศัพท์ หรือ อีเมลของคุณครู/ผู้ปกครอง <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    {contact.includes("@") ? (
-                      <Mail className="w-4 h-4" />
-                    ) : (
-                      <Phone className="w-4 h-4" />
-                    )}
+                  <div className="text-sm text-muted">ยอดโอน</div>
+                  <div className="font-head text-[32px] font-bold text-cp-navy leading-tight">฿{totalAmount}</div>
+                  <div className="text-sm text-muted mt-1">
+                    ชื่อบัญชี ClassPic Studio · พร้อมเพย์ {promptpayId}
                   </div>
-                  <input
-                    type="text"
-                    value={contact}
-                    onChange={(e) => {
-                      setContact(e.target.value);
-                      if (contactError) setContactError("");
-                    }}
-                    placeholder="เช่น 0812345678 หรือ teacher@school.ac.th"
-                    className={`w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2856B0] transition ${
-                      contactError ? "border-rose-400 ring-rose-200" : "border-slate-300"
-                    }`}
-                  />
+                  <ol className="mt-5 space-y-1.5 text-[15px] text-ink list-decimal pl-5">
+                    <li>เปิดแอปธนาคาร เลือก &ldquo;สแกน&rdquo;</li>
+                    <li>สแกน QR นี้ หรือเลือกรูป QR จากอัลบั้ม</li>
+                    <li>ตรวจยอดให้เป็น ฿{totalAmount} แล้วกดยืนยัน</li>
+                    <li>เก็บรูปสลิปไว้แนบในขั้นถัดไป</li>
+                  </ol>
                 </div>
-                {contactError && (
-                  <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {contactError}
-                  </p>
-                )}
               </div>
-            </div>
+            )}
+          </section>
 
-            {/* Step 2: PromptPay QR Code Generation */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-full bg-[#2856B0] text-white flex items-center justify-center font-bold text-sm">
-                    2
-                  </span>
-                  <div>
-                    <h2 className="text-base font-bold text-[#142E4F]">
-                      สแกนจ่ายด้วยแอปธนาคารใดก็ได้
-                    </h2>
-                    <p className="text-xs text-slate-500">
-                      รองรับ Mobile Banking ทุกธนาคาร (กสิกร, ไทยพาณิชย์, กรุงไทย, ฯลฯ)
-                    </p>
+          {/* ขั้นที่ 3 */}
+          <section className="panel p-6">
+            {stepTitle(3, "แนบสลิป", "แนบรูปสลิปจากแอปธนาคาร แล้วกดยืนยัน")}
+
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-colors ${
+                isDragging
+                  ? "border-cp-blue bg-cp-mist"
+                  : slipPreview
+                    ? "border-[#1b8a4b]/40 bg-[#1b8a4b]/5"
+                    : "border-[#CFD7E0] hover:border-cp-blue bg-cp-bg"
+              }`}
+            >
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              {slipPreview ? (
+                <div className="space-y-3">
+                  <div className="relative w-36 h-48 mx-auto rounded-lg overflow-hidden border border-line bg-white">
+                    <Image src={slipPreview} alt="สลิปที่เลือก" fill className="object-contain" unoptimized />
                   </div>
-                </div>
-
-                {!qrGenerated && (
-                  <button
-                    type="button"
-                    onClick={() => generateQRCode()}
-                    disabled={isGeneratingQR}
-                    className="text-xs font-semibold bg-[#2856B0] hover:bg-[#142E4F] text-white px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                  >
-                    {isGeneratingQR ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <QrCode className="w-3.5 h-3.5" />
-                    )}
-                    <span>สร้าง QR Code</span>
-                  </button>
-                )}
-              </div>
-
-              {!qrGenerated ? (
-                <div className="bg-slate-50 border border-dashed border-slate-200 rounded-xl p-8 text-center">
-                  <QrCode className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-slate-600 mb-2">
-                    กดปุ่มสร้าง QR Code เพื่อรับภาพพร้อมเพย์ล็อกยอดเงิน ฿{totalAmount.toFixed(2)}
+                  <p className="text-sm text-[#1b8a4b] font-medium inline-flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" /> เลือกสลิปแล้ว · กดเพื่อเปลี่ยนรูป
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => generateQRCode()}
-                    disabled={isGeneratingQR}
-                    className="mt-2 inline-flex items-center gap-2 bg-[#F26C28] hover:bg-[#d96303] text-white font-bold px-6 py-2.5 rounded-xl shadow-xs transition cursor-pointer text-sm"
-                  >
-                    {isGeneratingQR ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>กำลังสร้าง QR Code...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4" />
-                        <span>สร้าง QR Code ชำระเงิน</span>
-                      </>
-                    )}
-                  </button>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {/* Thai QR Payment Container */}
-                  <div className="max-w-sm mx-auto bg-white rounded-2xl border-2 border-[#2856B0] overflow-hidden shadow-md">
-                    {/* Official Thai QR Header Style */}
-                    <div className="bg-[#142E4F] px-4 py-3 text-white text-center">
-                      <div className="text-xs font-medium tracking-wider text-[#AED6F4]">
-                        THAI QR PAYMENT
-                      </div>
-                      <div className="text-sm font-bold mt-0.5">
-                        พร้อมเพย์ (PromptPay)
-                      </div>
-                    </div>
-
-                    <div className="p-5 flex flex-col items-center bg-white text-center">
-                      {qrDataUrl ? (
-                        <div className="relative w-56 h-56 border border-slate-100 rounded-lg p-2 bg-white shadow-inner">
-                          <Image
-                            src={qrDataUrl}
-                            alt="PromptPay QR Code"
-                            fill
-                            className="object-contain p-1"
-                            unoptimized
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-56 h-56 bg-slate-100 animate-pulse rounded-lg" />
-                      )}
-
-                      {/* Locked Amount Display */}
-                      <div className="mt-4 w-full bg-[#AED6F4]/20 border border-[#AED6F4] rounded-xl py-2 px-3">
-                        <div className="text-[11px] text-slate-500 font-medium">
-                          ยอดโอนชำระสุทธิ (ล็อกยอดอัตโนมัติ)
-                        </div>
-                        <div className="text-2xl font-black text-[#F26C28]">
-                          ฿{totalAmount.toFixed(2)}
-                        </div>
-                      </div>
-
-                      {/* Account Details */}
-                      <div className="mt-3 text-xs text-slate-600 space-y-0.5">
-                        <p>
-                          <span className="font-semibold text-slate-700">ชื่อบัญชี:</span>{" "}
-                          ClassPic Studio
-                        </p>
-                        <p className="text-slate-400 text-[11px]">
-                          พร้อมเพย์: {promptpayId}
-                        </p>
-                      </div>
-
-                      {/* Download QR Button */}
-                      <button
-                        type="button"
-                        onClick={handleDownloadQR}
-                        className="mt-4 w-full bg-slate-100 hover:bg-slate-200 text-[#142E4F] text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>บันทึกภาพ QR Code ลงเครื่อง</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Transfer Instructions */}
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/80 text-xs text-slate-600 space-y-1.5">
-                    <strong className="font-bold text-[#142E4F] block">
-                      📌 ขั้นตอนการโอนเงิน:
-                    </strong>
-                    <ol className="list-decimal list-inside space-y-1">
-                      <li>เปิดแอปธนาคารของท่าน แล้วเลือกเมนู "สแกน"</li>
-                      <li>สแกนภาพ QR Code ด้านบน หรือเลือกภาพจากอัลบั้ม</li>
-                      <li>ตรวจสอบยอดเงินให้ตรงกับ <strong>฿{totalAmount.toFixed(2)}</strong> แล้วกดยืนยัน</li>
-                      <li>บันทึกภาพสลิปการโอนเงินเพื่อนำมาแนบในขั้นตอนถัดไป</li>
-                    </ol>
-                  </div>
+                <div className="py-4">
+                  <p className="font-head font-medium text-cp-navy">กดเพื่อเลือกรูปสลิป</p>
+                  <p className="text-sm text-muted mt-1">หรือลากรูปมาวางตรงนี้ (JPG, PNG)</p>
                 </div>
               )}
             </div>
 
-            {/* Step 3: Slip Upload & Verification */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="w-7 h-7 rounded-full bg-[#2856B0] text-white flex items-center justify-center font-bold text-sm">
-                  3
-                </span>
-                <div>
-                  <h2 className="text-base font-bold text-[#142E4F]">
-                    แนบรูปสลิปโอนเงิน
-                  </h2>
-                  <p className="text-xs text-slate-500">
-                    ระบบจะตรวจสอบความถูกต้องของสลิปและปลดล็อกไฟล์ PDF ทันที
-                  </p>
-                </div>
+            {submitError && (
+              <div className="mt-4 rounded-xl bg-[#c0392b]/5 border border-[#c0392b]/20 p-3 text-sm text-[#c0392b] flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                {submitError}
               </div>
+            )}
 
-              {/* Upload Dropzone */}
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
-                  isDragging
-                    ? "border-[#2856B0] bg-[#AED6F4]/20"
-                    : slipPreview
-                    ? "border-emerald-300 bg-emerald-50/20"
-                    : "border-slate-300 hover:border-[#2856B0] bg-slate-50"
-                }`}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-
-                {slipPreview ? (
-                  <div className="space-y-3">
-                    <div className="relative w-40 h-52 mx-auto rounded-lg overflow-hidden border border-slate-200 shadow-xs">
-                      <Image
-                        src={slipPreview}
-                        alt="Slip Preview"
-                        fill
-                        className="object-contain bg-slate-100"
-                        unoptimized
-                      />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-emerald-700 flex items-center justify-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        เลือกรูปสลิปเรียบร้อยแล้ว
-                      </p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        กดเพื่อเปลี่ยนรูปสลิปใหม่
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <div className="w-12 h-12 bg-slate-200/80 rounded-full flex items-center justify-center mx-auto text-slate-500">
-                      <Upload className="w-6 h-6" />
-                    </div>
-                    <p className="text-sm font-semibold text-slate-700">
-                      คลิกเพื่อเลือกรูปสลิป หรือลากไฟล์มาวางที่นี่
-                    </p>
-                    <p className="text-xs text-slate-400">
-                      รองรับไฟล์ภาพ JPG, PNG (รูปสลิปจากแอปธนาคารที่มี Mini QR)
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {submitError && (
-                <div className="mt-4 p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-xs text-rose-700 font-medium">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{submitError}</span>
-                </div>
+            <button
+              type="button"
+              onClick={handleVerifySlip}
+              disabled={isSubmitting}
+              className="btn-primary w-full py-3.5 mt-6 text-base cursor-pointer"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" /> กำลังตรวจสลิป...
+                </>
+              ) : (
+                "ยืนยันและรับไฟล์"
               )}
-
-              {/* Confirm & Verify Button */}
-              <button
-                type="button"
-                onClick={handleVerifySlip}
-                disabled={isSubmitting}
-                className="mt-6 w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-base active:scale-98 cursor-pointer disabled:opacity-50"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>กำลังยืนยันและตรวจสอบสลิป...</span>
-                  </>
-                ) : (
-                  <>
-                    <ShieldCheck className="w-5 h-5" />
-                    <span>ยืนยันการโอนเงินและรับไฟล์ใบงาน</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Sidebar Summary (Right Column) */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs sticky top-24 space-y-5">
-              <h3 className="text-lg font-bold text-[#142E4F] pb-3 border-b border-slate-100 flex items-center justify-between">
-                <span>สรุปรายการสั่งซื้อ</span>
-                <span className="text-xs font-normal text-slate-500">
-                  {totalItems} รายการ
-                </span>
-              </h3>
-
-              {/* Items List */}
-              <div className="space-y-3 max-h-72 overflow-y-auto pr-1 divide-y divide-slate-100">
-                {cart.map((item) => (
-                  <div key={item.product.id} className="pt-3 first:pt-0 flex gap-3 items-center">
-                    <div className="relative w-12 h-16 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-200">
-                      <Image
-                        src={item.product.cover_image}
-                        alt={item.product.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-semibold text-[#142E4F] line-clamp-2">
-                        {item.product.title}
-                      </h4>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
-                        {item.product.grade_level} • {item.product.page_count} หน้า PDF
-                      </p>
-                    </div>
-                    <div className="text-xs font-bold text-[#F26C28] shrink-0">
-                      ฿{item.product.price.toFixed(2)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Price Calculation */}
-              <div className="pt-4 border-t border-slate-200 space-y-2 text-xs text-slate-600">
-                <div className="flex justify-between">
-                  <span>ราคารวมสินค้า</span>
-                  <span>฿{totalAmount.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>ค่าบริการจัดส่ง</span>
-                  <span className="text-emerald-600 font-medium">฿0.00 (ดาวน์โหลดทันที)</span>
-                </div>
-                <div className="pt-3 border-t border-slate-200 flex justify-between items-baseline">
-                  <span className="text-sm font-bold text-[#142E4F]">ยอดชำระสุทธิ</span>
-                  <span className="text-2xl font-black text-[#F26C28]">
-                    ฿{totalAmount.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Guarantee Box */}
-              <div className="bg-[#AED6F4]/20 border border-[#AED6F4] rounded-xl p-3.5 space-y-2 text-[11px] text-[#142E4F]">
-                <div className="flex items-center gap-1.5 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-[#2856B0]" />
-                  <span>การันตีความปลอดภัยและคุณภาพ ClassPic</span>
-                </div>
-                <ul className="space-y-1 text-slate-600 list-disc list-inside">
-                  <li>ไฟล์ต้นฉบับคมชัด มาตรฐาน A4 สำหรับปริ้นท์</li>
-                  <li>สลิปจะถูกบันทึกรหัสธุรกรรมป้องกันการใช้ซ้ำ</li>
-                  <li>หากพบปัญหา ติดต่อแอดมินเพื่อขอรับไฟล์ใหม่ได้ทันที</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+            </button>
+          </section>
         </div>
+
+        {/* สรุปรายการ */}
+        <aside className="panel p-6 lg:sticky lg:top-24">
+          <h3 className="font-semibold text-cp-navy mb-2">
+            รายการ <span className="text-muted font-normal">({totalItems})</span>
+          </h3>
+          <ul className="max-h-80 overflow-y-auto">
+            {cart.map((item) => (
+              <li key={item.product.id} className="flex gap-3 py-3 border-b border-line last:border-0">
+                <div className="w-11 shrink-0 aspect-[210/297]">
+                  <WorksheetPaperPreview
+                    slug={item.product.slug}
+                    title={item.product.title}
+                    gradeLevel={item.product.grade_level}
+                    subject={item.product.subject}
+                    coverImage={item.product.cover_image}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-medium text-cp-navy line-clamp-2 leading-snug">{item.product.title}</h4>
+                  <p className="text-xs text-muted mt-0.5">{item.product.page_count} หน้า</p>
+                </div>
+                <span className="font-head text-sm font-semibold text-cp-navy">฿{item.product.price}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="flex justify-between items-baseline border-t border-line mt-2 pt-4">
+            <span className="font-head font-semibold text-cp-navy">รวม</span>
+            <span className="font-head text-[28px] font-bold text-cp-navy">฿{totalAmount}</span>
+          </div>
+          <p className="text-sm text-muted mt-4">
+            มีปัญหาเรื่องไฟล์ ติดต่อ LINE @classpic ได้เลย
+          </p>
+        </aside>
       </div>
     </div>
   );

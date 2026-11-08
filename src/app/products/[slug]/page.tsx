@@ -19,15 +19,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!product) {
     return {
-      title: "ไม่พบชุดใบงาน — ClassPic Store",
+      title: "ไม่พบชุดใบงาน — ClassPic",
     };
   }
 
   return {
-    title: `${product.title} — ClassPic Store`,
+    title: `${product.title} — ClassPic`,
     description: product.description,
     openGraph: {
-      title: `${product.title} | ใบงาน A4 คุณภาพสูง`,
+      title: `${product.title} | ใบงาน A4 พร้อมพิมพ์`,
       description: product.description,
       images: [{ url: product.cover_image }],
     },

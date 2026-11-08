@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useCart } from "@/context/CartContext";
-import { X, Trash2, ShoppingBag, ArrowRight, ShieldCheck } from "lucide-react";
+import { X } from "lucide-react";
+import WorksheetPaperPreview from "./WorksheetPaperPreview";
 
 export default function CartDrawer() {
   const { cart, removeFromCart, totalItems, totalAmount, isCartOpen, setIsCartOpen } = useCart();
@@ -11,122 +11,85 @@ export default function CartDrawer() {
   if (!isCartOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
-        onClick={() => setIsCartOpen(false)}
-      />
+    <div className="fixed inset-0 z-50">
+      <div className="fixed inset-0 bg-cp-navy/40" onClick={() => setIsCartOpen(false)} />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
-          {/* Header */}
-          <div className="p-4 sm:p-6 bg-[#142E4F] text-white flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#F26C28]" />
-              <h2 className="text-lg font-bold">ตะกร้าของคุณ ({totalItems} รายการ)</h2>
+      <aside className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+        <div className="flex items-center justify-between px-6 h-[72px] border-b border-line">
+          <h2 className="text-lg font-semibold text-cp-navy">
+            ตะกร้า <span className="text-muted font-normal">({totalItems})</span>
+          </h2>
+          <button
+            onClick={() => setIsCartOpen(false)}
+            className="p-2 -mr-2 rounded-lg text-muted hover:text-cp-navy hover:bg-cp-bg cursor-pointer"
+            aria-label="ปิดตะกร้า"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6">
+          {cart.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center gap-2">
+              <p className="font-head font-medium text-cp-navy">ยังไม่มีใบงานในตะกร้า</p>
+              <p className="text-sm text-muted">เลือกชุดที่ต้องการแล้วกด &ldquo;ใส่ตะกร้า&rdquo;</p>
+              <button onClick={() => setIsCartOpen(false)} className="btn-secondary mt-4 cursor-pointer">
+                ดูใบงานทั้งหมด
+              </button>
             </div>
-            <button
-              onClick={() => setIsCartOpen(false)}
-              className="p-1 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Cart Items List */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-            {cart.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400 space-y-3">
-                <ShoppingBag className="w-16 h-16 text-slate-200" />
-                <p className="text-base font-medium text-slate-600">ยังไม่มีใบงานในตะกร้า</p>
-                <p className="text-xs text-slate-400">เลือกดูใบงานที่ต้องการแล้วกดหยิบใส่ตะกร้าได้เลยครับ</p>
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="mt-4 px-4 py-2 bg-[#2856B0] text-white rounded-xl text-sm font-medium hover:bg-[#154d8f] transition cursor-pointer"
-                >
-                  เลือกดูใบงานทั้งหมด
-                </button>
-              </div>
-            ) : (
-              cart.map((item) => (
-                <div
-                  key={item.product.id}
-                  className="flex gap-4 p-3 bg-slate-50 border border-slate-200/80 rounded-xl"
-                >
-                  <div className="relative w-16 h-20 bg-slate-200 rounded-lg overflow-hidden shrink-0">
-                    <Image
-                      src={item.product.cover_image}
-                      alt={item.product.title}
-                      fill
-                      className="object-cover"
+          ) : (
+            <ul>
+              {cart.map((item) => (
+                <li key={item.product.id} className="flex gap-4 py-5 border-b border-line last:border-0">
+                  <div className="w-16 shrink-0 aspect-[210/297]">
+                    <WorksheetPaperPreview
+                      slug={item.product.slug}
+                      title={item.product.title}
+                      gradeLevel={item.product.grade_level}
+                      subject={item.product.subject}
+                      coverImage={item.product.cover_image}
                     />
                   </div>
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="text-sm font-semibold text-[#142E4F] line-clamp-2">
-                          {item.product.title}
-                        </h4>
-                        <button
-                          onClick={() => removeFromCart(item.product.id)}
-                          className="text-slate-400 hover:text-rose-500 p-1 rounded transition cursor-pointer"
-                          title="ลบออกจากตะกร้า"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1">
-                        {item.product.grade_level} • {item.product.page_count} หน้า A4
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between pt-2">
-                      <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">
-                        PDF ดิจิทัล
-                      </span>
-                      <span className="text-sm font-bold text-[#F26C28]">
-                        ฿{item.product.price.toFixed(2)}
-                      </span>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-[15px] font-semibold text-cp-navy leading-snug line-clamp-2">
+                      {item.product.title}
+                    </h4>
+                    <p className="text-sm text-muted mt-0.5">
+                      {item.product.grade_level} · {item.product.page_count} หน้า
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="font-head font-semibold text-cp-navy">฿{item.product.price}</span>
+                      <button
+                        onClick={() => removeFromCart(item.product.id)}
+                        className="text-sm text-muted hover:text-[#c0392b] cursor-pointer"
+                      >
+                        ลบ
+                      </button>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Footer Checkout Summary */}
-          {cart.length > 0 && (
-            <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 space-y-4">
-              <div className="space-y-1.5 text-sm">
-                <div className="flex justify-between text-slate-500">
-                  <span>จำนวนใบงาน</span>
-                  <span>{totalItems} รายการ</span>
-                </div>
-                <div className="flex justify-between items-baseline pt-2 border-t border-slate-200">
-                  <span className="text-base font-bold text-[#142E4F]">ยอดชำระทั้งหมด</span>
-                  <span className="text-2xl font-black text-[#F26C28]">
-                    ฿{totalAmount.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 justify-center">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>สแกนจ่ายพร้อมเพย์ รับลิงก์ดาวน์โหลดทันที 24 ชม.</span>
-              </div>
-
-              <Link
-                href="/checkout"
-                onClick={() => setIsCartOpen(false)}
-                className="w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 active:scale-98"
-              >
-                <span>ไปที่หน้าชำระเงิน</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
-      </div>
+
+        {cart.length > 0 && (
+          <div className="px-6 py-5 border-t border-line bg-cp-bg space-y-4">
+            <div className="flex justify-between items-baseline">
+              <span className="text-muted">รวม</span>
+              <span className="font-head text-2xl font-bold text-cp-navy">฿{totalAmount}</span>
+            </div>
+            <Link
+              href="/checkout"
+              onClick={() => setIsCartOpen(false)}
+              className="btn-primary w-full py-3.5"
+            >
+              ไปชำระเงิน
+            </Link>
+            <p className="text-xs text-muted text-center">จ่ายผ่านพร้อมเพย์ ได้ไฟล์ทันทีหลังแนบสลิป</p>
+          </div>
+        )}
+      </aside>
     </div>
   );
 }

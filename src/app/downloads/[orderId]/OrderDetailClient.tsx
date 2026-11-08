@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle2, AlertCircle, Copy, Check, ArrowLeft, Loader2 } from "lucide-react";
 import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
 import { Order } from "@/types";
+import BrandIcon from "@/components/BrandIcon";
 
 interface Props {
   initialOrder: Order;
@@ -225,7 +226,16 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                         disabled={isDownloading}
                         className="btn-primary text-sm px-5 py-2.5 cursor-pointer"
                       >
-                        {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : "ดาวน์โหลด PDF"}
+                        {isDownloading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <>
+                            <span className="grid place-items-center w-6 h-6 rounded-md bg-white">
+                              <BrandIcon name="cloud-download" className="w-4 h-4" />
+                            </span>
+                            ดาวน์โหลด PDF
+                          </>
+                        )}
                       </button>
                       <button
                         type="button"
@@ -244,7 +254,10 @@ export default function OrderDetailClient({ initialOrder }: Props) {
                       </button>
                     </div>
                   ) : (
-                    <p className="text-sm text-muted mt-3">แนบสลิปแล้วปุ่มดาวน์โหลดจะขึ้นตรงนี้</p>
+                    <p className="text-sm text-muted mt-3 flex items-center gap-2">
+                      <BrandIcon name="padlock-square-1" className="w-5 h-5" />
+                      แนบสลิปแล้วปุ่มดาวน์โหลดจะขึ้นตรงนี้
+                    </p>
                   )}
                 </div>
               </li>

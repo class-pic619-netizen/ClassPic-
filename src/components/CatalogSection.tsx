@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Product, GradeLevel, SubjectCategory } from "@/types";
 import ProductCard from "./ProductCard";
 import { Search, X } from "lucide-react";
+import BrandIcon from "@/components/BrandIcon";
 
 interface CatalogSectionProps {
   products: Product[];
@@ -91,7 +92,8 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
       </div>
 
       {/* แท็บระดับชั้น */}
-      <div className="flex gap-7 border-b border-line overflow-x-auto font-head text-[15px] font-medium">
+      <div className="flex items-center gap-7 border-b border-line overflow-x-auto font-head text-[15px] font-medium">
+        <BrandIcon name="graduation-cap" className="w-6 h-6 -mr-3" />
         {GRADE_TABS.map((tab) => {
           const active = selectedGrade === tab.value;
           return (
@@ -139,6 +141,7 @@ export default function CatalogSection({ products }: CatalogSectionProps) {
         </div>
       ) : (
         <div className="text-center py-16 rounded-2xl bg-cp-bg">
+          <BrandIcon name="book-reading" className="w-12 h-12 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-cp-navy">ยังไม่มีใบงานที่ตรงกับที่เลือก</h3>
           <p className="text-muted mt-1 mb-5">ลองเปลี่ยนชั้นหรือวิชา หรือค้นหาด้วยคำอื่น</p>
           {hasActiveFilter && (

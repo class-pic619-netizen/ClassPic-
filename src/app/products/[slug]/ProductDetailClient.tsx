@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
 import ProductCard from "@/components/ProductCard";
 import { ArrowLeft, Maximize2, X, Check } from "lucide-react";
+import BrandIcon from "@/components/BrandIcon";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -41,7 +42,7 @@ export default function ProductDetailClient({
   const specs = [
     { label: "ขนาด", value: "A4 (210 × 297 มม.)" },
     { label: "จำนวน", value: `${product.page_count} หน้า` },
-    { label: "ไฟล์", value: "PDF พิมพ์ได้ทั้งขาวดำและสี" },
+    { label: "ไฟล์", value: "PDF" },
     { label: "เฉลย", value: product.has_answer_key ? "มี อยู่ท้ายไฟล์" : "ไม่มี" },
   ];
 
@@ -166,7 +167,14 @@ export default function ProductDetailClient({
             ))}
           </dl>
 
-          <p className="text-sm text-muted mt-6">
+          <div className="flex items-center gap-3 mt-6 rounded-xl bg-cp-bg px-4 py-3">
+            <BrandIcon name="printer" className="w-8 h-8" />
+            <p className="text-[15px] text-ink">
+              พิมพ์ได้ทั้งขาวดำและสี บนกระดาษ A4 ธรรมดา ไม่ต้องตั้งค่าขอบกระดาษ
+            </p>
+          </div>
+
+          <p className="text-sm text-muted mt-4">
             พิมพ์ใช้สอนในห้องเรียนหรือที่บ้านได้ไม่จำกัดครั้ง ขอไม่ให้นำไฟล์ไปขายต่อหรือแจกในกลุ่มสาธารณะ
           </p>
         </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { ArrowLeft } from "lucide-react";
 import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
+import BrandIcon from "@/components/BrandIcon";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart, totalItems, totalAmount } = useCart();
@@ -31,6 +32,7 @@ export default function CartPage() {
 
       {cart.length === 0 ? (
         <div className="rounded-2xl bg-cp-bg py-16 text-center">
+          <BrandIcon name="book-reading" className="w-12 h-12 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-cp-navy">ยังไม่มีใบงานในตะกร้า</h3>
           <p className="text-muted mt-1 mb-6">มีชุดฟรีให้ลองก่อนด้วย</p>
           <Link href="/#catalog" className="btn-primary">
@@ -82,7 +84,10 @@ export default function CartPage() {
           </ul>
 
           <aside className="panel p-6 lg:sticky lg:top-24">
-            <h3 className="font-semibold text-cp-navy mb-4">สรุป</h3>
+            <h3 className="font-semibold text-cp-navy mb-4 flex items-center gap-2">
+              <BrandIcon name="receipt" className="w-6 h-6" />
+              สรุป
+            </h3>
             <div className="flex justify-between text-[15px] text-muted py-1.5">
               <span>ใบงาน</span>
               <span>{totalItems} ชุด</span>

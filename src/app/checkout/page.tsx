@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { ArrowLeft, CheckCircle2, AlertCircle, Download, Loader2 } from "lucide-react";
 import WorksheetPaperPreview from "@/components/WorksheetPaperPreview";
+import BrandIcon from "@/components/BrandIcon";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -429,7 +430,8 @@ export default function CheckoutPage() {
 
         {/* สรุปรายการ */}
         <aside className="panel p-6 lg:sticky lg:top-24">
-          <h3 className="font-semibold text-cp-navy mb-2">
+          <h3 className="font-semibold text-cp-navy mb-2 flex items-center gap-2">
+            <BrandIcon name="receipt" className="w-6 h-6" />
             รายการ <span className="text-muted font-normal">({totalItems})</span>
           </h3>
           <ul className="max-h-80 overflow-y-auto">

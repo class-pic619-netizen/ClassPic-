@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Product, Order, GradeLevel, SubjectCategory } from "@/types";
+import { ImagesPicker, PdfPicker, ProductFileButtons, TelegramPanel, uploadToStorage } from "./AdminUploads";
 import {
   Lock,
   Package,
@@ -24,6 +25,7 @@ import {
   X,
   ChevronRight,
   ShieldAlert,
+  Bell,
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -33,7 +35,7 @@ export default function AdminDashboard() {
   const [authLoading, setAuthLoading] = useState<boolean>(false);
 
   // Dashboard Data State
-  const [activeTab, setActiveTab] = useState<"orders" | "products" | "new_product" | "deploy">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "products" | "new_product" | "telegram" | "deploy">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,7 +50,9 @@ export default function AdminDashboard() {
   const [newPrice, setNewPrice] = useState<number>(59);
   const [newOriginalPrice, setNewOriginalPrice] = useState<number>(99);
   const [newHasAnswerKey, setNewHasAnswerKey] = useState<boolean>(true);
-  const [newCoverImage, setNewCoverImage] = useState<string>("");
+  const [newPdfFile, setNewPdfFile] = useState<File | null>(null);
+  const [newImageFiles, setNewImageFiles] = useState<File[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<string>("");
   const [newIsComingSoon, setNewIsComingSoon] = useState<boolean>(false);
   const [isSubmittingProduct, setIsSubmittingProduct] = useState<boolean>(false);
   const [productSuccessMsg, setProductSuccessMsg] = useState<string>("");
@@ -162,6 +166,19 @@ export default function AdminDashboard() {
     setProductSuccessMsg("");
 
     try {
+      // 1) ส่งไฟล์ตรงเข้า Supabase Storage ก่อน แล้วค่อยบันทึก path ลงตาราง products
+      let pdfPath: string | undefined;
+      if (newPdfFile) {
+        pdfPath = await uploadToStorage(newPdfFile, "pdf", (p) => setUploadStatus(`กำลังอัปโหลด PDF ${p}%`));
+      }
+      const imagePaths: string[] = [];
+      for (const [i, f] of newImageFiles.entries()) {
+        imagePaths.push(
+          await uploadToStorage(f, "image", (p) => setUploadStatus(`กำลังอัปโหลดรูป ${i + 1}/${newImageFiles.length} · ${p}%`))
+        );
+      }
+      setUploadStatus("กำลังบันทึกข้อมูลใบงาน...");
+
       const res = await fetch("/api/admin/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -174,7 +191,9 @@ export default function AdminDashboard() {
           price: newPrice,
           original_price: newOriginalPrice,
           has_answer_key: newHasAnswerKey,
-          cover_image: newCoverImage,
+          cover_image: imagePaths[0] ?? "",
+          preview_images: imagePaths,
+          pdf_file_url: pdfPath,
           is_coming_soon: newIsComingSoon,
         }),
       });
@@ -184,6 +203,8 @@ export default function AdminDashboard() {
         setProductSuccessMsg("✓ เพิ่มใบงานชุดใหม่เรียบร้อยแล้ว!");
         setNewTitle("");
         setNewDescription("");
+        setNewPdfFile(null);
+        setNewImageFiles([]);
         fetchDashboardData();
         setTimeout(() => {
           setProductSuccessMsg("");
@@ -192,10 +213,11 @@ export default function AdminDashboard() {
       } else {
         alert(data.message || "เกิดข้อผิดพลาด");
       }
-    } catch {
-      alert("ไม่สามารถบันทึกข้อมูลได้");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "ไม่สามารถบันทึกข้อมูลได้");
     } finally {
       setIsSubmittingProduct(false);
+      setUploadStatus("");
     }
   };
 
@@ -399,6 +421,18 @@ export default function AdminDashboard() {
         >
           <PlusCircle className="w-4 h-4 text-[#F26C28]" />
           <span>เพิ่มใบงานชุดใหม่</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("telegram")}
+          className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+            activeTab === "telegram"
+              ? "border-[#F26C28] text-[#142E4F]"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          <Bell className="w-4 h-4 text-[#F26C28]" />
+          <span>แจ้งเตือน Telegram</span>
         </button>
 
         <button
@@ -611,7 +645,9 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="p-4 pt-0 border-t border-slate-100 flex items-center justify-between">
+                <ProductFileButtons product={p} onUpdated={fetchDashboardData} />
+
+                <div className="p-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-base font-bold text-[#F26C28]">฿{p.price}</span>
                   <Link
                     href={`/products/${p.slug}`}
@@ -752,21 +788,9 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                URL รูปภาพหน้าปก (หรือรูปตัวอย่าง)
-              </label>
-              <input
-                type="url"
-                value={newCoverImage}
-                onChange={(e) => setNewCoverImage(e.target.value)}
-                placeholder="https://..."
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#2856B0] outline-none"
-              />
-              <span className="text-[10px] text-slate-400 mt-1 block">
-                ระบบจะคาดลายน้ำ ClassPic Studio บนรูปตัวอย่างหน้าร้านให้อัตโนมัติ
-              </span>
-            </div>
+            <PdfPicker file={newPdfFile} onChange={setNewPdfFile} />
+
+            <ImagesPicker files={newImageFiles} onChange={setNewImageFiles} />
 
             <div className="flex flex-wrap items-center gap-6 pt-2">
               <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
@@ -796,7 +820,10 @@ export default function AdminDashboard() {
               className="w-full bg-[#F26C28] hover:bg-[#d96303] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm active:scale-98"
             >
               {isSubmittingProduct ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
+                <>
+                  <RefreshCw className="w-5 h-5 animate-spin" />
+                  {uploadStatus && <span>{uploadStatus}</span>}
+                </>
               ) : (
                 <>
                   <PlusCircle className="w-4 h-4" />
@@ -807,6 +834,9 @@ export default function AdminDashboard() {
           </form>
         </div>
       )}
+
+      {/* Tab: Telegram notifications */}
+      {activeTab === "telegram" && <TelegramPanel />}
 
       {/* Tab 4: Deployment & Supabase Guide */}
       {activeTab === "deploy" && (
@@ -860,6 +890,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ADMIN_PASSWORD=your-secure-admin-password
 TELEGRAM_BOT_TOKEN=optional-bot-token
 TELEGRAM_CHAT_ID=optional-chat-id
+NEXT_PUBLIC_SITE_URL=https://classpic.vercel.app
 EASYSLIP_API_KEY=optional-easyslip-key`}
               </pre>
             </div>

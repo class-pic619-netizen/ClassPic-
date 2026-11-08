@@ -3,6 +3,8 @@ import sharp from "sharp";
 import jsQR from "jsqr";
 import crypto from "crypto";
 import { getOrder, isSlipUsed, recordSlip, setOrderStatus, uploadSlipImage } from "@/lib/db";
+import { adminLink, baht, notifyOwner } from "@/lib/telegram";
+import type { Order } from "@/types";
 
 const MAX_SLIP_BYTES = 8 * 1024 * 1024;
 
@@ -90,6 +92,7 @@ export async function POST(req: NextRequest) {
     // ใบงานฟรีทั้งหมด ไม่ต้องใช้สลิป
     if (order.total_amount === 0) {
       await setOrderStatus(order.id, "PAID", { trans_ref: `FREE-${order.id}` });
+      notifyOwner(`🎁 ClassPic: มีคนรับใบงานฟรี\nออเดอร์ ${order.id}\n${itemLines(order)}\nผู้รับ: ${order.customer_contact}`);
       return json({ success: true, orderId: order.id, status: "PAID", message: "รับใบงานฟรีได้เลย" });
     }
 
@@ -165,10 +168,10 @@ export async function POST(req: NextRequest) {
     const status = autoApproved ? "PAID" : "PENDING_REVIEW";
     await setOrderStatus(order.id, status, { trans_ref: transRef, slip_image_url: slipPath });
 
-    notifyTelegram(
+    notifyOwner(
       autoApproved
-        ? `ClassPic: ออเดอร์ ${order.id} ชำระแล้ว ฿${order.total_amount} (EasySlip ตรวจผ่าน)`
-        : `ClassPic: มีสลิปใหม่รอตรวจ ออเดอร์ ${order.id} ฿${order.total_amount}\nผู้ซื้อ: ${order.customer_contact}\nQR บนสลิป: ${qrPayload ? "มี" : "ไม่พบ"}\nเข้าไปอนุมัติที่หน้า /admin`
+        ? `✅ ClassPic: ขายได้ ${baht(order.total_amount)} (EasySlip ตรวจผ่านอัตโนมัติ)\nออเดอร์ ${order.id}\n${itemLines(order)}\nผู้ซื้อ: ${order.customer_contact}`
+        : `🧾 ClassPic: มีสลิปใหม่รอตรวจ ${baht(order.total_amount)}\nออเดอร์ ${order.id}\n${itemLines(order)}\nผู้ซื้อ: ${order.customer_contact}\nQR บนสลิป: ${qrPayload ? "อ่านได้" : "ไม่พบ (ตรวจด้วยตาให้ดี)"}\n👉 อนุมัติที่ ${adminLink()}`
     );
 
     return json({
@@ -185,13 +188,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function notifyTelegram(text: string) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return;
-  fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text }),
-  }).catch((e) => console.error("Telegram notify error:", e));
+function itemLines(order: Order): string {
+  return order.items.map((it) => `• ${it.product.title}`).join("\n");
 }

@@ -81,14 +81,14 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: ensured.total,
+          orderId: ensured.id,
         }),
       });
 
       const data = await res.json();
       if (data.success) {
         setQrDataUrl(data.qrDataUrl);
-        setPromptpayId(data.promptpayId || "0812345678");
+        setPromptpayId(data.promptpayId || "");
         setQrGenerated(true);
       } else {
         setSubmitError(data.error || "ไม่สามารถสร้าง QR Code ได้");

@@ -27,6 +27,11 @@
 ---
 
 ## ประวัติการบันทึกงาน (Work Log)
+- **2026-11-08 (Supabase):**
+  - ผู้ใช้สร้างโปรเจกต์ Supabase `classpic-db` (ภูมิภาค ap-northeast-2 โซล, แพ็กเกจฟรี)
+  - SQL Editor บนเว็บรันหลายคำสั่งไม่ได้ ("Only singular query allowed") จึงเพิ่ม `scripts/db-apply-schema.mjs` (ใช้ `pg` + `DATABASE_URL` Session pooler ใน `.env.local`)
+  - รัน `supabase/schema.sql` สำเร็จ: 4 ตาราง เปิด RLS ครบ, ถัง `public-previews` (สาธารณะ), `private-pdfs`, `payment-slips` (ส่วนตัว)
+  - ถัดไป: ผู้ใช้ใส่ publishable/secret key ใน `.env.local` → เปลี่ยนโค้ดจาก ordersStore ในหน่วยความจำไปใช้ Supabase + ปิด SEC.1–SEC.3
 - **2026-11-08:**
   - ปรับหน้าเว็บหน้าร้านทั้งหมดตามแบบร่าง v2 ที่ผู้ใช้อนุมัติ: หน้าแรก, แคตตาล็อก, การ์ดใบงาน, หน้ารายละเอียด, ตะกร้า (หน้า + ลิ้นชัก), ชำระเงิน, ค้นหาคำสั่งซื้อ, หน้าดาวน์โหลด, Navbar, Footer
   - ฟอนต์ใหม่ผ่าน `next/font`: Nunito + Mitr (หัวข้อ), Anuphan (เนื้อหา) และ design tokens/ยูทิลิตีใน `globals.css` (`btn-primary`, `btn-secondary`, `panel`, `paper`, `input-field`)

@@ -25,15 +25,21 @@
 
 เมื่อโปรเจกต์ `classpic-db` ใน Supabase สร้างเสร็จแล้ว:
 
-### 2.1 สร้างตารางฐานข้อมูล 4 ตาราง
-1. ไปที่เมนูด้านซ้ายเลือก **SQL Editor** > กด **New Query**
-2. คัดลอกคำสั่ง SQL จากท้ายไฟล์ `docs/BLUEPRINT.md` ไปวาง แล้วกดปุ่ม **Run** (ระบบจะสร้างตาราง `products`, `orders`, `order_items`, `verified_slips` ให้ครบภายใน 2 วินาที)
+### 2.1 สร้างตาราง + ถังเก็บไฟล์ (รันไฟล์เดียวจบ)
+1. เมนูซ้าย **SQL Editor** > **New query**
+2. เปิดไฟล์ `supabase/schema.sql` คัดลอกทั้งหมดไปวาง แล้วกด **Run**
+3. จะได้ตาราง `products`, `orders`, `order_items`, `verified_slips` (เปิด RLS ล็อกสิทธิ์แล้ว)
+   และถังไฟล์ `public-previews` (สาธารณะ), `private-pdfs` (ส่วนตัว), `payment-slips` (ส่วนตัว)
+   - ไม่ต้องสร้างถังเองที่เมนู Storage
+   - อย่าใช้ไฟล์ `database/schema.sql` (เลิกใช้แล้ว)
 
-### 2.2 สร้างถังเก็บไฟล์ 3 ถัง (Storage Buckets)
-ไปที่เมนูด้านซ้ายเลือก **Storage** > กด **New bucket** สร้าง 3 ถังตามชื่อนี้เป๊ะๆ:
-1. **`public-previews`** — เปิดสวิตช์ **Public bucket = ON** (ใช้เก็บรูปปกและรูปตัวอย่างที่ติดลายน้ำแล้ว)
-2. **`private-pdfs`** — ปิดสวิตช์ **Public bucket = OFF** (ใช้เก็บไฟล์ PDF ใบงาน A4 ตัวจริง ห้ามใครเข้าถึงโดยตรง)
-3. **`payment-slips`** — ปิดสวิตช์ **Public bucket = OFF** (ใช้เก็บรูปสลิปที่ลูกค้าแนบมา)
+### 2.2 คัดลอกคีย์ลงไฟล์ `.env.local`
+1. เมนูซ้าย **Project Settings** (รูปเฟือง) > **API Keys** และหน้า **Data API** สำหรับ Project URL
+2. เปิดไฟล์ `.env.local` ในโฟลเดอร์โปรเจกต์ แล้ววางค่า 3 ตัว:
+   - `NEXT_PUBLIC_SUPABASE_URL` = Project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = Publishable key (หรือ `anon` `public`)
+   - `SUPABASE_SERVICE_ROLE_KEY` = Secret key (หรือ `service_role`) — **ห้ามส่งให้ใครหรือวางในแชต**
+3. ตั้ง `ADMIN_PASSWORD` เอง (`DOWNLOAD_SECRET` สร้างสุ่มไว้ให้แล้ว)
 
 ---
 

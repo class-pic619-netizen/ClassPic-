@@ -1,3 +1,4 @@
+-- ⚠️ ไฟล์นี้เลิกใช้แล้ว (คอลัมน์ไม่ตรงกับโค้ด) — ให้ใช้ supabase/schema.sql แทน
 -- ==============================================================================
 -- CLASSPIC STORE — DATABASE SCHEMA (PostgreSQL / Supabase)
 -- แบรนด์: ClassPic Learning & Creative Studio (Bright Outside — Clear Inside)

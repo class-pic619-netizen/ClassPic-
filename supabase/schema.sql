@@ -1,68 +1,95 @@
-// Supabase Database Schema for ClassPic Store
-// Run this in Supabase SQL Editor (https://supabase.com/dashboard)
+-- ==============================================================================
+-- ClassPic Store — Supabase schema
+-- วิธีใช้: Supabase Dashboard > SQL Editor > New query > วางทั้งไฟล์ > Run
+-- รันซ้ำได้ (ใช้ IF NOT EXISTS / ON CONFLICT ทุกจุด)
+--
+-- ความปลอดภัย:
+--   * เปิด Row Level Security (RLS) ทุกตาราง
+--   * คนทั่วไป (anon key ในเบราว์เซอร์) อ่านได้แค่รายการใบงาน — อ่าน/เขียนออเดอร์และสลิปไม่ได้
+--   * เซิร์ฟเวอร์ของเว็บใช้ service_role key (เก็บใน .env.local / Vercel เท่านั้น) ซึ่งข้าม RLS ได้
+-- ==============================================================================
 
--- 1. Create Products Table (ใบงาน A4 มาตรฐานไทย)
-CREATE TABLE IF NOT EXISTS public.products (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    slug TEXT UNIQUE NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT,
-    grade_level TEXT NOT NULL, -- 'อนุบาล', 'ป.1-ป.3', 'ป.4-ป.6', 'การศึกษาพิเศษ', '2 ภาษา'
-    subject TEXT NOT NULL,     -- 'ภาษาอังกฤษ', 'คณิตศาสตร์', 'ภาษาไทย', ฯลฯ
-    page_count INTEGER NOT NULL DEFAULT 20,
-    has_answer_key BOOLEAN NOT NULL DEFAULT true,
-    price NUMERIC(10, 2) NOT NULL DEFAULT 59.00,
-    original_price NUMERIC(10, 2),
-    is_free_sample BOOLEAN NOT NULL DEFAULT false,
-    is_coming_soon BOOLEAN NOT NULL DEFAULT false,
-    cover_image TEXT NOT NULL,
-    preview_images TEXT[] DEFAULT '{}',
-    pdf_file_url TEXT, -- private-pdfs/xxx.pdf
-    tags TEXT[] DEFAULT '{}',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- 1. ใบงาน
+create table if not exists public.products (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  title text not null,
+  description text not null default '',
+  grade_level text not null,          -- อนุบาล | ป.1-ป.3 | ป.4-ป.6 | การศึกษาพิเศษ | 2 ภาษา
+  subject text not null,              -- ภาษาอังกฤษ | คณิตศาสตร์ | ภาษาไทย | วิทยาศาสตร์ | เชาวน์ปัญญา | ศิลปะและกิจกรรม
+  page_count integer not null default 1,
+  has_answer_key boolean not null default true,
+  price numeric(10, 2) not null default 0,
+  original_price numeric(10, 2),
+  is_free_sample boolean not null default false,
+  is_coming_soon boolean not null default false,
+  cover_image text not null default '',          -- path ในถัง public-previews
+  preview_images text[] not null default '{}',   -- path ในถัง public-previews
+  pdf_file_url text,                             -- path ในถัง private-pdfs (ห้ามเปิดสาธารณะ)
+  tags text[] not null default '{}',
+  is_published boolean not null default true,
+  created_at timestamptz not null default now()
 );
 
--- 2. Create Orders Table (คำสั่งซื้อ)
-CREATE TABLE IF NOT EXISTS public.orders (
-    id TEXT PRIMARY KEY, -- เช่น CP-20261105-1234
-    customer_contact TEXT NOT NULL, -- เบอร์โทรศัพท์ หรือ อีเมล
-    total_amount NUMERIC(10, 2) NOT NULL,
-    status TEXT NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'PAID', 'REJECTED'
-    trans_ref TEXT, -- รหัสอ้างอิงธนาคารจากสลิป
-    slip_image_url TEXT,
-    paid_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- 2. คำสั่งซื้อ
+create table if not exists public.orders (
+  id text primary key,                           -- เช่น CP-20261108-1234
+  customer_contact text not null,                -- เบอร์โทรหรืออีเมล
+  total_amount numeric(10, 2) not null,
+  status text not null default 'PENDING'
+    check (status in ('PENDING', 'PENDING_REVIEW', 'PAID', 'VERIFIED', 'REJECTED', 'FAILED')),
+  trans_ref text,
+  slip_image_url text,                           -- path ในถัง payment-slips
+  paid_at timestamptz,
+  created_at timestamptz not null default now()
 );
 
--- 3. Create Order Items Table (รายการใบงานในแต่ละคำสั่งซื้อ)
-CREATE TABLE IF NOT EXISTS public.order_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    order_id TEXT NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
-    product_id UUID REFERENCES public.products(id),
-    product_title TEXT NOT NULL,
-    price NUMERIC(10, 2) NOT NULL,
-    quantity INTEGER NOT NULL DEFAULT 1,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- 3. ใบงานในแต่ละคำสั่งซื้อ
+create table if not exists public.order_items (
+  id uuid primary key default gen_random_uuid(),
+  order_id text not null references public.orders(id) on delete cascade,
+  product_id uuid references public.products(id) on delete set null,
+  product_title text not null,
+  price numeric(10, 2) not null,
+  quantity integer not null default 1,
+  created_at timestamptz not null default now()
 );
 
--- 4. Create Verified Slips Table (ป้องกันสลิปใช้ซ้ำ 100%)
-CREATE TABLE IF NOT EXISTS public.verified_slips (
-    trans_ref TEXT PRIMARY KEY, -- รหัสธุรกรรมธนาคาร ห้ามซ้ำเด็ดขาด
-    amount NUMERIC(10, 2) NOT NULL,
-    sender_bank TEXT,
-    receiver_bank TEXT,
-    order_id TEXT NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
-    verified_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- 4. สลิปที่ใช้แล้ว (กันสลิปซ้ำ: trans_ref ห้ามซ้ำ)
+create table if not exists public.verified_slips (
+  trans_ref text primary key,
+  image_hash text unique,
+  amount numeric(10, 2) not null,
+  sender_bank text,
+  receiver_bank text,
+  order_id text not null references public.orders(id) on delete cascade,
+  verified_at timestamptz not null default now()
 );
 
--- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_orders_customer_contact ON public.orders(customer_contact);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
-CREATE INDEX IF NOT EXISTS idx_products_grade ON public.products(grade_level);
-CREATE INDEX IF NOT EXISTS idx_products_subject ON public.products(subject);
+create index if not exists idx_orders_customer_contact on public.orders(customer_contact);
+create index if not exists idx_orders_status on public.orders(status);
+create index if not exists idx_order_items_order on public.order_items(order_id);
+create index if not exists idx_products_grade on public.products(grade_level);
+create index if not exists idx_products_subject on public.products(subject);
 
--- Storage Buckets Configuration Note:
--- Create 3 buckets in Supabase Storage Dashboard:
--- 1. 'public-previews' -> Public bucket (สำหรับรูปหน้าปก & ตัวอย่างติดลายน้ำ)
--- 2. 'private-pdfs'    -> Private bucket (สำหรับไฟล์ PDF A4 ตัวเต็ม ล็อกแน่นหนา)
--- 3. 'payment-slips'   -> Private bucket (สำหรับรูปสลิปโอนเงิน)
+-- 5. Row Level Security
+alter table public.products       enable row level security;
+alter table public.orders         enable row level security;
+alter table public.order_items    enable row level security;
+alter table public.verified_slips enable row level security;
+
+drop policy if exists "Public can read published products" on public.products;
+create policy "Public can read published products"
+  on public.products for select
+  to anon, authenticated
+  using (is_published = true);
+-- orders / order_items / verified_slips: ไม่มี policy = anon อ่าน/เขียนไม่ได้เลย
+-- (เซิร์ฟเวอร์เข้าถึงด้วย service_role)
+
+-- 6. ถังเก็บไฟล์ (Storage buckets)
+insert into storage.buckets (id, name, public)
+values
+  ('public-previews', 'public-previews', true),   -- รูปตัวอย่างใบงาน (ติดลายน้ำแล้ว)
+  ('private-pdfs',    'private-pdfs',    false),  -- ไฟล์ PDF ตัวเต็ม จ่ายผ่าน signed URL เท่านั้น
+  ('payment-slips',   'payment-slips',   false)   -- รูปสลิปลูกค้า
+on conflict (id) do update set public = excluded.public;

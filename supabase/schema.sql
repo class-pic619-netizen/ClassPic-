@@ -24,9 +24,9 @@ create table if not exists public.products (
   is_free_sample boolean not null default false,
   is_coming_soon boolean not null default false,
   cover_image text not null default '',          -- path ในถัง public-previews
-  preview_images text[] not null default '{}',   -- path ในถัง public-previews
+  preview_images jsonb not null default '[]',    -- รายการ path ในถัง public-previews
   pdf_file_url text,                             -- path ในถัง private-pdfs (ห้ามเปิดสาธารณะ)
-  tags text[] not null default '{}',
+  tags jsonb not null default '[]',
   is_published boolean not null default true,
   created_at timestamptz not null default now()
 );

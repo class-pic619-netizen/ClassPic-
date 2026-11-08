@@ -119,43 +119,42 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleApproveOrder = async (orderId: string) => {
-    if (!confirm(`ยืนยันการอนุมัติคำสั่งซื้อ ${orderId} ใช่หรือไม่?`)) return;
+  // ยืนยันบนหน้าเว็บเอง (ไม่ใช้ confirm() เพราะบางเบราว์เซอร์/หน้าต่างในแอปปิดกล่องนี้อัตโนมัติ)
+  const [pendingAction, setPendingAction] = useState<{ orderId: string; action: "approve" | "reject" } | null>(null);
+  const [actionMessage, setActionMessage] = useState<string>("");
 
+  const runOrderAction = async (orderId: string, action: "approve" | "reject") => {
+    if (pendingAction?.orderId !== orderId || pendingAction.action !== action) {
+      setPendingAction({ orderId, action });
+      setActionMessage("");
+      return;
+    }
+    setPendingAction(null);
     try {
       const res = await fetch("/api/admin/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, action: "approve" }),
+        body: JSON.stringify({ orderId, action }),
       });
       const data = await res.json();
+      if (res.status === 401) {
+        setIsAuthenticated(false);
+        return;
+      }
+      setActionMessage(data.success ? `${orderId}: ${data.message}` : data.message || "ทำรายการไม่สำเร็จ");
       if (data.success) {
         fetchDashboardData();
         setSelectedSlipOrder(null);
       }
-    } catch (err) {
-      alert("เกิดข้อผิดพลาดในการอนุมัติคำสั่งซื้อ");
+    } catch {
+      setActionMessage("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง");
     }
   };
 
-  const handleRejectOrder = async (orderId: string) => {
-    if (!confirm(`ต้องการปฏิเสธคำสั่งซื้อ ${orderId} ใช่หรือไม่?`)) return;
-
-    try {
-      const res = await fetch("/api/admin/orders", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, action: "reject" }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        fetchDashboardData();
-        setSelectedSlipOrder(null);
-      }
-    } catch (err) {
-      alert("เกิดข้อผิดพลาดในการปฏิเสธคำสั่งซื้อ");
-    }
-  };
+  const handleApproveOrder = (orderId: string) => runOrderAction(orderId, "approve");
+  const handleRejectOrder = (orderId: string) => runOrderAction(orderId, "reject");
+  const isConfirming = (orderId: string, action: "approve" | "reject") =>
+    pendingAction?.orderId === orderId && pendingAction.action === action;
 
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -429,6 +428,12 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          {actionMessage && (
+            <div className="mx-6 mt-4 rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 text-sm text-emerald-800">
+              {actionMessage}
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
@@ -528,7 +533,7 @@ export default function AdminDashboard() {
                                 title="อนุมัติออเดอร์ทันที"
                               >
                                 <Check className="w-3.5 h-3.5" />
-                                <span>อนุมัติ</span>
+                                <span>{isConfirming(order.id, "approve") ? "กดอีกครั้งเพื่อยืนยัน" : "อนุมัติ"}</span>
                               </button>
 
                               <button
@@ -536,7 +541,7 @@ export default function AdminDashboard() {
                                 className="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-2.5 py-1.5 rounded-lg border border-rose-200 transition-colors"
                                 title="ปฏิเสธสลิป"
                               >
-                                ✕
+                                {isConfirming(order.id, "reject") ? "ยืนยันปฏิเสธ" : "✕"}
                               </button>
                             </>
                           )}
@@ -904,13 +909,13 @@ EASYSLIP_API_KEY=optional-easyslip-key`}
                   onClick={() => handleApproveOrder(selectedSlipOrder.id)}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-xs"
                 >
-                  ✓ อนุมัติสลิปนี้ทันที
+                  {isConfirming(selectedSlipOrder.id, "approve") ? "กดอีกครั้งเพื่อยืนยันอนุมัติ" : "✓ อนุมัติสลิปนี้"}
                 </button>
                 <button
                   onClick={() => handleRejectOrder(selectedSlipOrder.id)}
                   className="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-4 py-2.5 rounded-xl text-xs border border-rose-200"
                 >
-                  ✕ ปฏิเสธ
+                  {isConfirming(selectedSlipOrder.id, "reject") ? "ยืนยันปฏิเสธ" : "✕ ปฏิเสธ"}
                 </button>
               </div>
             )}

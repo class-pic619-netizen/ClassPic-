@@ -6,14 +6,36 @@ import { getOrder, isSlipUsed, recordSlip, setOrderStatus, uploadSlipImage } fro
 
 const MAX_SLIP_BYTES = 8 * 1024 * 1024;
 
+/** อ่านข้อมูลแบบ TLV (แท็ก 2 หลัก + ความยาว 2 หลัก + ค่า) ตามมาตรฐาน QR ของธนาคารไทย */
+function parseTlv(input: string): Map<string, string> {
+  const out = new Map<string, string>();
+  let i = 0;
+  while (i + 4 <= input.length) {
+    const tag = input.slice(i, i + 2);
+    const len = Number(input.slice(i + 2, i + 4));
+    if (!Number.isFinite(len) || i + 4 + len > input.length) break;
+    out.set(tag, input.slice(i + 4, i + 4 + len));
+    i += 4 + len;
+  }
+  return out;
+}
+
 /**
- * ดึงรหัสอ้างอิงจากข้อมูล Mini QR ของสลิปธนาคารไทย
- * ถ้าไม่พบรูปแบบรหัส ใช้ hash ของข้อความ QR แทน (ยังกันสลิปซ้ำได้)
+ * ดึงรหัสอ้างอิงธุรกรรมจาก Mini QR บนสลิปธนาคารไทย
+ * โครงสร้าง: แท็ก 00 = { 00: API ID "000001", 01: รหัสธนาคารผู้โอน, 02: รหัสธุรกรรม } , 51: "TH", 91: CRC
+ * ถ้าไม่ใช่รูปแบบนี้ ใช้ hash ของข้อความ QR แทน (ยังกันสลิปซ้ำได้)
  */
-function extractBankTransRef(qrData: string): string {
-  const match = qrData.match(/(?:TR|REF|B)[A-Z0-9]{8,24}/i);
-  if (match) return match[0].toUpperCase();
-  return `QR-${crypto.createHash("sha256").update(qrData).digest("hex").slice(0, 16).toUpperCase()}`;
+function extractSlipRef(qrData: string): { transRef: string; bankCode?: string } {
+  const top = parseTlv(qrData);
+  const inner = top.get("00");
+  if (inner && top.get("51") === "TH") {
+    const sub = parseTlv(inner);
+    const ref = sub.get("02");
+    if (ref && /^[A-Za-z0-9]{8,40}$/.test(ref)) {
+      return { transRef: ref.toUpperCase(), bankCode: sub.get("01") };
+    }
+  }
+  return { transRef: `QR-${crypto.createHash("sha256").update(qrData).digest("hex").slice(0, 16).toUpperCase()}` };
 }
 
 function json(body: Record<string, unknown>, status = 200) {
@@ -86,7 +108,8 @@ export async function POST(req: NextRequest) {
     }
 
     const imageHash = crypto.createHash("sha256").update(image).digest("hex");
-    let transRef = qrPayload ? extractBankTransRef(qrPayload) : `IMG-${imageHash.slice(0, 16).toUpperCase()}`;
+    const slipRef = qrPayload ? extractSlipRef(qrPayload) : null;
+    let transRef = slipRef?.transRef ?? `IMG-${imageHash.slice(0, 16).toUpperCase()}`;
 
     if (await isSlipUsed(transRef, imageHash)) {
       return json({ success: false, isDuplicate: true, error: "สลิปนี้เคยใช้กับคำสั่งซื้ออื่นไปแล้ว ใช้ซ้ำไม่ได้" }, 400);
@@ -133,7 +156,7 @@ export async function POST(req: NextRequest) {
       image_hash: imageHash,
       amount: paidAmount,
       order_id: order.id,
-      sender_bank: qrPayload ? "BANK_QR" : "IMAGE_ONLY",
+      sender_bank: slipRef?.bankCode ? `BANK-${slipRef.bankCode}` : qrPayload ? "QR_UNKNOWN" : "IMAGE_ONLY",
     });
     if (!reserved) {
       return json({ success: false, isDuplicate: true, error: "สลิปนี้เคยใช้กับคำสั่งซื้ออื่นไปแล้ว ใช้ซ้ำไม่ได้" }, 400);

@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Product, Order, GradeLevel, SubjectCategory } from "@/types";
-import { ImagesPicker, PdfPicker, ProductFileButtons, TelegramPanel, uploadToStorage } from "./AdminUploads";
+import { ImagesPicker, PdfPicker, ProductFileButtons, uploadToStorage } from "./AdminUploads";
+import AdminLogin from "./AdminLogin";
+import AdminSettingsPanel from "./AdminSettingsPanel";
 import {
-  Lock,
   Package,
   ShoppingCart,
   CheckCircle2,
@@ -15,7 +16,6 @@ import {
   RefreshCw,
   LogOut,
   TrendingUp,
-  AlertCircle,
   FileText,
   UploadCloud,
   Database,
@@ -30,9 +30,7 @@ import {
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [passwordInput, setPasswordInput] = useState<string>("");
-  const [authError, setAuthError] = useState<string>("");
-  const [authLoading, setAuthLoading] = useState<boolean>(false);
+  const [canResetViaTelegram, setCanResetViaTelegram] = useState<boolean>(false);
 
   // Dashboard Data State
   const [activeTab, setActiveTab] = useState<"orders" | "products" | "new_product" | "telegram" | "deploy">("orders");
@@ -62,6 +60,7 @@ export default function AdminDashboard() {
     fetch("/api/admin/auth")
       .then((res) => res.json())
       .then((data) => {
+        setCanResetViaTelegram(Boolean(data.canResetViaTelegram));
         if (data.authenticated) {
           setIsAuthenticated(true);
           fetchDashboardData();
@@ -71,33 +70,6 @@ export default function AdminDashboard() {
       })
       .catch(() => setLoading(false));
   }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthLoading(true);
-    setAuthError("");
-
-    try {
-      const res = await fetch("/api/admin/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: passwordInput }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setIsAuthenticated(true);
-        setPasswordInput("");
-        fetchDashboardData();
-      } else {
-        setAuthError(data.message || "รหัสผ่านไม่ถูกต้อง");
-      }
-    } catch {
-      setAuthError("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
 
   const handleLogout = () => {
     fetch("/api/admin/auth", { method: "DELETE" }).finally(() => setIsAuthenticated(false));
@@ -224,54 +196,13 @@ export default function AdminDashboard() {
   // Login Screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
-          <div className="text-center space-y-3">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#142E4F] text-[#F26C28] flex items-center justify-center shadow-md">
-              <Lock className="w-7 h-7" />
-            </div>
-            <h2 className="text-2xl font-extrabold text-[#142E4F]">เข้าสู่ระบบแอดมิน</h2>
-            <p className="text-xs text-slate-500">
-              ระบบจัดการหลังบ้าน ClassPic Studio (อนุมัติสลิป & ทยอยลงใบงานใหม่)
-            </p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                รหัสผ่านความปลอดภัย (Admin Password):
-              </label>
-              <input
-                type="password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="รหัสผ่านหลังบ้าน"
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2856B0] transition-all"
-                required
-              />
-            </div>
-
-            {authError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{authError}</span>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={authLoading}
-              className="w-full bg-[#142E4F] hover:bg-[#2856B0] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              {authLoading ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
-              ) : (
-                <span>เข้าสู่ระบบหลังบ้าน</span>
-              )}
-            </button>
-          </form>
-        </div>
-      </div>
+      <AdminLogin
+        canResetViaTelegram={canResetViaTelegram}
+        onSuccess={() => {
+          setIsAuthenticated(true);
+          fetchDashboardData();
+        }}
+      />
     );
   }
 
@@ -432,7 +363,7 @@ export default function AdminDashboard() {
           }`}
         >
           <Bell className="w-4 h-4 text-[#F26C28]" />
-          <span>แจ้งเตือน Telegram</span>
+          <span>ตั้งค่า & ความปลอดภัย</span>
         </button>
 
         <button
@@ -835,8 +766,8 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Tab: Telegram notifications */}
-      {activeTab === "telegram" && <TelegramPanel />}
+      {/* Tab: Settings — Telegram, 2FA, password */}
+      {activeTab === "telegram" && <AdminSettingsPanel />}
 
       {/* Tab 4: Deployment & Supabase Guide */}
       {activeTab === "deploy" && (

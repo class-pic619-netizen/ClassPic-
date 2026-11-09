@@ -1,13 +1,14 @@
 /**
  * แจ้งเตือนเจ้าของร้านผ่าน Telegram Bot (ฝั่งเซิร์ฟเวอร์เท่านั้น)
- * ตั้งค่า TELEGRAM_BOT_TOKEN (จาก @BotFather) และ TELEGRAM_CHAT_ID (ห้องแชตของเจ้าของร้าน)
+ * ตั้งค่า Token/Chat ID ได้ 2 ทาง: หน้า /admin แท็บ "แจ้งเตือน Telegram" (แนะนำ ทำในมือถือได้)
+ * หรือ env TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID — ค่าที่ตั้งในหน้าเว็บใช้ก่อน
  * ถ้าไม่ได้ตั้งค่า ระบบจะข้ามการแจ้งเตือนเงียบ ๆ ร้านยังทำงานได้ปกติ
  */
 import { after } from "next/server";
+import { loadAdminSettings, telegramConfig, type AdminSettings } from "./adminSettings";
 
-export function isTelegramConfigured(): boolean {
-  return Boolean(process.env.TELEGRAM_BOT_TOKEN?.trim() && process.env.TELEGRAM_CHAT_ID?.trim());
-}
+/** เปลี่ยนได้เฉพาะตอนทดสอบระบบ (ชี้ไปเซิร์ฟเวอร์จำลอง) */
+const TELEGRAM_API = (process.env.TELEGRAM_API_BASE || "https://api.telegram.org").replace(/\/$/, "");
 
 function siteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -22,17 +23,22 @@ export function adminLink(): string {
   return base ? `${base}/admin` : "หน้า /admin";
 }
 
-/** ส่งข้อความทันทีและรอผล (ใช้กับปุ่มทดสอบในหลังบ้าน) */
+export async function getTelegramConfig(settings?: AdminSettings) {
+  return telegramConfig(settings ?? (await loadAdminSettings()));
+}
+
+/** ส่งข้อความทันทีและรอผล */
 export async function sendTelegram(
   text: string,
-  chatIdOverride?: string
+  opts: { chatId?: string; botToken?: string; settings?: AdminSettings } = {}
 ): Promise<{ ok: boolean; error?: string }> {
-  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
-  const chatId = (chatIdOverride || process.env.TELEGRAM_CHAT_ID || "").trim();
-  if (!token) return { ok: false, error: "ยังไม่ได้ตั้งค่า TELEGRAM_BOT_TOKEN" };
-  if (!chatId) return { ok: false, error: "ยังไม่ได้ตั้งค่า TELEGRAM_CHAT_ID" };
+  const cfg = opts.botToken && opts.chatId ? opts : { ...(await getTelegramConfig(opts.settings)), ...stripEmpty(opts) };
+  const token = cfg.botToken?.trim();
+  const chatId = cfg.chatId?.trim();
+  if (!token) return { ok: false, error: "ยังไม่ได้ใส่ Bot Token" };
+  if (!chatId) return { ok: false, error: "ยังไม่ได้ใส่ Chat ID" };
   try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    const res = await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
@@ -46,25 +52,41 @@ export async function sendTelegram(
   }
 }
 
+function stripEmpty(o: { chatId?: string; botToken?: string }) {
+  const out: { chatId?: string; botToken?: string } = {};
+  if (o.chatId) out.chatId = o.chatId;
+  if (o.botToken) out.botToken = o.botToken;
+  return out;
+}
+
 /** แจ้งเตือนแบบไม่หน่วงการตอบลูกค้า (ทำงานหลังส่ง response แล้ว ใช้ได้บน Vercel) */
 export function notifyOwner(text: string): void {
-  if (!isTelegramConfigured()) return;
   after(async () => {
-    const r = await sendTelegram(text);
-    if (!r.ok) console.error("Telegram notify error:", r.error);
+    try {
+      const cfg = await getTelegramConfig();
+      if (!cfg.botToken || !cfg.chatId) return;
+      const r = await sendTelegram(text, cfg);
+      if (!r.ok) console.error("Telegram notify error:", r.error);
+    } catch (e) {
+      console.error("Telegram notify error:", e);
+    }
   });
 }
 
-/** ห้องแชตที่เพิ่งทักบอท — ช่วยหา TELEGRAM_CHAT_ID โดยไม่ต้องใช้เครื่องมืออื่น */
-export async function findRecentChats(): Promise<{ ok: boolean; chats: { id: string; name: string }[]; error?: string }> {
-  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
-  if (!token) return { ok: false, chats: [], error: "ยังไม่ได้ตั้งค่า TELEGRAM_BOT_TOKEN" };
+/** ห้องแชตที่เพิ่งทักบอท — ช่วยหา Chat ID โดยไม่ต้องใช้เครื่องมืออื่น */
+export async function findRecentChats(
+  botToken?: string
+): Promise<{ ok: boolean; chats: { id: string; name: string }[]; error?: string }> {
+  const token = botToken?.trim() || (await getTelegramConfig()).botToken;
+  if (!token) return { ok: false, chats: [], error: "ยังไม่ได้ใส่ Bot Token" };
   try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates`, { signal: AbortSignal.timeout(8000) });
+    const res = await fetch(`${TELEGRAM_API}/bot${token}/getUpdates`, { signal: AbortSignal.timeout(8000) });
     const data = (await res.json().catch(() => ({}))) as {
       ok?: boolean;
       description?: string;
-      result?: { message?: { chat?: { id: number; first_name?: string; last_name?: string; title?: string; username?: string } } }[];
+      result?: {
+        message?: { chat?: { id: number; first_name?: string; last_name?: string; title?: string; username?: string } };
+      }[];
     };
     if (!data.ok) return { ok: false, chats: [], error: data.description || "Token ไม่ถูกต้อง" };
     const map = new Map<string, string>();

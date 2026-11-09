@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/adminAuth";
 import { getAllOrders, getOrder, setOrderStatus, signedSlipUrl } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
-  const denied = requireAdmin(req);
+  const denied = await requireAdmin(req);
   if (denied) return denied;
 
   try {
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const denied = requireAdmin(req);
+  const denied = await requireAdmin(req);
   if (denied) return denied;
 
   try {

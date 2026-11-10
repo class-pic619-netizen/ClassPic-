@@ -90,10 +90,11 @@ export default function AdminLogin({
   const Icon = step === "password" ? Lock : step === "code" ? ShieldCheck : KeyRound;
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
+    <div className="admin-dark min-h-screen">
+    <main className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#142E4F] text-[#F26C28] flex items-center justify-center shadow-md">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#2856B0]/30 text-[#F26C28] flex items-center justify-center shadow-[0_0_24px_rgba(40,86,176,0.6)] border border-[#AED6F4]/20">
             <Icon className="w-7 h-7" />
           </div>
           <h2 className="text-2xl font-extrabold text-[#142E4F]">{title}</h2>
@@ -209,6 +210,7 @@ export default function AdminLogin({
           )}
         </form>
       </div>
+    </main>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/components/Providers";
 import CartDrawer from "@/components/CartDrawer";
+import HideOnAdmin from "@/components/HideOnAdmin";
 
 // หัวข้อ: Nunito (ละติน/ตัวเลข ทรงกลมแบบโลโก้) + Mitr (ไทย หัวมน) | เนื้อหา: Anuphan
 const nunito = Nunito({
@@ -46,10 +47,14 @@ export default function RootLayout({
     <html lang="th" className={`${nunito.variable} ${mitr.variable} ${anuphan.variable}`}>
       <body className="min-h-screen flex flex-col bg-white text-ink antialiased">
         <Providers>
-          <Navbar />
+          <HideOnAdmin>
+            <Navbar />
+          </HideOnAdmin>
           <CartDrawer />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <HideOnAdmin>
+            <Footer />
+          </HideOnAdmin>
         </Providers>
       </body>
     </html>

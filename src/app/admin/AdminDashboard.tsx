@@ -3,39 +3,29 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Product, Order, GradeLevel, SubjectCategory } from "@/types";
-import { ImagesPicker, PdfPicker, ProductFileButtons, TelegramPanel, uploadToStorage } from "./AdminUploads";
+import { ImagesPicker, PdfPicker, ProductFileButtons, uploadToStorage } from "./AdminUploads";
+import AdminLogin from "./AdminLogin";
+import AdminSettingsPanel from "./AdminSettingsPanel";
+import AdminShell, { type AdminTab } from "./AdminShell";
+import AdminOverview from "./AdminOverview";
 import {
-  Lock,
-  Package,
-  ShoppingCart,
   CheckCircle2,
   Clock,
   PlusCircle,
   Eye,
   RefreshCw,
-  LogOut,
-  TrendingUp,
-  AlertCircle,
-  FileText,
-  UploadCloud,
   Database,
   ExternalLink,
-  Search,
   Check,
   X,
-  ChevronRight,
-  ShieldAlert,
-  Bell,
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [passwordInput, setPasswordInput] = useState<string>("");
-  const [authError, setAuthError] = useState<string>("");
-  const [authLoading, setAuthLoading] = useState<boolean>(false);
+  const [canResetViaTelegram, setCanResetViaTelegram] = useState<boolean>(false);
 
   // Dashboard Data State
-  const [activeTab, setActiveTab] = useState<"orders" | "products" | "new_product" | "telegram" | "deploy">("orders");
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -57,47 +47,6 @@ export default function AdminDashboard() {
   const [isSubmittingProduct, setIsSubmittingProduct] = useState<boolean>(false);
   const [productSuccessMsg, setProductSuccessMsg] = useState<string>("");
 
-  // Check initial login session
-  useEffect(() => {
-    fetch("/api/admin/auth")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.authenticated) {
-          setIsAuthenticated(true);
-          fetchDashboardData();
-        } else {
-          setLoading(false);
-        }
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthLoading(true);
-    setAuthError("");
-
-    try {
-      const res = await fetch("/api/admin/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: passwordInput }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setIsAuthenticated(true);
-        setPasswordInput("");
-        fetchDashboardData();
-      } else {
-        setAuthError(data.message || "รหัสผ่านไม่ถูกต้อง");
-      }
-    } catch {
-      setAuthError("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
 
   const handleLogout = () => {
     fetch("/api/admin/auth", { method: "DELETE" }).finally(() => setIsAuthenticated(false));
@@ -122,6 +71,22 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  // Check initial login session
+  useEffect(() => {
+    fetch("/api/admin/auth")
+      .then((res) => res.json())
+      .then((data) => {
+        setCanResetViaTelegram(Boolean(data.canResetViaTelegram));
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+          fetchDashboardData();
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   // ยืนยันบนหน้าเว็บเอง (ไม่ใช้ confirm() เพราะบางเบราว์เซอร์/หน้าต่างในแอปปิดกล่องนี้อัตโนมัติ)
   const [pendingAction, setPendingAction] = useState<{ orderId: string; action: "approve" | "reject" } | null>(null);
@@ -224,229 +189,28 @@ export default function AdminDashboard() {
   // Login Screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
-          <div className="text-center space-y-3">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#142E4F] text-[#F26C28] flex items-center justify-center shadow-md">
-              <Lock className="w-7 h-7" />
-            </div>
-            <h2 className="text-2xl font-extrabold text-[#142E4F]">เข้าสู่ระบบแอดมิน</h2>
-            <p className="text-xs text-slate-500">
-              ระบบจัดการหลังบ้าน ClassPic Studio (อนุมัติสลิป & ทยอยลงใบงานใหม่)
-            </p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                รหัสผ่านความปลอดภัย (Admin Password):
-              </label>
-              <input
-                type="password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="รหัสผ่านหลังบ้าน"
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2856B0] transition-all"
-                required
-              />
-            </div>
-
-            {authError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{authError}</span>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={authLoading}
-              className="w-full bg-[#142E4F] hover:bg-[#2856B0] text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              {authLoading ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
-              ) : (
-                <span>เข้าสู่ระบบหลังบ้าน</span>
-              )}
-            </button>
-          </form>
-        </div>
-      </div>
+      <AdminLogin
+        canResetViaTelegram={canResetViaTelegram}
+        onSuccess={() => {
+          setIsAuthenticated(true);
+          fetchDashboardData();
+        }}
+      />
     );
   }
 
-  // Calculate Metrics
-  const totalRevenue = orders
-    .filter((o) => o.status === "PAID")
-    .reduce((sum, o) => sum + o.total_amount, 0);
-  const pendingOrders = orders.filter((o) => o.status === "PENDING" || o.status === "PENDING_REVIEW");
-  const paidOrders = orders.filter((o) => o.status === "PAID");
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Top Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-        <div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold text-[#2856B0] uppercase tracking-wider mb-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>ClassPic Admin Center</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
-            ระบบจัดการร้านค้าหลังบ้าน
-          </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            ตรวจสลิปโอนเงิน อนุมัติการสั่งซื้อ และทยอยอัปโหลดใบงาน A4 ชุดใหม่
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchDashboardData}
-            className="p-2.5 bg-white hover:bg-slate-50 text-slate-600 rounded-xl border border-slate-200 shadow-2xs transition-colors flex items-center gap-1.5 text-xs font-medium"
-            title="รีเฟรชข้อมูล"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-            <span className="hidden sm:inline">รีเฟรช</span>
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl border border-rose-200 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>ออกจากระบบ</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {/* Metric 1 */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">ยอดขายรวม</span>
-            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
-            ฿{totalRevenue.toLocaleString()}
-          </div>
-          <p className="text-[11px] text-emerald-600 font-medium">
-            จาก {paidOrders.length} ออเดอร์ที่ชำระสำเร็จ
-          </p>
-        </div>
-
-        {/* Metric 2 */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">รอตรวจสลิป</span>
-            <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#F26C28]">
-            {pendingOrders.length}
-          </div>
-          <p className="text-[11px] text-amber-600 font-medium">ต้องกดอนุมัติเพื่อปลดล็อกไฟล์</p>
-        </div>
-
-        {/* Metric 3 */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">ออเดอร์ทั้งหมด</span>
-            <div className="p-2 rounded-xl bg-blue-50 text-[#2856B0]">
-              <ShoppingCart className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
-            {orders.length}
-          </div>
-          <p className="text-[11px] text-slate-400">ประวัติคำสั่งซื้อทั้งหมดในระบบ</p>
-        </div>
-
-        {/* Metric 4 */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">ใบงานในร้าน</span>
-            <div className="p-2 rounded-xl bg-purple-50 text-purple-600">
-              <Package className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#142E4F]">
-            {products.length}
-          </div>
-          <p className="text-[11px] text-slate-400">ชุดใบงานดิจิทัลพร้อมขาย</p>
-        </div>
-      </div>
-
-      {/* Tabs Navigation */}
-      <div className="flex flex-wrap gap-2 border-b border-slate-200">
-        <button
-          onClick={() => setActiveTab("orders")}
-          className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === "orders"
-              ? "border-[#F26C28] text-[#142E4F]"
-              : "border-transparent text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          <ShoppingCart className="w-4 h-4" />
-          <span>จัดการออเดอร์ & ตรวจสลิป</span>
-          {pendingOrders.length > 0 && (
-            <span className="bg-[#F26C28] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-              {pendingOrders.length}
-            </span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab("products")}
-          className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === "products"
-              ? "border-[#F26C28] text-[#142E4F]"
-              : "border-transparent text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          <Package className="w-4 h-4" />
-          <span>รายการใบงานทั้งหมด ({products.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("new_product")}
-          className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === "new_product"
-              ? "border-[#F26C28] text-[#142E4F]"
-              : "border-transparent text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          <PlusCircle className="w-4 h-4 text-[#F26C28]" />
-          <span>เพิ่มใบงานชุดใหม่</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("telegram")}
-          className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === "telegram"
-              ? "border-[#F26C28] text-[#142E4F]"
-              : "border-transparent text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          <Bell className="w-4 h-4 text-[#F26C28]" />
-          <span>แจ้งเตือน Telegram</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab("deploy")}
-          className={`px-4 py-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === "deploy"
-              ? "border-[#F26C28] text-[#142E4F]"
-              : "border-transparent text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          <Database className="w-4 h-4 text-[#2856B0]" />
-          <span>คู่มือ Supabase & ขึ้นออนไลน์</span>
-        </button>
-      </div>
+    <AdminShell
+      active={activeTab}
+      onChange={setActiveTab}
+      pendingCount={orders.filter((o) => o.status === "PENDING_REVIEW").length}
+      loading={loading}
+      onRefresh={fetchDashboardData}
+      onLogout={handleLogout}
+    >
+      {activeTab === "overview" && (
+        <AdminOverview orders={orders} products={products} onGo={setActiveTab} onOpenSlip={setSelectedSlipOrder} />
+      )}
 
       {/* Tab 1: Orders Management */}
       {activeTab === "orders" && (
@@ -835,8 +599,8 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Tab: Telegram notifications */}
-      {activeTab === "telegram" && <TelegramPanel />}
+      {/* Tab: Settings — Telegram, 2FA, password */}
+      {activeTab === "telegram" && <AdminSettingsPanel />}
 
       {/* Tab 4: Deployment & Supabase Guide */}
       {activeTab === "deploy" && (
@@ -953,6 +717,6 @@ EASYSLIP_API_KEY=optional-easyslip-key`}
           </div>
         </div>
       )}
-    </div>
+    </AdminShell>
   );
 }

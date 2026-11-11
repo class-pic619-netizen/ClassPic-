@@ -106,3 +106,106 @@ h1, h2, h3, h4, button, .font-head {
   &:focus { outline: none; border-color: var(--color-cp-blue); box-shadow: 0 0 0 3px rgba(40, 86, 176, 0.12); }
   &::placeholder { color: #9AA6B2; }
 }
+
+/* ------------------------------------------------------------------ */
+/* หลังบ้าน /admin — ธีมมืดกรมท่าแบบแดชบอร์ด (ใช้เฉพาะในกรอบ .admin-dark)  */
+/* ไม่อยู่ใน @layer จึงชนะคลาส Tailwind เดิมของแท็บต่าง ๆ โดยไม่ต้องแก้ทีละจุด */
+/* ------------------------------------------------------------------ */
+.admin-dark {
+  --adm-bg: #08142a;
+  --adm-card: rgba(20, 46, 79, 0.55);
+  --adm-card-solid: #10233f;
+  --adm-line: rgba(174, 214, 244, 0.14);
+  --adm-text: #e8f1fa;
+  --adm-muted: #93a7bf;
+  color: var(--adm-text);
+  background:
+    radial-gradient(1100px 600px at 85% -10%, rgba(40, 86, 176, 0.35), transparent 60%),
+    radial-gradient(800px 500px at -10% 110%, rgba(174, 214, 244, 0.10), transparent 60%),
+    var(--adm-bg);
+  background-attachment: fixed;
+}
+
+.cp-glass {
+  background: linear-gradient(160deg, rgba(31, 64, 108, 0.55), rgba(16, 35, 63, 0.75));
+  border: 1px solid var(--adm-line, rgba(174, 214, 244, 0.14));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+/* การ์ด/พื้นขาวเดิม → กระจกกรมท่า */
+.admin-dark main .bg-white,
+.admin-dark .bg-white\/90 {
+  background: linear-gradient(160deg, rgba(31, 64, 108, 0.55), rgba(16, 35, 63, 0.8));
+  border-color: var(--adm-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+}
+.admin-dark main .bg-slate-50,
+.admin-dark main .bg-slate-100,
+.admin-dark main .hover\:bg-slate-50:hover,
+.admin-dark main .hover\:bg-slate-50\/80:hover { background-color: rgba(174, 214, 244, 0.06); }
+.admin-dark main .bg-sky-50,
+.admin-dark main .bg-blue-50,
+.admin-dark main .hover\:bg-sky-50:hover { background-color: rgba(40, 86, 176, 0.22); }
+.admin-dark main .hover\:bg-sky-100:hover { background-color: rgba(40, 86, 176, 0.35); }
+.admin-dark main .bg-emerald-50 { background-color: rgba(52, 211, 153, 0.12); }
+.admin-dark main .bg-rose-50 { background-color: rgba(244, 63, 94, 0.12); }
+.admin-dark main .hover\:bg-rose-100:hover { background-color: rgba(244, 63, 94, 0.22); }
+.admin-dark main .bg-amber-50,
+.admin-dark main .bg-orange-50 { background-color: rgba(242, 108, 40, 0.12); }
+.admin-dark main .bg-purple-50 { background-color: rgba(168, 85, 247, 0.14); }
+
+/* เส้นขอบ */
+.admin-dark main .border-slate-100,
+.admin-dark main .border-slate-200,
+.admin-dark main .border-slate-300,
+.admin-dark main .divide-slate-100 > * + * { border-color: var(--adm-line); }
+.admin-dark main .border-\[\#AED6F4\] { border-color: rgba(174, 214, 244, 0.35); }
+.admin-dark main .border-emerald-200 { border-color: rgba(52, 211, 153, 0.35); }
+.admin-dark main .border-rose-200 { border-color: rgba(244, 63, 94, 0.35); }
+.admin-dark main .border-amber-200,
+.admin-dark main .border-orange-200 { border-color: rgba(242, 108, 40, 0.35); }
+.admin-dark main .border-blue-200 { border-color: rgba(91, 141, 239, 0.4); }
+
+/* ตัวอักษร */
+.admin-dark main .text-\[\#142E4F\] { color: #ffffff; }
+.admin-dark main .text-\[\#2856B0\],
+.admin-dark main .hover\:text-\[\#2856B0\]:hover { color: #8fc3f0; }
+.admin-dark main .text-slate-700,
+.admin-dark main .text-slate-600,
+.admin-dark main .hover\:text-slate-800:hover { color: #d5e2f0; }
+.admin-dark main .text-slate-500 { color: var(--adm-muted); }
+.admin-dark main .text-slate-400 { color: #7088a3; }
+.admin-dark main .text-emerald-700,
+.admin-dark main .text-emerald-800,
+.admin-dark main .text-emerald-600 { color: #6ee7b7; }
+.admin-dark main .text-rose-600,
+.admin-dark main .text-rose-700,
+.admin-dark main .text-red-600 { color: #fda4af; }
+.admin-dark main .text-amber-600,
+.admin-dark main .text-amber-700,
+.admin-dark main .text-\[\#b8501a\] { color: #ffb38a; }
+.admin-dark main .text-purple-600 { color: #d8b4fe; }
+
+/* ช่องกรอก */
+.admin-dark main input:not([type="checkbox"]),
+.admin-dark main textarea,
+.admin-dark main select {
+  background-color: rgba(8, 20, 42, 0.6);
+  border-color: var(--adm-line);
+  color: var(--adm-text);
+}
+.admin-dark main input::placeholder,
+.admin-dark main textarea::placeholder { color: #5f7690; }
+.admin-dark main select option { background: var(--adm-card-solid); color: var(--adm-text); }
+.admin-dark main code { background: rgba(174, 214, 244, 0.1); color: #cfe4f7; }
+
+/* ปุ่มหลัก: เพิ่มแสงเรือง */
+.admin-dark main .bg-\[\#F26C28\] { box-shadow: 0 0 18px rgba(242, 108, 40, 0.35); }
+.admin-dark main .bg-\[\#142E4F\] { background-color: #2856b0; box-shadow: 0 0 16px rgba(40, 86, 176, 0.45); }
+
+/* หน้าเข้าสู่ระบบ (อยู่นอก main) */
+.admin-dark .admin-login-card {
+  background: linear-gradient(160deg, rgba(31, 64, 108, 0.6), rgba(16, 35, 63, 0.85));
+  border-color: var(--adm-line);
+}
